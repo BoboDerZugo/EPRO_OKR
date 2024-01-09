@@ -8,9 +8,7 @@ public class OKRSet {
         this.objective = objective;
         this.keyResults = new KeyResult[5];
         int minLength = Math.min(this.keyResults.length, keyResults.length);
-        for (int i = 0; i < minLength; i++) {
-            this.keyResults[i] = keyResults[i];
-        }
+        System.arraycopy(keyResults, 0, this.keyResults, 0, minLength);
     }
 
     public Objective getObjective() {

@@ -38,8 +38,6 @@ public class Company {
 
     public void setOkrSets(OKRSet... okrSets){
         int minLength = Math.min(this.okrSets.length, okrSets.length);
-        for (int i = 0; i < minLength; i++) {
-            this.okrSets[i] = okrSets[i];
-        }
+        System.arraycopy(okrSets, 0, this.okrSets, 0, minLength);
     }
 }

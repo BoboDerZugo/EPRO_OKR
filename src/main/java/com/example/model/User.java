@@ -3,7 +3,9 @@ package com.example.model;
 import java.util.UUID;
 
 public class User {
-    private enum Role {CO_ADMIN, BU_ADMIN, NORMAL};
+    private enum Role {CO_ADMIN, BU_ADMIN, NORMAL}
+
+    ;
     private Role role;
     private UUID uuid;
     private String name;
@@ -14,8 +16,18 @@ public class User {
         this.role = Role.valueOf(role);
     }
 
-    public Role getRole() {
-        return role;
+    public String getRole() {
+        switch (role) {
+            case CO_ADMIN -> {
+                return "Company Admin";
+            }
+            case BU_ADMIN -> {
+                return "Business Unit Admin";
+            }
+            default -> {
+                return "Normal";
+            }
+        }
     }
 
     public UUID getUuid() {
