@@ -4,7 +4,10 @@ package com.example.controller;
 
 import java.util.List;
 
+import com.example.model.BusinessUnit;
 import com.example.model.BusinessUnitModel;
+import com.example.model.OKRSet;
+import com.example.model.User;
 import com.example.service.BusinessUnitService;
 
 
@@ -38,13 +41,13 @@ public class BusinessUnitController {
 
     @GetMapping("/{id}/okr")
     @ResponseStatus(HttpStatus.OK)
-    public List<OKR> getOKRsByBusinessUnitId(@PathVariable("id") Long id){
+    public List<OKRSet> getOKRsByBusinessUnitId(@PathVariable("id") Long id){
         return businessUnitService.getOKRsByBusinessUnitId(id);
     }
 
     @GetMapping("/{id}/employees")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getEmployeesByBusinessUnitId(@PathVariable("id") Long id){
+    public List<User> getEmployeesByBusinessUnitId(@PathVariable("id") Long id){
         return businessUnitService.getEmployeesByBusinessUnitId(id);
     }
 
