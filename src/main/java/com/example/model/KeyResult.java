@@ -1,11 +1,19 @@
 package com.example.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Set;
 import java.util.UUID;
 
+@Document(collection = "KeyResult")
 public class KeyResult {
 
+    @Id
     private UUID uuid;
+    @Indexed
     private String name;
     private short fulfilled;
     private double current;
@@ -14,6 +22,7 @@ public class KeyResult {
     private User owner;
     private String statusUpdate;
     private String description;
+    @DBRef
     private Set<Unit> contributingUnits;
 
     public KeyResult(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description, Set<Unit> contributingUnits) {

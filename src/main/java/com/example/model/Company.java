@@ -1,12 +1,22 @@
 package com.example.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
+@Document(collection = "Company")
 public class Company {
+    @Id
+    private UUID uuid;
+    @DBRef
     private Set<BusinessUnit> businessUnits;
+    @DBRef
     private OKRSet[] okrSets;
-
+    @DBRef
     private Set<User> employeeSet;
 
     public Company(OKRSet... okrSets) {

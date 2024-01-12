@@ -1,13 +1,17 @@
 package com.example.model;
 
-import java.util.UUID;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.UUID;
+@Document(collection = "User")
 public class User {
     private enum Role {CO_ADMIN, BU_ADMIN, NORMAL}
-
-    ;
-    private Role role;
+    @Id
     private UUID uuid;
+    private Role role;
+    @Indexed
     private String name;
 
     public User(String name, String role) {
