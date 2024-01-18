@@ -12,7 +12,7 @@ public class BusinessUnit {
     @Id
     private UUID uuid;
     @DBRef
-    private Set<User> employees;
+    private Set<User> employeeSet;
     @DBRef
     private Set<Unit> units;
     @DBRef
@@ -20,7 +20,7 @@ public class BusinessUnit {
 
     public BusinessUnit(OKRSet[] okrSets) {
         this.uuid = UUID.randomUUID();
-        this.employees = new HashSet<>();
+        this.employeeSet = new HashSet<>();
         this.units = new HashSet<>();
         this.okrSets = new OKRSet[5];
         setOkrSets(okrSets);
@@ -30,8 +30,8 @@ public class BusinessUnit {
         return uuid;
     }
 
-    public Set<User> getEmployees() {
-        return employees;
+    public Set<User> getEmployeeSet() {
+        return employeeSet;
     }
 
     public Set<Unit> getUnits() {
@@ -43,7 +43,7 @@ public class BusinessUnit {
     }
 
     public void addEmployee(User u){
-        this.employees.add(u);
+        this.employeeSet.add(u);
     }
 
     public void addUnit(Unit u){

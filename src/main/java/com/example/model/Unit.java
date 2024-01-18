@@ -13,33 +13,33 @@ public class Unit {
     @Id
     private UUID uuid;
     @DBRef
-    private Set<User> employees;
+    private Set<User> employeeSet;
     @DBRef
-    private OKRSet[] okr;
+    private OKRSet[] okrSets;
 
     public Unit(OKRSet[] okr) {
         this.uuid = UUID.randomUUID();
-        this.employees = new HashSet<>();
-        this.okr = okr;
+        this.employeeSet = new HashSet<>();
+        this.okrSets = okr;
     }
 
     public UUID getUuid() {
         return uuid;
     }
 
-    public Set<User> getEmployees() {
-        return employees;
+    public Set<User> getEmployeeSet() {
+        return employeeSet;
     }
 
     public OKRSet[] getOkr() {
-        return okr;
+        return okrSets;
     }
 
     public void addEmployee(User u){
-        this.employees.add(u);
+        this.employeeSet.add(u);
     }
 
     public void setOkr(OKRSet... okr) {
-        this.okr = okr;
+        this.okrSets = okr;
     }
 }
