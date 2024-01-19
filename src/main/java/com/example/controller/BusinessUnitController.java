@@ -3,12 +3,13 @@
 package com.example.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import com.example.model.BusinessUnit;
-import com.example.model.BusinessUnitModel;
-import com.example.model.OKRSet;
 import com.example.model.User;
 import com.example.service.BusinessUnitService;
+import com.example.model.Unit;
+import com.example.model.OKRSet;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,50 +23,54 @@ public class BusinessUnitController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<BusinessUnit> getAllBusinessUnits(){
-        return businessUnitService.getAllBusinessUnits();
+    public Set<BusinessUnit> getAllBusinessUnits(){
+        return businessUnitService.findAll();
     }
 
     //get units by business unit id
     @GetMapping("/units/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<BusinessUnit> getUnitsByBusinessUnitId(@PathVariable("id") Long id){
-        return businessUnitService.getUnitsByBusinessUnitId(id);
+    public Set<Unit> getUnitsByBusinessUnitId(@PathVariable("id") Long id){
+        BusinessUnit businessUnit = businessUnitService.findById(id);
+        return businessUnit.getUnits();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BusinessUnit getBusinessUnitById(@PathVariable("id") Long id){
-        return businessUnitService.getBusinessUnitById(id);
+        return businessUnitService.findById(id);
     }
 
     @GetMapping("/{id}/okr")
     @ResponseStatus(HttpStatus.OK)
-    public List<OKRSet> getOKRsByBusinessUnitId(@PathVariable("id") Long id){
-        return businessUnitService.getOKRsByBusinessUnitId(id);
+    public Set<OKRSet> getOKRsByBusinessUnitId(@PathVariable("id") Long id){
+        BusinessUnit businessUnit = businessUnitService.findById(id);
+        return businessUnit.getOKRSets();
     }
 
     @GetMapping("/{id}/employees")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> getEmployeesByBusinessUnitId(@PathVariable("id") Long id){
-        return businessUnitService.getEmployeesByBusinessUnitId(id);
+    public Set<User> getEmployeesByBusinessUnitId(@PathVariable("id") Long id){
+        BusinessUnit businessUnit = businessUnitService.findById(id);
+        return businessUnit.getEmployees();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BusinessUnit createBusinessUnit(@RequestBody BusinessUnit businessUnit){
-        return businessUnitService.createBusinessUnit(businessUnit);
+        //create business unit
+        return businessUnitService.insertBusinessUnit(businessUnit);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BusinessUnit updateBusinessUnit(@PathVariable("id") Long id, @RequestBody BusinessUnit businessUnit){
-        return businessUnitService.updateBusinessUnit(id, businessUnit);
+        businessUnitService.updateOne(id, businessUnit);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteBusinessUnit(@PathVariable("id") Long id){
-        businessUnitService.deleteBusinessUnit(id);
+        businessUnitService.deleteOne(id);
     }
 }
