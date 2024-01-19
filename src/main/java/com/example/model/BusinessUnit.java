@@ -23,7 +23,7 @@ public class BusinessUnit {
         this.employeeSet = new HashSet<>();
         this.units = new HashSet<>();
         this.okrSets = new HashSet<>();
-        setOkrSets(okrSets);
+        this.okrSets = Set.of(okrSets);
     }
 
     public UUID getUuid() {

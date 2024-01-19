@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 @Document(collection = "OKRSet")
 public class OKRSet {
@@ -14,13 +16,12 @@ public class OKRSet {
     @DBRef
     private Objective objective;
     @DBRef
-    private KeyResult[] keyResults;
+    private List<KeyResult> keyResults;
     public OKRSet(Objective objective,KeyResult... keyResults) {
         this.uuid = UUID.randomUUID();
         this.objective = objective;
-        this.keyResults = new KeyResult[5];
-        int minLength = Math.min(this.keyResults.length, keyResults.length);
-        System.arraycopy(keyResults, 0, this.keyResults, 0, minLength);
+        this.keyResults = List.of(keyResults);
+
     }
 
     public UUID getUuid() {
@@ -31,7 +32,7 @@ public class OKRSet {
         return objective;
     }
 
-    public KeyResult[] getKeyResults() {
+    public List<KeyResult> getKeyResults() {
         return keyResults;
     }
 

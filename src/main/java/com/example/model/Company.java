@@ -15,22 +15,22 @@ public class Company {
     @DBRef
     private Set<BusinessUnit> businessUnits;
     @DBRef
-    private OKRSet[] okrSets;
+    private Set<OKRSet> okrSets;
     @DBRef
     private Set<User> employeeSet;
 
     public Company(OKRSet... okrSets) {
-        this.okrSets = new OKRSet[5];
+        this.okrSets = Set.of(okrSets);
         this.businessUnits = new HashSet<>();
         this.employeeSet = new HashSet<>();
-        setOkrSets(okrSets);
+        this.okrSets = Set.of(okrSets);
     }
 
     public Set<BusinessUnit> getBusinessUnits() {
         return businessUnits;
     }
 
-    public OKRSet[] getOkrSets() {
+    public Set<OKRSet> getOkrSets() {
         return okrSets;
     }
 
@@ -46,8 +46,7 @@ public class Company {
         this.employeeSet.add(u);
     }
 
-    public void setOkrSets(OKRSet... okrSets){
-        int minLength = Math.min(this.okrSets.length, okrSets.length);
-        System.arraycopy(okrSets, 0, this.okrSets, 0, minLength);
+    public void setOkrSets(Set<OKRSet> okrSets){
+        this.okrSets = okrSets;
     }
 }

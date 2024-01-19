@@ -15,12 +15,12 @@ public class Unit {
     @DBRef
     private Set<User> employeeSet;
     @DBRef
-    private OKRSet[] okrSets;
+    private Set<OKRSet> okrSets;
 
     public Unit(OKRSet[] okr) {
         this.uuid = UUID.randomUUID();
         this.employeeSet = new HashSet<>();
-        this.okrSets = okr;
+        this.okrSets = Set.of(okr);
     }
 
     public UUID getUuid() {
@@ -31,7 +31,7 @@ public class Unit {
         return employeeSet;
     }
 
-    public OKRSet[] getOkr() {
+    public Set<OKRSet> getOkr() {
         return okrSets;
     }
 
@@ -40,6 +40,6 @@ public class Unit {
     }
 
     public void setOkr(OKRSet... okr) {
-        this.okrSets = okr;
+        this.okrSets = Set.of(okr);
     }
 }
