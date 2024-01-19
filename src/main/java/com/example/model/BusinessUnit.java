@@ -12,46 +12,45 @@ public class BusinessUnit {
     @Id
     private UUID uuid;
     @DBRef
-    private Set<User> employees;
+    private Set<User> employeeSet;
     @DBRef
     private Set<Unit> units;
     @DBRef
-    private OKRSet[] okrSets;
+    private Set<OKRSet> okrSets;
 
     public BusinessUnit(OKRSet[] okrSets) {
         this.uuid = UUID.randomUUID();
-        this.employees = new HashSet<>();
+        this.employeeSet = new HashSet<>();
         this.units = new HashSet<>();
-        this.okrSets = new OKRSet[5];
-        setOkrSets(okrSets);
+        this.okrSets = new HashSet<>();
+        this.okrSets = Set.of(okrSets);
     }
 
     public UUID getUuid() {
         return uuid;
     }
 
-    public Set<User> getEmployees() {
-        return employees;
+    public Set<User> getEmployeeSet() {
+        return employeeSet;
     }
 
     public Set<Unit> getUnits() {
         return units;
     }
 
-    public OKRSet[] getOkrSets() {
+    public Set<OKRSet> getOkrSets() {
         return okrSets;
     }
 
     public void addEmployee(User u){
-        this.employees.add(u);
+        this.employeeSet.add(u);
     }
 
     public void addUnit(Unit u){
         this.units.add(u);
     }
 
-    public void setOkrSets(OKRSet... okrSets){
-        int minLength = Math.min(this.okrSets.length, okrSets.length);
-        System.arraycopy(okrSets, 0, this.okrSets, 0, minLength);
+    public void setOkrSets(Set<OKRSet> okrSets){
+        this.okrSets = okrSets;
     }
 }
