@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface ObjectiveService extends MongoRepository<Objective, UUID> {
 
     Iterable<Objective> findObjectivesByFulfilledGreaterThanEqual(short target);
+    Iterable<Objective> findObjectivesByFulfilledLessThan(short target);
 }

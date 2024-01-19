@@ -10,6 +10,8 @@ import java.util.UUID;
 
 @Document(collection = "KeyResultHistory")
 public class KeyResultHistory {
+    @Id
+    UUID uuid;
     @Indexed
     private String name;
     private short fulfilled;
@@ -23,6 +25,7 @@ public class KeyResultHistory {
     private Set<Unit> contributingUnits;
 
     public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description, Set<Unit> contributingUnits) {
+        this.uuid = UUID.randomUUID();
         this.name = name;
         this.fulfilled = fulfilled;
         this.current = current;
@@ -35,6 +38,7 @@ public class KeyResultHistory {
     }
 
     public KeyResultHistory(KeyResult keyResult){
+        this.uuid = UUID.randomUUID();
         this.name = keyResult.getName();
         this.fulfilled = keyResult.getFulfilled();
         this.current = keyResult.getCurrent();
