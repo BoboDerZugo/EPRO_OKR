@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.UUID;
 @Document(collection = "User")
 public class User {
-    private enum Role {CO_ADMIN, BU_ADMIN, NORMAL}
+    public enum Role {CO_ADMIN, BU_ADMIN, NORMAL}
     @Id
     private UUID uuid;
     private Role role;
