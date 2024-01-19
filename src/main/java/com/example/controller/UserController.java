@@ -6,39 +6,68 @@ import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 import java.util.List;
 
+/**
+ * This class represents a controller for managing units.
+ */
 @RestController
 @RequestMapping("/unit")
-public class UnitController {
-    
-    private final UnitService unitService;
+public class UserController{
+        
+        private final UserService userService;
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Unit> getAllUnits(){
-        return unitService.findAll();
-    }
+        /**
+         * This method returns all users.
+         * @return List<User>
+         */
+        @GetMapping
+        @ResponseStatus(HttpStatus.OK)
+        public List<User> getAllUsers(){
+                return userService.findAll();
+        }
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Unit getUnitById(@PathVariable("id") Long id){
-        return unitService.findById(id);
-    }
+        /**
+         * This method returns a user by id.
+         * @param id
+         * @return User
+         */
+        @GetMapping("/{id}")
+        @ResponseStatus(HttpStatus.OK)
+        public User getUserById(@PathVariable("id") Long id){
+                return userService.findById(id);
+        }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Unit createUnit(@RequestBody Unit unit){
-        return unitService.insertOne(unit);
-    }
+        /**
+         * This method creates a user.
+         * @param user
+         * @return User
+         */
+        @PostMapping
+        @ResponseStatus(HttpStatus.CREATED)
+        public User createUser(@RequestBody User user){
+                return userService.insertOne(user);
+        }
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Unit updateUnit(@PathVariable("id") Long id, @RequestBody Unit unit){
-        return unitService.updateOne(id, unit);
-    }
+        /**
+         * This method updates a user.
+         * @param id
+         * @param user
+         * @return User
+         */
+        @PutMapping("/{id}")
+        @ResponseStatus(HttpStatus.OK)
+        public User updateUser(@PathVariable("id") Long id, @RequestBody User user){
+                return userService.updateOne(id, user);
+        }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteUnit(@PathVariable("id") Long id){
-        unitService.deleteOne(id);
+        /**
+         * This method deletes a user.
+         * @param id
+         */
+        @DeleteMapping("/{id}")
+        @ResponseStatus(HttpStatus.OK)
+        public void deleteUser(@PathVariable("id") Long id){
+                userService.deleteOne(id);
+        }
+
+        
     }
-}
