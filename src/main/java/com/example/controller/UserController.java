@@ -1,10 +1,16 @@
 package com.example.controller;
 
 import com.example.service.UnitService;
+import com.example.service.UserService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * This class represents a controller for managing units.
@@ -13,7 +19,8 @@ import java.util.List;
 @RequestMapping("/unit")
 public class UserController{
         
-        private final UserService userService;
+        @Autowired
+        private UserService userService;
 
         /**
          * This method returns all users.
@@ -32,8 +39,9 @@ public class UserController{
          */
         @GetMapping("/{id}")
         @ResponseStatus(HttpStatus.OK)
-        public User getUserById(@PathVariable("id") Long id){
-                return userService.findById(id);
+        public User getUserById(@PathVariable("id") @NonNull UUID id){
+                Optional<User> user = userService.findById(id);
+                return user.get();
         }
 
         /**
@@ -43,8 +51,8 @@ public class UserController{
          */
         @PostMapping
         @ResponseStatus(HttpStatus.CREATED)
-        public User createUser(@RequestBody User user){
-                return userService.insertOne(user);
+        public User createUser(@RequestBody @NonNull User user){
+                return userService.save(user);
         }
 
         /**
@@ -55,8 +63,9 @@ public class UserController{
          */
         @PutMapping("/{id}")
         @ResponseStatus(HttpStatus.OK)
-        public User updateUser(@PathVariable("id") Long id, @RequestBody User user){
-                return userService.updateOne(id, user);
+        public User updateUser(@PathVariable("id") UUID id, @RequestBody User user){
+                Optional<User> userToUpdate = userService.updateOne(id, user);
+                return userToUpdate.get();
         }
 
         /**
@@ -65,8 +74,9 @@ public class UserController{
          */
         @DeleteMapping("/{id}")
         @ResponseStatus(HttpStatus.OK)
-        public void deleteUser(@PathVariable("id") Long id){
-                userService.deleteOne(id);
+        public User deleteUser(@PathVariable("id") Long id){
+                Optional<User> userToDelete = userService.delete(id);
+                return userToDelete.get();
         }
 
         
