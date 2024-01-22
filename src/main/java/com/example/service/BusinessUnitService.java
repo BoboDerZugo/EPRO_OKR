@@ -17,5 +17,9 @@ public interface BusinessUnitService extends MongoRepository<BusinessUnit, UUID>
     Optional<BusinessUnit> findByOkrSetsContains(OKRSet okrSet);
     Optional<BusinessUnit> findByEmployeeSetContains(User user);
 
+    Optional<BusinessUnit> updateOne(Long id, BusinessUnit businessUnit);
+
+    Optional<BusinessUnit> delete(Long id);
+
 
 }
