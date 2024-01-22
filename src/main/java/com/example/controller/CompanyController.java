@@ -5,8 +5,13 @@ package com.example.controller;
 import com.example.service.CompanyService;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 
@@ -14,7 +19,8 @@ import com.example.model.*;
 @RequestMapping("/company")
 public class CompanyController {
 
-    private final CompanyService companyService;
+    @Autowired
+    private CompanyService companyService;
 
     //Crud operations
     @GetMapping
@@ -25,26 +31,29 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Company getCompanyById(@PathVariable("id") Long id){
-        return companyService.findById(id);
+    public Company getCompanyById(@PathVariable("id") @NonNull UUID id){
+        Optional<Company> company = companyService.findById(id);
+        return company.get();
     }   
 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Company createCompany(@RequestBody Company company){
-        return companyService.insertOne(company);
+    public Company createCompany(@RequestBody @NonNull Company company){
+        return companyService.insert(company);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Company updateCompany(@PathVariable("id") Long id, @RequestBody Company company){
-        return companyService.updateOne(id, company);
+    public Company updateCompany(@PathVariable("id") @NonNull UUID id, @RequestBody Company company){
+        Optional<Company> companyToUpdate = companyService.updateOne(id, company);
+        return companyToUpdate.get();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCompany(@PathVariable("id") Long id){
-        companyService.deleteOne(id);
+    public Company deleteCompany(@PathVariable("id") @NonNull Long id){
+        Optional<Company> companyToDelete = companyService.delete(id);
+        return companyToDelete.get();
     }
 }
