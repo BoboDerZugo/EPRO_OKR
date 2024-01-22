@@ -1,7 +1,15 @@
 package com.example.controller;
 
 import com.example.service.OKRSetService;
+
+import java.lang.annotation.Native;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 
@@ -10,7 +18,8 @@ import com.example.model.*;
 public class OKRSetController {
     
     //CRUD operations for OKRSet
-    private final OKRSetService okrSetService;
+    @Autowired
+    private OKRSetService okrSetService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -20,25 +29,28 @@ public class OKRSetController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public OKRSet getOKRSetById(@PathVariable("id") Long id){
-        return okrSetService.findById(id);
+    public OKRSet getOKRSetById(@PathVariable("id") @NonNull UUID id){
+        Optional<OKRSet> okrSet = okrSetService.findById(id);
+        return okrSet.get();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OKRSet createOKRSet(@RequestBody OKRSet okrSet){
-        return okrSetService.insertOne(okrSet);
+    public OKRSet createOKRSet(@RequestBody @NonNull OKRSet okrSet){
+        return okrSetService.save(okrSet);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public OKRSet updateOKRSet(@PathVariable("id") Long id, @RequestBody OKRSet okrSet){
-        return okrSetService.updateOne(id, okrSet);
+    public OKRSet updateOKRSet(@PathVariable("id") @NonNull UUID id, @RequestBody OKRSet okrSet){
+        Optional<OKRSet> okrSetToUpdate = okrSetService.updateOne(id, okrSet);
+        return okrSetToUpdate.get();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteOKRSet(@PathVariable("id") Long id){
-        okrSetService.deleteOne(id);
+    public OKRSet deleteOKRSet(@PathVariable("id") @NonNull Long id){
+        Optional<OKRSet> okrSetToDelete = okrSetService.delete(id);
+        return okrSetToDelete.get();
     }
 }
