@@ -1,7 +1,14 @@
 package com.example.controller;
 
 import com.example.service.ObjectiveService;
+
+import java.util.List;
+import java.util.UUID;
+
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 
@@ -10,7 +17,8 @@ import com.example.model.*;
 public class ObjectiveController {
     
     //CRUD operations for Objectives
-    private final ObjectiveService objectiveService;
+    @Autowired
+    private ObjectiveService objectiveService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -20,25 +28,29 @@ public class ObjectiveController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Objective getObjectiveById(@PathVariable("id") Long id){
-        return objectiveService.findById(id);
+    public Objective getObjectiveById(@PathVariable("id") @NonNull UUID id){
+        Optional<Objective> objective = objectiveService.findById(id);
+        return objective.get();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Objective createObjective(@RequestBody Objective objective){
-        return objectiveService.insertOne(objective);
+    public Objective createObjective(@RequestBody @NonNull Objective objective){
+        return objectiveService.insert(objective);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Objective updateObjective(@PathVariable("id") Long id, @RequestBody Objective objective){
-        return objectiveService.updateOne(id, objective);
+    public Objective updateObjective(@PathVariable("id") UUID id, @RequestBody Objective objective){
+        //update objective
+        Optional<Objective> objectiveToUpdate = objectiveService.updateOne(id, objective);
+        return objectiveToUpdate.get();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteObjective(@PathVariable("id") Long id){
-        objectiveService.deleteOne(id);
+    public Objective deleteObjective(@PathVariable("id") @NonNull UUID id){
+        Optional<Objective> objectiveToDelete = objectiveService.findByIdAndDelete(id);
+        return objectiveToDelete.get();
     }
 }
