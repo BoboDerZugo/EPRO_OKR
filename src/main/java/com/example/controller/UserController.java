@@ -74,7 +74,7 @@ public class UserController{
          */
         @DeleteMapping("/{id}")
         @ResponseStatus(HttpStatus.OK)
-        public User deleteUser(@PathVariable("id") Long id){
+        public User deleteUser(@PathVariable("id") UUID id){
                 Optional<User> userToDelete = userService.delete(id);
                 return userToDelete.get();
         }

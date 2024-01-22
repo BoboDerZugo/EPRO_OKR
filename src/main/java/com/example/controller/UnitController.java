@@ -39,14 +39,14 @@ public class UnitController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Unit updateUnit(@PathVariable("id") @NonNull Long id, @RequestBody @NonNull Unit unit){
+    public Unit updateUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull Unit unit){
         Optional<Unit> unitToUpdate = unitService.updateOne(id, unit);
         return unitToUpdate.get();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Unit deleteUnit(@PathVariable("id") @NonNull Long id){
+    public Unit deleteUnit(@PathVariable("id") @NonNull UUID id){
         Optional<Unit> unitToDelete = unitService.delete(id);
         return unitToDelete.get();
     }

@@ -70,14 +70,14 @@ public class BusinessUnitController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BusinessUnit updateBusinessUnit(@PathVariable("id") @NonNull Long id, @RequestBody BusinessUnit businessUnit){
+    public BusinessUnit updateBusinessUnit(@PathVariable("id") @NonNull UUID id, @RequestBody BusinessUnit businessUnit){
         Optional<BusinessUnit> businessUnitToUpdate = businessUnitService.updateOne(id, businessUnit);
         return businessUnitToUpdate.get();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BusinessUnit deleteBusinessUnit(@PathVariable("id") Long id){
+    public BusinessUnit deleteBusinessUnit(@PathVariable("id") UUID id){
         Optional<BusinessUnit> businessUnitToDelete = businessUnitService.delete(id);
         return businessUnitToDelete.get();
     }

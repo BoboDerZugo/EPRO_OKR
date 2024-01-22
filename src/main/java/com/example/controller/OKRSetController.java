@@ -49,7 +49,7 @@ public class OKRSetController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public OKRSet deleteOKRSet(@PathVariable("id") @NonNull Long id){
+    public OKRSet deleteOKRSet(@PathVariable("id") @NonNull UUID id){
         Optional<OKRSet> okrSetToDelete = okrSetService.delete(id);
         return okrSetToDelete.get();
     }

@@ -12,5 +12,5 @@ public interface UserService extends MongoRepository<User, UUID> {
 
     Optional<User> updateOne(UUID id, User user);
 
-    Optional<User> delete(Long id);
+    Optional<User> delete(UUID id);
 }

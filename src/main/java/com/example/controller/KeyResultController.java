@@ -48,7 +48,7 @@ public class KeyResultController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public KeyResult deleteKeyResult(@PathVariable("id") Long id){
+    public KeyResult deleteKeyResult(@PathVariable("id") UUID id){
         Optional<KeyResult> keyResultToDelete = keyResultService.delete(id);
         return keyResultToDelete.get();
     }

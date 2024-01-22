@@ -14,5 +14,5 @@ public interface CompanyService extends MongoRepository<Company, UUID> {
     Optional<Company> findByOkrSetsContains(OKRSet okrSet);
     Optional<Company> findByEmployeeSetContains(User user);
     Optional<Company> updateOne(UUID id, Company company);
-    Optional<Company> delete(Long id);
+    Optional<Company> delete(UUID id);
 }

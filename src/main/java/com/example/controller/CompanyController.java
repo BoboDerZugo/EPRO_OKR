@@ -52,7 +52,7 @@ public class CompanyController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Company deleteCompany(@PathVariable("id") @NonNull Long id){
+    public Company deleteCompany(@PathVariable("id") @NonNull UUID id){
         Optional<Company> companyToDelete = companyService.delete(id);
         return companyToDelete.get();
     }

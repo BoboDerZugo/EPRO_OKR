@@ -13,7 +13,7 @@ public interface KeyResultService extends MongoRepository<KeyResult, UUID> {
     Optional<KeyResult> findByOwnerEquals(User user);
     Optional<KeyResult> findByContributingUnitsContains(Unit unit);
     Optional<KeyResult> updateOne(UUID id, KeyResult keyResult);
-    Optional<KeyResult> delete(Long id);
+    Optional<KeyResult> delete(UUID id);
 
 
 }
