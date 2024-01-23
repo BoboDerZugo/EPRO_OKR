@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
@@ -41,6 +42,24 @@ public class CompanyController {
     @ResponseStatus(HttpStatus.CREATED)
     public Company createCompany(@RequestBody @NonNull Company company){
         return companyService.insert(company);
+    }
+
+    //Add OKRSet to Company
+    @PostMapping("/{id}/okrset")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Company addOKRSetToCompany(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull OKRSet okrSet){
+        Optional<Company> company = companyService.findById(id);
+        if(company.isPresent()){
+            Company c = company.get();
+            if(c.getOkrSets().size() > 4){
+                ResponseEntity<Company> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return response.getBody();
+            }
+            c.addOKRSet(okrSet);
+            return companyService.updateOne(id, c).get();
+        }
+        ResponseEntity<Company> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return response.getBody();
     }
 
     @PutMapping("/{id}")

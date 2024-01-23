@@ -53,4 +53,9 @@ public class BusinessUnit {
     public void setOkrSets(Set<OKRSet> okrSets){
         this.okrSets = okrSets;
     }
+
+    public void addOKRSet(OKRSet okrSet) {
+        // TODO Auto-generated method stub
+        this.okrSets.add(okrSet);
+    }
 }

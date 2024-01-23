@@ -16,6 +16,7 @@ import com.example.model.OKRSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,24 @@ public class BusinessUnitController {
     @ResponseStatus(HttpStatus.CREATED)
     public BusinessUnit createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit){
         return businessUnitService.insert(businessUnit);
+    }
+
+    //Add OKRSet to BusinessUnit
+    @PostMapping("/{id}/okrset")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BusinessUnit addOKRSetToBusinessUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull OKRSet okrSet){
+        Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
+        if(businessUnit.isPresent()){
+            BusinessUnit bu = businessUnit.get();
+            if(bu.getOkrSets().size() > 4){
+                ResponseEntity<BusinessUnit> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return response.getBody();
+            }
+            bu.addOKRSet(okrSet);
+            return businessUnitService.updateOne(id, bu).get();
+        }
+        ResponseEntity<BusinessUnit> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return response.getBody();
     }
 
     @PutMapping("/{id}")
