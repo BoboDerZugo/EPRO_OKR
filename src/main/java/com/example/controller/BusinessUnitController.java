@@ -65,7 +65,7 @@ public class BusinessUnitController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BusinessUnit createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit){
-        return businessUnitService.save(businessUnit);
+        return businessUnitService.insert(businessUnit);
     }
 
     @PutMapping("/{id}")

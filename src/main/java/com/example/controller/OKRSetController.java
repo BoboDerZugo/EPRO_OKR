@@ -37,7 +37,7 @@ public class OKRSetController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OKRSet createOKRSet(@RequestBody @NonNull OKRSet okrSet){
-        return okrSetService.save(okrSet);
+        return okrSetService.insert(okrSet);
     }
 
     @PutMapping("/{id}")

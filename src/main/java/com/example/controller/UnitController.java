@@ -34,7 +34,7 @@ public class UnitController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Unit createUnit(@RequestBody @NonNull Unit unit){
-        return unitService.save(unit);
+        return unitService.insert(unit);
     }
 
     @PutMapping("/{id}")

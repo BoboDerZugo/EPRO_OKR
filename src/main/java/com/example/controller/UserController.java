@@ -52,7 +52,7 @@ public class UserController{
         @PostMapping
         @ResponseStatus(HttpStatus.CREATED)
         public User createUser(@RequestBody @NonNull User user){
-                return userService.save(user);
+                return userService.insert(user);
         }
 
         /**
