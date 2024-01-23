@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.model.BusinessUnit;
 import com.example.model.OKRSet;
 import com.example.model.Unit;
 import com.example.model.User;
