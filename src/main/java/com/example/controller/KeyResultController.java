@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.service.KeyResultService;
+import com.example.service.KeyResultHistoryService;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class KeyResultController {
 
     @Autowired
     private KeyResultService keyResultService;
+    @Autowired
+    private KeyResultHistoryService keyResultHistoryService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -42,6 +45,9 @@ public class KeyResultController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public KeyResult updateKeyResult(@PathVariable("id") UUID id, @RequestBody KeyResult keyResult){
+        //insert key result history
+        keyResultHistoryService.insert(new KeyResultHistory(keyResult));
+        //update key result
         Optional<KeyResult> keyResultToUpdate = keyResultService.updateOne(id, keyResult);
         return keyResultToUpdate.get();
     }
