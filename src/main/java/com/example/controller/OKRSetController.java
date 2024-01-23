@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
@@ -21,35 +22,44 @@ public class OKRSetController {
     private OKRSetService okrSetService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<OKRSet> getAllOKRSets(){
-        return okrSetService.findAll();
+    public ResponseEntity<List<OKRSet>> getAllOKRSets(){
+        List<OKRSet> okrSets = okrSetService.findAll();
+        return ResponseEntity.ok(okrSets);
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public OKRSet getOKRSetById(@PathVariable("id") @NonNull UUID id){
+    public ResponseEntity<OKRSet> getOKRSetById(@PathVariable("id") @NonNull UUID id){
         Optional<OKRSet> okrSet = okrSetService.findById(id);
-        return okrSet.get();
+        if (okrSet.isPresent()) {
+            return ResponseEntity.ok(okrSet.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public OKRSet createOKRSet(@RequestBody @NonNull OKRSet okrSet){
-        return okrSetService.insert(okrSet);
+    public ResponseEntity<OKRSet> createOKRSet(@RequestBody @NonNull OKRSet okrSet){
+        OKRSet createdOKRSet = okrSetService.insert(okrSet);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOKRSet);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public OKRSet updateOKRSet(@PathVariable("id") @NonNull UUID id, @RequestBody OKRSet okrSet){
+    public ResponseEntity<OKRSet> updateOKRSet(@PathVariable("id") @NonNull UUID id, @RequestBody OKRSet okrSet){
         Optional<OKRSet> okrSetToUpdate = okrSetService.updateOne(id, okrSet);
-        return okrSetToUpdate.get();
+        if (okrSetToUpdate.isPresent()) {
+            return ResponseEntity.ok(okrSetToUpdate.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public OKRSet deleteOKRSet(@PathVariable("id") @NonNull UUID id){
+    public ResponseEntity<OKRSet> deleteOKRSet(@PathVariable("id") @NonNull UUID id){
         Optional<OKRSet> okrSetToDelete = okrSetService.delete(id);
-        return okrSetToDelete.get();
+        if (okrSetToDelete.isPresent()) {
+            return ResponseEntity.ok(okrSetToDelete.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -3,18 +3,18 @@
 package com.example.controller;
 
 import com.example.service.CompanyService;
+import com.example.model.Company;
+import com.example.model.OKRSet;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
-import com.example.model.*;
 
 @RestController
 @RequestMapping("/company")
@@ -23,56 +23,68 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
-    //Crud operations
+    // Crud operations
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Company> getAllCompanies(){
+    public List<Company> getAllCompanies() {
         return companyService.findAll();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Company getCompanyById(@PathVariable("id") @NonNull UUID id){
+    public ResponseEntity<Company> getCompanyById(@PathVariable("id") @NonNull UUID id) {
         Optional<Company> company = companyService.findById(id);
-        return company.get();
-    }   
-
+        if (company.isPresent()) {
+            return ResponseEntity.ok(company.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Company createCompany(@RequestBody @NonNull Company company){
+    public Company createCompany(@RequestBody @NonNull Company company) {
         return companyService.insert(company);
     }
 
-    //Add OKRSet to Company
+    // Add OKRSet to Company
     @PostMapping("/{id}/okrset")
     @ResponseStatus(HttpStatus.CREATED)
-    public Company addOKRSetToCompany(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull OKRSet okrSet){
+    public ResponseEntity<Company> addOKRSetToCompany(@PathVariable("id") @NonNull UUID id,
+            @RequestBody @NonNull OKRSet okrSet) {
         Optional<Company> company = companyService.findById(id);
-        if(company.isPresent()){
+        if (company.isPresent()) {
             Company c = company.get();
-            if(c.getOkrSets().size() > 4){
-                ResponseEntity<Company> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                return response.getBody();
+            if (c.getOkrSets().size() > 4) {
+                return ResponseEntity.badRequest().build();
             }
             c.addOKRSet(okrSet);
-            return companyService.updateOne(id, c).get();
+            return ResponseEntity.ok(companyService.updateOne(id, c).get());
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        ResponseEntity<Company> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return response.getBody();
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Company updateCompany(@PathVariable("id") @NonNull UUID id, @RequestBody Company company){
+    public ResponseEntity<Company> updateCompany(@PathVariable("id") @NonNull UUID id,
+            @RequestBody Company company) {
         Optional<Company> companyToUpdate = companyService.updateOne(id, company);
-        return companyToUpdate.get();
+        if (companyToUpdate.isPresent()) {
+            return ResponseEntity.ok(companyToUpdate.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Company deleteCompany(@PathVariable("id") @NonNull UUID id){
+    public ResponseEntity<Company> deleteCompany(@PathVariable("id") @NonNull UUID id) {
         Optional<Company> companyToDelete = companyService.delete(id);
-        return companyToDelete.get();
+        if (companyToDelete.isPresent()) {
+            return ResponseEntity.ok(companyToDelete.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

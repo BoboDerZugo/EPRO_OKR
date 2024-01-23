@@ -1,7 +1,10 @@
+
 package com.example.controller;
+
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
@@ -14,67 +17,81 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/unit")
-public class UserController{
-        
+public class UserController {
+
         @Autowired
         private UserService userService;
 
         /**
          * This method returns all users.
-         * @return List<User>
+         *
+         * @return ResponseEntity<List<User>>
          */
         @GetMapping
-        @ResponseStatus(HttpStatus.OK)
-        public List<User> getAllUsers(){
-                return userService.findAll();
+        public ResponseEntity<List<User>> getAllUsers() {
+                List<User> users = userService.findAll();
+                return ResponseEntity.ok(users);
         }
 
         /**
          * This method returns a user by id.
+         *
          * @param id
-         * @return User
+         * @return ResponseEntity<User>
          */
         @GetMapping("/{id}")
-        @ResponseStatus(HttpStatus.OK)
-        public User getUserById(@PathVariable("id") @NonNull UUID id){
+        public ResponseEntity<User> getUserById(@PathVariable("id") @NonNull UUID id) {
                 Optional<User> user = userService.findById(id);
-                return user.get();
+                if (user.isPresent()) {
+                        return ResponseEntity.ok(user.get());
+                } else {
+                        return ResponseEntity.notFound().build();
+                }
         }
 
         /**
          * This method creates a user.
+         *
          * @param user
-         * @return User
+         * @return ResponseEntity<User>
          */
         @PostMapping
-        @ResponseStatus(HttpStatus.CREATED)
-        public User createUser(@RequestBody @NonNull User user){
-                return userService.insert(user);
+        public ResponseEntity<User> createUser(@RequestBody @NonNull User user) {
+                User createdUser = userService.insert(user);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         }
 
         /**
          * This method updates a user.
+         *
          * @param id
          * @param user
-         * @return User
+         * @return ResponseEntity<User>
          */
         @PutMapping("/{id}")
-        @ResponseStatus(HttpStatus.OK)
-        public User updateUser(@PathVariable("id") UUID id, @RequestBody User user){
+        public ResponseEntity<User> updateUser(@PathVariable("id") @NonNull UUID id, @RequestBody User user) {
                 Optional<User> userToUpdate = userService.updateOne(id, user);
-                return userToUpdate.get();
+                if (userToUpdate.isPresent()) {
+                        return ResponseEntity.ok(userToUpdate.get());
+                } else {
+                        return ResponseEntity.notFound().build();
+                }
         }
 
         /**
          * This method deletes a user.
+         *
          * @param id
+         * @return ResponseEntity<User>
          */
         @DeleteMapping("/{id}")
-        @ResponseStatus(HttpStatus.OK)
-        public User deleteUser(@PathVariable("id") UUID id){
+        public ResponseEntity<User> deleteUser(@PathVariable("id") @NonNull UUID id) {
                 Optional<User> userToDelete = userService.delete(id);
-                return userToDelete.get();
+                if (userToDelete.isPresent()) {
+                        return ResponseEntity.ok(userToDelete.get());
+                } else {
+                        return ResponseEntity.notFound().build();
+                }
         }
 
-        
-    }
+}

@@ -6,6 +6,7 @@ import com.example.service.KeyResultHistoryService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 import java.util.List;
@@ -24,39 +25,48 @@ public class KeyResultController {
     private KeyResultHistoryService keyResultHistoryService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<KeyResult> getAllKeyResults(){
-        return keyResultService.findAll();
+    public ResponseEntity<List<KeyResult>> getAllKeyResults(){
+        List<KeyResult> keyResults = keyResultService.findAll();
+        return new ResponseEntity<>(keyResults, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public KeyResult getKeyResultById(@PathVariable("id") UUID id){
+    public ResponseEntity<KeyResult> getKeyResultById(@PathVariable("id") UUID id){
         Optional<KeyResult> keyResult = keyResultService.findById(id);
-        return keyResult.get();
+        if (keyResult.isPresent()) {
+            return new ResponseEntity<>(keyResult.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public KeyResult createKeyResult(@RequestBody  @NonNull KeyResult keyResult){
-        return keyResultService.insert(keyResult);
+    public ResponseEntity<KeyResult> createKeyResult(@RequestBody  @NonNull KeyResult keyResult){
+        KeyResult createdKeyResult = keyResultService.insert(keyResult);
+        return new ResponseEntity<>(createdKeyResult, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public KeyResult updateKeyResult(@PathVariable("id") UUID id, @RequestBody KeyResult keyResult){
+    public ResponseEntity<KeyResult> updateKeyResult(@PathVariable("id") UUID id, @RequestBody KeyResult keyResult){
         //insert key result history
         keyResultHistoryService.insert(new KeyResultHistory(keyResult));
         //update key result
         Optional<KeyResult> keyResultToUpdate = keyResultService.updateOne(id, keyResult);
-        return keyResultToUpdate.get();
+        if (keyResultToUpdate.isPresent()) {
+            return new ResponseEntity<>(keyResultToUpdate.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public KeyResult deleteKeyResult(@PathVariable("id") UUID id){
+    public ResponseEntity<KeyResult> deleteKeyResult(@PathVariable("id") UUID id){
         Optional<KeyResult> keyResultToDelete = keyResultService.delete(id);
-        return keyResultToDelete.get();
+        if (keyResultToDelete.isPresent()) {
+            return new ResponseEntity<>(keyResultToDelete.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
 
