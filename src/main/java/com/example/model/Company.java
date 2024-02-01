@@ -12,18 +12,22 @@ import java.util.UUID;
 public class Company {
     @Id
     private UUID uuid;
+
     @DBRef
     private Set<BusinessUnit> businessUnits;
     @DBRef
     private Set<OKRSet> okrSets;
     @DBRef
     private Set<User> employeeSet;
-
     public Company(OKRSet... okrSets) {
         this.okrSets = Set.of(okrSets);
         this.businessUnits = new HashSet<>();
         this.employeeSet = new HashSet<>();
         this.okrSets = Set.of(okrSets);
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public Set<BusinessUnit> getBusinessUnits() {
