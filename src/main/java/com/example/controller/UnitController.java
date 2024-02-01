@@ -22,32 +22,32 @@ public class UnitController {
     @GetMapping
     public ResponseEntity<List<Unit>> getAllUnits() {
         List<Unit> units = unitService.findAll();
-        return new ResponseEntity<>(units, HttpStatus.OK);
+        return ResponseEntity.ok(units);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Unit> getUnitById(@PathVariable("id") @NonNull UUID id) {
         Optional<Unit> unit = unitService.findById(id);
         if (unit.isPresent()) {
-            return new ResponseEntity<>(unit.get(), HttpStatus.OK);
+            return ResponseEntity.ok(unit.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
     public ResponseEntity<Unit> createUnit(@RequestBody @NonNull Unit unit) {
         Unit createdUnit = unitService.insert(unit);
-        return new ResponseEntity<>(createdUnit, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUnit);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Unit> updateUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull Unit unit) {
         Optional<Unit> unitToUpdate = unitService.updateOne(id, unit);
         if (unitToUpdate.isPresent()) {
-            return new ResponseEntity<>(unitToUpdate.get(), HttpStatus.OK);
+            return ResponseEntity.ok(unitToUpdate.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -55,9 +55,9 @@ public class UnitController {
     public ResponseEntity<Unit> deleteUnit(@PathVariable("id") @NonNull UUID id) {
         Optional<Unit> unitToDelete = unitService.delete(id);
         if (unitToDelete.isPresent()) {
-            return new ResponseEntity<>(unitToDelete.get(), HttpStatus.OK);
+            return ResponseEntity.ok(unitToDelete.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return  ResponseEntity.notFound().build();
         }
     }
 }

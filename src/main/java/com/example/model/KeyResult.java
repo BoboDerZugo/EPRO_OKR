@@ -24,6 +24,8 @@ public class KeyResult {
     private String description;
     @DBRef
     private Set<Unit> contributingUnits;
+    //Optional reference to BusinessUnit OKR
+    private OKRSet okrSet;
 
     public KeyResult(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description, Set<Unit> contributingUnits) {
         this.uuid = UUID.randomUUID();
@@ -36,6 +38,20 @@ public class KeyResult {
         this.statusUpdate = statusUpdate;
         this.description = description;
         this.contributingUnits = contributingUnits;
+    }
+
+    public KeyResult(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description, Set<Unit> contributingUnits, OKRSet okrSet) {
+        this.uuid = UUID.randomUUID();
+        this.name = name;
+        this.fulfilled = fulfilled;
+        this.current = current;
+        this.goal = goal;
+        this.confidence = confidence;
+        this.owner = owner;
+        this.statusUpdate = statusUpdate;
+        this.description = description;
+        this.contributingUnits = contributingUnits;
+        this.okrSet = okrSet;
     }
 
     public UUID getUuid() {
@@ -78,6 +94,10 @@ public class KeyResult {
         return contributingUnits;
     }
 
+    public OKRSet getOkrSet() {
+        return okrSet;
+    }
+
     public void setFulfilled(short fulfilled) {
         this.fulfilled = fulfilled;
     }
@@ -96,5 +116,9 @@ public class KeyResult {
 
     public void addContributingUnit(Unit u){
         this.contributingUnits.add(u);
+    }
+
+    public void setOkrSet(OKRSet okrSet) {
+        this.okrSet = okrSet;
     }
 }

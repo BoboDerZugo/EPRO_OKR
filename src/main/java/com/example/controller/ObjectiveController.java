@@ -24,32 +24,32 @@ public class ObjectiveController {
     @GetMapping
     public ResponseEntity<List<Objective>> getAllObjectives(){
         List<Objective> objectives = objectiveService.findAll();
-        return new ResponseEntity<>(objectives, HttpStatus.OK);
+        return ResponseEntity.ok(objectives);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Objective> getObjectiveById(@PathVariable("id") @NonNull UUID id){
         Optional<Objective> objective = objectiveService.findById(id);
         if (objective.isPresent()) {
-            return new ResponseEntity<>(objective.get(), HttpStatus.OK);
+            return ResponseEntity.ok(objective.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
     public ResponseEntity<Objective> createObjective(@RequestBody @NonNull Objective objective){
         Objective createdObjective = objectiveService.insert(objective);
-        return new ResponseEntity<>(createdObjective, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdObjective);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Objective> updateObjective(@PathVariable("id") UUID id, @RequestBody Objective objective){
         Optional<Objective> objectiveToUpdate = objectiveService.updateOne(id, objective);
         if (objectiveToUpdate.isPresent()) {
-            return new ResponseEntity<>(objectiveToUpdate.get(), HttpStatus.OK);
+            return ResponseEntity.ok(objectiveToUpdate.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -57,9 +57,9 @@ public class ObjectiveController {
     public ResponseEntity<Objective> deleteObjective(@PathVariable("id") @NonNull UUID id){
         Optional<Objective> objectiveToDelete = objectiveService.findByIdAndDelete(id);
         if (objectiveToDelete.isPresent()) {
-            return new ResponseEntity<>(objectiveToDelete.get(), HttpStatus.OK);
+            return ResponseEntity.ok(objectiveToDelete.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 }

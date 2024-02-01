@@ -27,23 +27,23 @@ public class KeyResultController {
     @GetMapping
     public ResponseEntity<List<KeyResult>> getAllKeyResults(){
         List<KeyResult> keyResults = keyResultService.findAll();
-        return new ResponseEntity<>(keyResults, HttpStatus.OK);
+        return ResponseEntity.ok(keyResults);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<KeyResult> getKeyResultById(@PathVariable("id") UUID id){
         Optional<KeyResult> keyResult = keyResultService.findById(id);
         if (keyResult.isPresent()) {
-            return new ResponseEntity<>(keyResult.get(), HttpStatus.OK);
+            return ResponseEntity.ok(keyResult.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
     public ResponseEntity<KeyResult> createKeyResult(@RequestBody  @NonNull KeyResult keyResult){
         KeyResult createdKeyResult = keyResultService.insert(keyResult);
-        return new ResponseEntity<>(createdKeyResult, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdKeyResult);
     }
 
     @PutMapping("/{id}")
@@ -53,9 +53,9 @@ public class KeyResultController {
         //update key result
         Optional<KeyResult> keyResultToUpdate = keyResultService.updateOne(id, keyResult);
         if (keyResultToUpdate.isPresent()) {
-            return new ResponseEntity<>(keyResultToUpdate.get(), HttpStatus.OK);
+            return ResponseEntity.ok(keyResultToUpdate.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -63,9 +63,9 @@ public class KeyResultController {
     public ResponseEntity<KeyResult> deleteKeyResult(@PathVariable("id") UUID id){
         Optional<KeyResult> keyResultToDelete = keyResultService.delete(id);
         if (keyResultToDelete.isPresent()) {
-            return new ResponseEntity<>(keyResultToDelete.get(), HttpStatus.OK);
+            return ResponseEntity.ok(keyResultToDelete.get());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 }

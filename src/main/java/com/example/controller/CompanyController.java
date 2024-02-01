@@ -25,13 +25,11 @@ public class CompanyController {
 
     // Crud operations
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Company> getAllCompanies() {
-        return companyService.findAll();
+    public ResponseEntity<List<Company>> getAllCompanies() {
+        return ResponseEntity.ok(companyService.findAll());
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Company> getCompanyById(@PathVariable("id") @NonNull UUID id) {
         Optional<Company> company = companyService.findById(id);
         if (company.isPresent()) {
@@ -42,14 +40,12 @@ public class CompanyController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Company createCompany(@RequestBody @NonNull Company company) {
-        return companyService.insert(company);
+    public ResponseEntity<Company> createCompany(@RequestBody @NonNull Company company) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.insert(company));
     }
 
     // Add OKRSet to Company
     @PostMapping("/{id}/okrset")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Company> addOKRSetToCompany(@PathVariable("id") @NonNull UUID id,
             @RequestBody @NonNull OKRSet okrSet) {
         Optional<Company> company = companyService.findById(id);
@@ -59,14 +55,16 @@ public class CompanyController {
                 return ResponseEntity.badRequest().build();
             }
             c.addOKRSet(okrSet);
-            return ResponseEntity.ok(companyService.updateOne(id, c).get());
-        } else {
-            return ResponseEntity.notFound().build();
+            company = companyService.updateOne(id, c);
+            if (company.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(company.get());
+            }
         }
+        return ResponseEntity.notFound().build();
+
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Company> updateCompany(@PathVariable("id") @NonNull UUID id,
             @RequestBody Company company) {
         Optional<Company> companyToUpdate = companyService.updateOne(id, company);

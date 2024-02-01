@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/businessunit")
 public class BusinessUnitController {
@@ -50,10 +49,11 @@ public class BusinessUnitController {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
         if (businessUnit.isPresent()) {
             BusinessUnit unit = businessUnit.get();
-            return ResponseEntity.ok(unit);
-        } else {
-            return ResponseEntity.notFound().build();
+            if (unit != null) {
+                return ResponseEntity.ok(unit);
+            }
         }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}/okr")
@@ -61,10 +61,11 @@ public class BusinessUnitController {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
         if (businessUnit.isPresent()) {
             Set<OKRSet> okrSets = businessUnit.get().getOkrSets();
-            return ResponseEntity.ok(okrSets);
-        } else {
-            return ResponseEntity.notFound().build();
+            if (okrSets != null) {
+                return ResponseEntity.ok(okrSets);
+            }
         }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}/employees")
@@ -72,10 +73,10 @@ public class BusinessUnitController {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
         if (businessUnit.isPresent()) {
             Set<User> employees = businessUnit.get().getEmployeeSet();
-            return ResponseEntity.ok(employees);
-        } else {
-            return ResponseEntity.notFound().build();
+            if (employees != null)
+                return ResponseEntity.ok(employees);
         }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
@@ -86,30 +87,33 @@ public class BusinessUnitController {
 
     // Add OKRSet to BusinessUnit
     @PostMapping("/{id}/okrset")
-    public ResponseEntity<BusinessUnit> addOKRSetToBusinessUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull OKRSet okrSet) {
+    public ResponseEntity<BusinessUnit> addOKRSetToBusinessUnit(@PathVariable("id") @NonNull UUID id,
+            @RequestBody @NonNull OKRSet okrSet) {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
         if (businessUnit.isPresent()) {
             BusinessUnit bu = businessUnit.get();
             if (bu.getOkrSets().size() > 4) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                return ResponseEntity.badRequest().build();
             }
             bu.addOKRSet(okrSet);
             BusinessUnit updatedBusinessUnit = businessUnitService.updateOne(id, bu).get();
-            return ResponseEntity.status(HttpStatus.CREATED).body(updatedBusinessUnit);
-        } else {
-            return ResponseEntity.notFound().build();
+            if (updatedBusinessUnit != null)
+                return ResponseEntity.ok(updatedBusinessUnit);
         }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id, @RequestBody BusinessUnit businessUnit) {
+    public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id,
+            @RequestBody BusinessUnit businessUnit) {
         Optional<BusinessUnit> businessUnitToUpdate = businessUnitService.updateOne(id, businessUnit);
         if (businessUnitToUpdate.isPresent()) {
             BusinessUnit updatedBusinessUnit = businessUnitToUpdate.get();
-            return ResponseEntity.ok(updatedBusinessUnit);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+            if(updatedBusinessUnit != null)
+                return ResponseEntity.ok(updatedBusinessUnit);
+        } 
+        return ResponseEntity.notFound().build();
+        
     }
 
     @DeleteMapping("/{id}")
@@ -117,9 +121,10 @@ public class BusinessUnitController {
         Optional<BusinessUnit> businessUnitToDelete = businessUnitService.delete(id);
         if (businessUnitToDelete.isPresent()) {
             BusinessUnit deletedBusinessUnit = businessUnitToDelete.get();
-            return ResponseEntity.ok(deletedBusinessUnit);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+            if(deletedBusinessUnit != null)
+                return ResponseEntity.ok(deletedBusinessUnit);
+        } 
+        return ResponseEntity.notFound().build();
+        
     }
 }
