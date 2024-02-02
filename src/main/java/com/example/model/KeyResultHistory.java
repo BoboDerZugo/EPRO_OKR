@@ -23,6 +23,8 @@ public class KeyResultHistory {
     private String description;
     @DBRef
     private Set<Unit> contributingUnits;
+    @DBRef
+    private OKRSet okrSet;
 
     public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description, Set<Unit> contributingUnits) {
         this.uuid = UUID.randomUUID();
@@ -87,6 +89,10 @@ public class KeyResultHistory {
         return contributingUnits;
     }
 
+    public OKRSet getOkrSet() {
+        return okrSet;
+    }
+
     public void setFulfilled(short fulfilled) {
         this.fulfilled = fulfilled;
     }
@@ -103,7 +109,12 @@ public class KeyResultHistory {
         this.confidence = confidence;
     }
 
+    public void setOkrSet(OKRSet okrSet) {
+        this.okrSet = okrSet;
+    }
+
     public void addContributingUnit(Unit u){
         this.contributingUnits.add(u);
     }
+
 }
