@@ -42,22 +42,24 @@ public class UnitController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Unit> updateUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull Unit unit) {
-        Optional<Unit> unitToUpdate = unitService.updateOne(id, unit);
-        if (unitToUpdate.isPresent()) {
-            return ResponseEntity.ok(unitToUpdate.get());
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Unit> updateUnit(@PathVariable("id") @NonNull UUID id, @RequestBody Unit unit) {
+        if (unit != null) {
+            Unit updatedUnit = unitService.save(unit);
+            if (updatedUnit != null) {
+                return ResponseEntity.ok(updatedUnit);
+            }
         }
+        return ResponseEntity.notFound().build();
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Unit> deleteUnit(@PathVariable("id") @NonNull UUID id) {
-        Optional<Unit> unitToDelete = unitService.delete(id);
+        Optional<Unit> unitToDelete = unitService.deleteByUuid(id);
         if (unitToDelete.isPresent()) {
             return ResponseEntity.ok(unitToDelete.get());
         } else {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 }

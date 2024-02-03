@@ -11,6 +11,5 @@ import java.util.UUID;
 public interface UnitService extends MongoRepository<Unit, UUID> {
     Optional<Unit> findByEmployeeSetContains(User user);
     Optional<Unit> findByOkrSetsContains(OKRSet okrSet);
-    Optional<Unit> updateOne(UUID id, Unit unit);
-    Optional<Unit> delete(UUID id);
+    Optional<Unit> deleteByUuid(UUID id);
 }

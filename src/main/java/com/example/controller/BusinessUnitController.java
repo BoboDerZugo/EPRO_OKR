@@ -96,7 +96,7 @@ public class BusinessUnitController {
                 return ResponseEntity.badRequest().build();
             }
             bu.addOKRSet(okrSet);
-            BusinessUnit updatedBusinessUnit = businessUnitService.updateOne(id, bu).get();
+            BusinessUnit updatedBusinessUnit = businessUnitService.save(bu);
             if (updatedBusinessUnit != null)
                 return ResponseEntity.ok(updatedBusinessUnit);
         }
@@ -106,25 +106,24 @@ public class BusinessUnitController {
     @PutMapping("/{id}")
     public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id,
             @RequestBody BusinessUnit businessUnit) {
-        Optional<BusinessUnit> businessUnitToUpdate = businessUnitService.updateOne(id, businessUnit);
-        if (businessUnitToUpdate.isPresent()) {
-            BusinessUnit updatedBusinessUnit = businessUnitToUpdate.get();
-            if(updatedBusinessUnit != null)
-                return ResponseEntity.ok(updatedBusinessUnit);
-        } 
+        if (businessUnit != null) {
+            BusinessUnit businessUnitToUpdate = businessUnitService.save(businessUnit);
+            if (businessUnitToUpdate != null)
+                return ResponseEntity.ok(businessUnitToUpdate);
+        }
         return ResponseEntity.notFound().build();
-        
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<BusinessUnit> deleteBusinessUnit(@PathVariable("id") UUID id) {
-        Optional<BusinessUnit> businessUnitToDelete = businessUnitService.delete(id);
+        Optional<BusinessUnit> businessUnitToDelete = businessUnitService.deleteByUuid(id);
         if (businessUnitToDelete.isPresent()) {
             BusinessUnit deletedBusinessUnit = businessUnitToDelete.get();
-            if(deletedBusinessUnit != null)
+            if (deletedBusinessUnit != null)
                 return ResponseEntity.ok(deletedBusinessUnit);
-        } 
+        }
         return ResponseEntity.notFound().build();
-        
+
     }
 }
