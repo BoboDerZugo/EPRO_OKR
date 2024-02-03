@@ -10,7 +10,5 @@ public interface UserService extends MongoRepository<User, UUID> {
 
     Iterable<User> findByRoleEquals(User.Role role);
 
-    Optional<User> updateOne(UUID id, User user);
-
-    Optional<User> delete(UUID id);
+    Optional<User> deleteByUuid(UUID id);
 }

@@ -38,39 +38,44 @@ public class OKRSetController {
         }
     }
 
-    //??
+    // ??
     // returns the aggregated objective and keyResults of the OKRSet as JSON string
     @GetMapping("/{id}/aggregatedObjective")
-    public ResponseEntity<String> getAggregatedObjective(@PathVariable("id") @NonNull UUID id){
+    public ResponseEntity<String> getAggregatedObjective(@PathVariable("id") @NonNull UUID id) {
         Optional<OKRSet> okrSet = okrSetService.findById(id);
         if (okrSet.isPresent()) {
             OKRSet okr = okrSet.get();
             // JSON String
             /*
              * {
-                *"objective": {
-                    *"name": "name",
-                    "fullfilled": "fullfilled",}
-                *"keyResults": [
-                    *{
-                        *"description": "description",
-                        *"fullfillment": "fullfillment",
-                        *"goal": "goal",
-                        *"current": "current"
-                    *},
-                    *{
-                        *"description": "description",
-                        *"fullfillment": "fullfillment",
-                        *"goal": "goal",
-                        *"current": "current"
-                    *}
-                *]
-            *}
+             * "objective": {
+             * "name": "name",
+             * "fullfilled": "fullfilled",}
+             * "keyResults": [
+             * {
+             * "description": "description",
+             * "fullfillment": "fullfillment",
+             * "goal": "goal",
+             * "current": "current"
+             * },
+             * {
+             * "description": "description",
+             * "fullfillment": "fullfillment",
+             * "goal": "goal",
+             * "current": "current"
+             * }
+             * ]
+             * }
              */
-            String fullfillment = "{\"objective\": {\"name\": \"" + okr.getObjective().getName() + "\", \"fullfilled\": \"" + 
-                    okr.getObjective().getFulfilled() + "\"}, \"keyResults\": [" + okr.getKeyResults().stream().map(kr ->
-                    "{\"description\": \"" + kr.getDescription() + "\", \"fullfillment\": \"" + kr.getFulfilled() + "\", \"goal\": \"" +
-                    kr.getGoal() + "\", \"current\": \"" + kr.getCurrent() + "\"}").collect(Collectors.joining(",")) + "]}";
+            String fullfillment = "{\"objective\": {\"name\": \"" + okr.getObjective().getName()
+                    + "\", \"fullfilled\": \"" +
+                    okr.getObjective().getFulfilled() + "\"}, \"keyResults\": ["
+                    + okr.getKeyResults().stream()
+                            .map(kr -> "{\"description\": \"" + kr.getDescription() + "\", \"fullfillment\": \""
+                                    + kr.getFulfilled() + "\", \"goal\": \"" +
+                                    kr.getGoal() + "\", \"current\": \"" + kr.getCurrent() + "\"}")
+                            .collect(Collectors.joining(","))
+                    + "]}";
             return ResponseEntity.ok(fullfillment);
         } else {
             return ResponseEntity.notFound().build();
@@ -85,17 +90,18 @@ public class OKRSetController {
 
     @PutMapping("/{id}")
     public ResponseEntity<OKRSet> updateOKRSet(@PathVariable("id") @NonNull UUID id, @RequestBody OKRSet okrSet) {
-        Optional<OKRSet> okrSetToUpdate = okrSetService.updateOne(id, okrSet);
-        if (okrSetToUpdate.isPresent()) {
-            return ResponseEntity.ok(okrSetToUpdate.get());
-        } else {
-            return ResponseEntity.notFound().build();
+        if (okrSet != null) {
+            OKRSet updatedOKRSet = okrSetService.save(okrSet);
+            if (updatedOKRSet != null) {
+                return ResponseEntity.ok(updatedOKRSet);
+            }
         }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<OKRSet> deleteOKRSet(@PathVariable("id") @NonNull UUID id) {
-        Optional<OKRSet> okrSetToDelete = okrSetService.delete(id);
+        Optional<OKRSet> okrSetToDelete = okrSetService.deleteByUuid(id);
         if (okrSetToDelete.isPresent()) {
             return ResponseEntity.ok(okrSetToDelete.get());
         } else {

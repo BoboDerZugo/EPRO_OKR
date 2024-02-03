@@ -11,10 +11,8 @@ public interface ObjectiveService extends MongoRepository<Objective, UUID> {
     Iterable<Objective> findObjectivesByFulfilledGreaterThanEqual(short target);
     Iterable<Objective> findObjectivesByFulfilledLessThan(short target);
     
-    //Update an objective
-    Optional<Objective> updateOne(UUID id, Objective objective);
     //Delete an objective
-    Optional<Objective> findByIdAndDelete(UUID id);
+    Optional<Objective> deleteByUuid(UUID id);
 
 
 }

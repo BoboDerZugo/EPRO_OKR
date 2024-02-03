@@ -12,8 +12,7 @@ import java.util.UUID;
 public interface KeyResultService extends MongoRepository<KeyResult, UUID> {
     Optional<KeyResult> findByOwnerEquals(User user);
     Optional<KeyResult> findByContributingUnitsContains(Unit unit);
-    Optional<KeyResult> updateOne(UUID id, KeyResult keyResult);
-    Optional<KeyResult> delete(UUID id);
+    Optional<KeyResult> deleteByUuid(UUID id);
 
 
 }

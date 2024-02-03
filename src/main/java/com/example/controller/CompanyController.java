@@ -40,7 +40,7 @@ public class CompanyController {
         }
     }
 
-    //??
+    // ??
     // Aggregated OKR
     @GetMapping("/{id}/aggregatedOKR")
     public ResponseEntity<String> getAggregatedOKR(@PathVariable("id") @NonNull UUID id) {
@@ -51,90 +51,101 @@ public class CompanyController {
             /*
              * {
              * "company": {
-             *  "name": "name",
-             *  "okrSets": [
-             *      {
-             *          "objective": {
-             *              "name": "name",
-             *              "fullfilled": "fullfilled"
-             *          }
-             *          "keyResults": [
-             *              {
-             *                  "description": "description",
-             *                  "fullfillment": "fullfillment",
-             *                  "goal": "goal",
-             *                  "current": "current",
-             *                  "OKRSet": {                             (optional)
-             *                     "objective": {
-             *                        "name": "name",
-             *                       "fullfilled": "fullfilled"
-             *                      }
-             *                     "keyResults": [ .......
-             *          
-             *                  }
-             *              },
-             *              {
-             *                  "description": "description",
-             *                  "fullfillment": "fullfillment",
-             *                  "goal": "goal",
-             *                  "current": "current",
-             *                  "OKRSet": {                             (optional)
-             *                     "objective": {
-             *                        "name": "name",
-             *                       "fullfilled": "fullfilled"
-             *                       }
-             *                      "keyResults": [ .......
-             *                  }
-             *              }
-             *          ]   
-             *      },
-             *      {
-             *          "objective": {
-             *              "name": "name",
-             *              "fullfilled": "fullfilled"
-             *         }    
-             *          "keyResults": [
-             *              {
-             *                  "description": "description",
-             *                  "fullfillment": "fullfillment",
-             *                  "goal": "goal",
-             *                  "current": "current",
-             *                  "OKRSet": {                             (optional)
-             *                     "objective": {
-             *                        "name": "name",
-             *                       "fullfilled": "fullfilled"
-             *                      }
-             *                     "keyResults": [ .......
-             *                  }
-             *              },
-             *              {
-             *                  "description": "description",
-             *                  "fullfillment": "fullfillment",
-             *                  "goal": "goal",
-             *                  "current": "current",
-             *                  "OKRSet": {                             (optional)
-             *                     "objective": {
-             *                        "name": "name",
-             *                       "fullfilled": "fullfilled"
-             *                       }   
-             *                     "keyResults": [ .......
-             *                  }
-             *              }
-             *         ]
-             *      }
-             *  ]
+             * "name": "name",
+             * "okrSets": [
+             * {
+             * "objective": {
+             * "name": "name",
+             * "fullfilled": "fullfilled"
+             * }
+             * "keyResults": [
+             * {
+             * "description": "description",
+             * "fullfillment": "fullfillment",
+             * "goal": "goal",
+             * "current": "current",
+             * "OKRSet": { (optional)
+             * "objective": {
+             * "name": "name",
+             * "fullfilled": "fullfilled"
+             * }
+             * "keyResults": [ .......
+             * 
+             * }
+             * },
+             * {
+             * "description": "description",
+             * "fullfillment": "fullfillment",
+             * "goal": "goal",
+             * "current": "current",
+             * "OKRSet": { (optional)
+             * "objective": {
+             * "name": "name",
+             * "fullfilled": "fullfilled"
+             * }
+             * "keyResults": [ .......
+             * }
+             * }
+             * ]
+             * },
+             * {
+             * "objective": {
+             * "name": "name",
+             * "fullfilled": "fullfilled"
+             * }
+             * "keyResults": [
+             * {
+             * "description": "description",
+             * "fullfillment": "fullfillment",
+             * "goal": "goal",
+             * "current": "current",
+             * "OKRSet": { (optional)
+             * "objective": {
+             * "name": "name",
+             * "fullfilled": "fullfilled"
+             * }
+             * "keyResults": [ .......
+             * }
+             * },
+             * {
+             * "description": "description",
+             * "fullfillment": "fullfillment",
+             * "goal": "goal",
+             * "current": "current",
+             * "OKRSet": { (optional)
+             * "objective": {
+             * "name": "name",
+             * "fullfilled": "fullfilled"
+             * }
+             * "keyResults": [ .......
+             * }
+             * }
+             * ]
+             * }
+             * ]
              * }
              * }
              * 
              */
-            String aggregatedOKR = "{\"company\": {\"name\": \"" + "-" + "\", \"okrSets\": [" + c.getOkrSets().stream().map(okrSet ->
-                    "{\"objective\": {\"name\": \"" + okrSet.getObjective().getName() + "\", \"fullfilled\": \"" + 
-                    okrSet.getObjective().getFulfilled() + "\"}, \"keyResults\": [" + okrSet.getKeyResults().stream().map(kr ->
-                    "{\"description\": \"" + kr.getDescription() + "\", \"fullfillment\": \"" + kr.getFulfilled() + "\", \"goal\": \"" +
-                    kr.getGoal() + "\", \"current\": \"" + kr.getCurrent() + "\", \"OKRSet\": {" + "\"objective\": {\"name\": \"" + okrSet.getObjective().getName() + "\", \"fullfilled\": \"" +
-                    okrSet.getObjective().getFulfilled() + "\"}, \"keyResults\": [" + okrSet.getKeyResults().stream().map(kr2 ->
-                    "{\"description\": \"" + kr2.getDescription() + "\", \"fullfillment\": \"" + kr2.getFulfilled() + "\", \"goal\": \"" +
-                    kr2.getGoal() + "\", \"current\": \"" + kr2.getCurrent() + "\"}").collect(Collectors.joining(",")) + "]}}").collect(Collectors.joining(",")) + "]}").collect(Collectors.joining(",")) + "]}";
+            String aggregatedOKR = "{\"company\": {\"name\": \"" + "-" + "\", \"okrSets\": ["
+                    + c.getOkrSets().stream().map(okrSet -> "{\"objective\": {\"name\": \""
+                            + okrSet.getObjective().getName() + "\", \"fullfilled\": \"" +
+                            okrSet.getObjective().getFulfilled() + "\"}, \"keyResults\": ["
+                            + okrSet.getKeyResults().stream().map(kr -> "{\"description\": \"" + kr.getDescription()
+                                    + "\", \"fullfillment\": \"" + kr.getFulfilled() + "\", \"goal\": \"" +
+                                    kr.getGoal() + "\", \"current\": \"" + kr.getCurrent() + "\", \"OKRSet\": {"
+                                    + "\"objective\": {\"name\": \"" + okrSet.getObjective().getName()
+                                    + "\", \"fullfilled\": \"" +
+                                    okrSet.getObjective().getFulfilled() + "\"}, \"keyResults\": ["
+                                    + okrSet.getKeyResults().stream()
+                                            .map(kr2 -> "{\"description\": \"" + kr2.getDescription()
+                                                    + "\", \"fullfillment\": \"" + kr2.getFulfilled()
+                                                    + "\", \"goal\": \"" +
+                                                    kr2.getGoal() + "\", \"current\": \"" + kr2.getCurrent() + "\"}")
+                                            .collect(Collectors.joining(","))
+                                    + "]}}").collect(Collectors.joining(","))
+                            + "]}").collect(Collectors.joining(","))
+                    + "]}";
 
             return ResponseEntity.ok(aggregatedOKR);
         } else {
@@ -158,10 +169,9 @@ public class CompanyController {
                 return ResponseEntity.badRequest().build();
             }
             c.addOKRSet(okrSet);
-            company = companyService.updateOne(id, c);
-            if (company.isPresent()) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(company.get());
-            }
+            c = companyService.save(c);
+            if(c != null)
+                return ResponseEntity.ok(c);
         }
         return ResponseEntity.notFound().build();
 
@@ -170,18 +180,20 @@ public class CompanyController {
     @PutMapping("/{id}")
     public ResponseEntity<Company> updateCompany(@PathVariable("id") @NonNull UUID id,
             @RequestBody Company company) {
-        Optional<Company> companyToUpdate = companyService.updateOne(id, company);
-        if (companyToUpdate.isPresent()) {
-            return ResponseEntity.ok(companyToUpdate.get());
-        } else {
-            return ResponseEntity.notFound().build();
+        if (company != null) {
+            Company updatedCompany = companyService.save(company);
+            if (updatedCompany != null) {
+                return ResponseEntity.ok(updatedCompany);
+            }
         }
+        return ResponseEntity.notFound().build();
+
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Company> deleteCompany(@PathVariable("id") @NonNull UUID id) {
-        Optional<Company> companyToDelete = companyService.delete(id);
+        Optional<Company> companyToDelete = companyService.deleteByUuid(id);
         if (companyToDelete.isPresent()) {
             return ResponseEntity.ok(companyToDelete.get());
         } else {

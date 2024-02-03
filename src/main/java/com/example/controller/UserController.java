@@ -16,7 +16,7 @@ import java.util.UUID;
  * This class represents a controller for managing units.
  */
 @RestController
-@RequestMapping("/unit")
+@RequestMapping("/user")
 public class UserController {
 
         @Autowired
@@ -70,12 +70,13 @@ public class UserController {
          */
         @PutMapping("/{id}")
         public ResponseEntity<User> updateUser(@PathVariable("id") @NonNull UUID id, @RequestBody User user) {
-                Optional<User> userToUpdate = userService.updateOne(id, user);
-                if (userToUpdate.isPresent()) {
-                        return ResponseEntity.ok(userToUpdate.get());
-                } else {
-                        return ResponseEntity.notFound().build();
+                if (user != null) {
+                        User updatedUser = userService.save(user);
+                        if (updatedUser != null) {
+                                return ResponseEntity.ok(updatedUser);
+                        }
                 }
+                return ResponseEntity.notFound().build();
         }
 
         /**
@@ -86,7 +87,7 @@ public class UserController {
          */
         @DeleteMapping("/{id}")
         public ResponseEntity<User> deleteUser(@PathVariable("id") @NonNull UUID id) {
-                Optional<User> userToDelete = userService.delete(id);
+                Optional<User> userToDelete = userService.deleteByUuid(id);
                 if (userToDelete.isPresent()) {
                         return ResponseEntity.ok(userToDelete.get());
                 } else {

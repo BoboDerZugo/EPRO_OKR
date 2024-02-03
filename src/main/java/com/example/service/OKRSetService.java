@@ -12,6 +12,6 @@ public interface OKRSetService extends MongoRepository<OKRSet, UUID> {
 
     Optional<OKRSet> findByObjective(Objective objective);
     Optional<OKRSet> findByKeyResultsContains(KeyResult keyResult);
-    Optional<OKRSet> updateOne(UUID id, OKRSet okrSet);
-    Optional<OKRSet> delete(UUID id);
+
+    Optional<OKRSet> deleteByUuid(UUID id);
 }
