@@ -1,6 +1,7 @@
 package com.example.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,6 +20,15 @@ public class Company {
     private Set<OKRSet> okrSets;
     @DBRef
     private Set<User> employeeSet;
+
+    @PersistenceCreator
+    public Company(Set<BusinessUnit> businessUnits, Set<OKRSet> okrSets, Set<User> employeeSet) {
+        this.uuid = UUID.randomUUID();
+        this.businessUnits = businessUnits;
+        this.okrSets = okrSets;
+        this.employeeSet = employeeSet;
+    }
+
     public Company(OKRSet... okrSets) {
         this.okrSets = Set.of(okrSets);
         this.businessUnits = new HashSet<>();
@@ -57,5 +67,9 @@ public class Company {
     public void addOKRSet(OKRSet okrSet) {
         // TODO Auto-generated method stub
         this.okrSets.add(okrSet);
+    }
+
+    public void setUuid(UUID fromString) {
+        this.uuid = fromString;
     }
 }

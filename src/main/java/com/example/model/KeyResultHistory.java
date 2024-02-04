@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Set;
+//import java.util.Set;
 import java.util.UUID;
 
 @Document(collection = "KeyResultHistory")
@@ -21,12 +21,14 @@ public class KeyResultHistory {
     private User owner;
     private String statusUpdate;
     private String description;
-    @DBRef
-    private Set<Unit> contributingUnits;
+    // @DBRef
+    // private Set<Unit> contributingUnits;
     @DBRef
     private OKRSet okrSet;
 
-    public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description, Set<Unit> contributingUnits) {
+
+
+    public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description/*, Set<Unit> contributingUnits*/, OKRSet okrSet) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.fulfilled = fulfilled;
@@ -36,7 +38,20 @@ public class KeyResultHistory {
         this.owner = owner;
         this.statusUpdate = statusUpdate;
         this.description = description;
-        this.contributingUnits = contributingUnits;
+        //this.contributingUnits = contributingUnits;
+    }
+
+    public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description/*, Set<Unit> contributingUnits*/) {
+        this.uuid = UUID.randomUUID();
+        this.name = name;
+        this.fulfilled = fulfilled;
+        this.current = current;
+        this.goal = goal;
+        this.confidence = confidence;
+        this.owner = owner;
+        this.statusUpdate = statusUpdate;
+        this.description = description;
+        //this.contributingUnits = contributingUnits;
     }
 
     public KeyResultHistory(KeyResult keyResult){
@@ -49,7 +64,7 @@ public class KeyResultHistory {
         this.owner = keyResult.getOwner();
         this.statusUpdate = keyResult.getStatusUpdate();
         this.description = keyResult.getDescription();
-        this.contributingUnits = keyResult.getContributingUnits();
+        //this.contributingUnits = keyResult.getContributingUnits();
     }
     
 
@@ -85,9 +100,9 @@ public class KeyResultHistory {
         return description;
     }
 
-    public Set<Unit> getContributingUnits() {
-        return contributingUnits;
-    }
+    // public Set<Unit> getContributingUnits() {
+    //     return contributingUnits;
+    // }
 
     public OKRSet getOkrSet() {
         return okrSet;
@@ -113,8 +128,8 @@ public class KeyResultHistory {
         this.okrSet = okrSet;
     }
 
-    public void addContributingUnit(Unit u){
-        this.contributingUnits.add(u);
-    }
+    // public void addContributingUnit(Unit u){
+    //     this.contributingUnits.add(u);
+    // }
 
 }

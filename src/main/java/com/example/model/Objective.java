@@ -37,4 +37,8 @@ public class Objective {
     public void setFulfilled(short fulfilled) {
         this.fulfilled = fulfilled;
     }
+
+    public void setUuid(UUID fromString) {
+        this.uuid = fromString;
+    }
 }

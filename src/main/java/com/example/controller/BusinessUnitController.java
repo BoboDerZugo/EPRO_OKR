@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.example.model.BusinessUnit;
-import com.example.model.User;
+//import com.example.model.User;
 import com.example.service.BusinessUnitService;
 import com.example.model.Unit;
 import com.example.model.OKRSet;
@@ -68,21 +68,27 @@ public class BusinessUnitController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/{id}/employees")
-    public ResponseEntity<Set<User>> getEmployeesByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
-        Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
-        if (businessUnit.isPresent()) {
-            Set<User> employees = businessUnit.get().getEmployeeSet();
-            if (employees != null)
-                return ResponseEntity.ok(employees);
-        }
-        return ResponseEntity.notFound().build();
-    }
+    // @GetMapping("/{id}/employees")
+    // public ResponseEntity<Set<User>> getEmployeesByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
+    //     Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
+    //     if (businessUnit.isPresent()) {
+    //         Set<User> employees = businessUnit.get().getEmployeeSet();
+    //         if (employees != null)
+    //             return ResponseEntity.ok(employees);
+    //     }
+    //     return ResponseEntity.notFound().build();
+    // }
 
     @PostMapping
     public ResponseEntity<BusinessUnit> createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit) {
         BusinessUnit createdBusinessUnit = businessUnitService.insert(businessUnit);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBusinessUnit);
+        Optional<BusinessUnit> businessUnitOptional = businessUnitService.findById(createdBusinessUnit.getUuid());
+        if (businessUnitOptional.isPresent()) {
+            BusinessUnit bu = businessUnitOptional.get();
+            if (bu != null)
+                return ResponseEntity.status(HttpStatus.CREATED).body(bu);
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     // Add OKRSet to BusinessUnit
@@ -106,11 +112,11 @@ public class BusinessUnitController {
     @PutMapping("/{id}")
     public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id,
             @RequestBody BusinessUnit businessUnit) {
-        if (businessUnit != null) {
-            BusinessUnit businessUnitToUpdate = businessUnitService.save(businessUnit);
-            if (businessUnitToUpdate != null)
-                return ResponseEntity.ok(businessUnitToUpdate);
-        }
+        businessUnit.setUuid(UUID.fromString(id.toString()));
+        BusinessUnit updatedBusinessUnit = businessUnitService.save(businessUnit);
+        if (updatedBusinessUnit != null)
+            return ResponseEntity.ok(updatedBusinessUnit);
+                
         return ResponseEntity.notFound().build();
 
     }
