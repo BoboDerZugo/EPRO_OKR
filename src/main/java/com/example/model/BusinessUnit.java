@@ -1,6 +1,7 @@
 package com.example.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.HashSet;
@@ -11,16 +12,24 @@ import java.util.UUID;
 public class BusinessUnit {
     @Id
     private UUID uuid;
-    @DBRef
-    private Set<User> employeeSet;
+    // @DBRef
+    // private Set<User> employeeSet;
     @DBRef
     private Set<Unit> units;
     @DBRef
     private Set<OKRSet> okrSets;
 
+    @PersistenceCreator
+    public BusinessUnit(/*Set<User> employeeSet,*/ Set<Unit> units, Set<OKRSet> okrSets) {
+        this.uuid = UUID.randomUUID();
+        //this.employeeSet = employeeSet;
+        this.units = units;
+        this.okrSets = okrSets;
+    }
+
     public BusinessUnit(OKRSet[] okrSets) {
         this.uuid = UUID.randomUUID();
-        this.employeeSet = new HashSet<>();
+        // this.employeeSet = new HashSet<>();
         this.units = new HashSet<>();
         this.okrSets = new HashSet<>();
         this.okrSets = Set.of(okrSets);
@@ -30,9 +39,9 @@ public class BusinessUnit {
         return uuid;
     }
 
-    public Set<User> getEmployeeSet() {
-        return employeeSet;
-    }
+    // public Set<User> getEmployeeSet() {
+    //     return employeeSet;
+    // }
 
     public Set<Unit> getUnits() {
         return units;
@@ -42,9 +51,9 @@ public class BusinessUnit {
         return okrSets;
     }
 
-    public void addEmployee(User u){
-        this.employeeSet.add(u);
-    }
+    // public void addEmployee(User u){
+    //     this.employeeSet.add(u);
+    // }
 
     public void addUnit(Unit u){
         this.units.add(u);
@@ -55,7 +64,10 @@ public class BusinessUnit {
     }
 
     public void addOKRSet(OKRSet okrSet) {
-        // TODO Auto-generated method stub
         this.okrSets.add(okrSet);
+    }
+
+    public void setUuid(UUID fromString) {
+        this.uuid = fromString;
     }
 }

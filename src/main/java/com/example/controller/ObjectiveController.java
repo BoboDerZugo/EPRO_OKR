@@ -40,19 +40,21 @@ public class ObjectiveController {
     @PostMapping
     public ResponseEntity<Objective> createObjective(@RequestBody @NonNull Objective objective) {
         Objective createdObjective = objectiveService.insert(objective);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdObjective);
+        Optional<Objective> newObjective = objectiveService.findById(createdObjective.getUuid());
+        if (newObjective.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(newObjective.get());
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Objective> updateObjective(@PathVariable("id") UUID id, @RequestBody Objective objective) {
-        if (objective != null) {
-            Objective updatedObjective = objectiveService.save(objective);
-            if (updatedObjective != null) {
-                return ResponseEntity.ok(updatedObjective);
-            }
+    public ResponseEntity<Objective> updateObjective(@PathVariable("id") UUID id, @RequestBody @NonNull Objective objective) {
+        objective.setUuid(UUID.fromString(id.toString()));
+        Objective updatedObjective = objectiveService.save(objective);
+        if (updatedObjective != null) {
+            return ResponseEntity.ok(updatedObjective);
         }
         return ResponseEntity.notFound().build();
-
     }
 
     @DeleteMapping("/{id}")

@@ -58,7 +58,11 @@ public class UserController {
         @PostMapping
         public ResponseEntity<User> createUser(@RequestBody @NonNull User user) {
                 User createdUser = userService.insert(user);
-                return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+                Optional<User> userOptional = userService.findById(createdUser.getUuid());
+                if (userOptional.isPresent()) {
+                        return ResponseEntity.status(HttpStatus.CREATED).body(userOptional.get());
+                }
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
         /**
@@ -69,12 +73,11 @@ public class UserController {
          * @return ResponseEntity<User>
          */
         @PutMapping("/{id}")
-        public ResponseEntity<User> updateUser(@PathVariable("id") @NonNull UUID id, @RequestBody User user) {
-                if (user != null) {
-                        User updatedUser = userService.save(user);
-                        if (updatedUser != null) {
-                                return ResponseEntity.ok(updatedUser);
-                        }
+        public ResponseEntity<User> updateUser(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull User user) {
+                user.setUuid(UUID.fromString(id.toString()));
+                User updatedUser = userService.save(user);
+                if (updatedUser != null) {
+                        return ResponseEntity.ok(updatedUser);
                 }
                 return ResponseEntity.notFound().build();
         }

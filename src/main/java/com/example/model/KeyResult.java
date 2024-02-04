@@ -1,11 +1,15 @@
 package com.example.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+
+//import java.util.Set;
 import java.util.UUID;
 
 @Document(collection = "KeyResult")
@@ -19,15 +23,17 @@ public class KeyResult {
     private double current;
     private double goal;
     private double confidence;
+    @DBRef
     private User owner;
     private String statusUpdate;
     private String description;
-    @DBRef
-    private Set<Unit> contributingUnits;
+    // @DBRef
+    // private Set<Unit> contributingUnits;
     //Optional reference to BusinessUnit OKR
+    @DBRef
     private OKRSet okrSet;
 
-    public KeyResult(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description, Set<Unit> contributingUnits) {
+    public KeyResult(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description /*,Set<Unit> contributingUnits*/) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.fulfilled = fulfilled;
@@ -37,10 +43,11 @@ public class KeyResult {
         this.owner = owner;
         this.statusUpdate = statusUpdate;
         this.description = description;
-        this.contributingUnits = contributingUnits;
+        //this.contributingUnits = contributingUnits;
     }
 
-    public KeyResult(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description, Set<Unit> contributingUnits, OKRSet okrSet) {
+    @PersistenceCreator
+    public KeyResult(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description/*, Set<Unit> contributingUnits*/, OKRSet okrSet) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.fulfilled = fulfilled;
@@ -50,9 +57,16 @@ public class KeyResult {
         this.owner = owner;
         this.statusUpdate = statusUpdate;
         this.description = description;
-        this.contributingUnits = contributingUnits;
+        //this.contributingUnits = contributingUnits;
         this.okrSet = okrSet;
     }
+
+    @JsonCreator
+    public KeyResult() {
+        this.uuid = UUID.randomUUID();
+    }
+
+
 
     public UUID getUuid() {
         return uuid;
@@ -90,9 +104,9 @@ public class KeyResult {
         return description;
     }
 
-    public Set<Unit> getContributingUnits() {
-        return contributingUnits;
-    }
+    // public Set<Unit> getContributingUnits() {
+    //     return contributingUnits;
+    // }
 
     public OKRSet getOkrSet() {
         return okrSet;
@@ -114,11 +128,15 @@ public class KeyResult {
         this.confidence = confidence;
     }
 
-    public void addContributingUnit(Unit u){
-        this.contributingUnits.add(u);
-    }
+    // public void addContributingUnit(Unit u){
+    //     this.contributingUnits.add(u);
+    // }
 
     public void setOkrSet(OKRSet okrSet) {
         this.okrSet = okrSet;
+    }
+
+    public void setUuid(UUID fromString) {
+        this.uuid = fromString;
     }
 }
