@@ -191,6 +191,7 @@ public class CompanyController {
             @RequestBody @NonNull Company company) {
         company.setUuid(UUID.fromString(id.toString()));
         Company updatedCompany = companyService.save(company);
+        updatedCompany = companyService.findById(id).get();
         //if (updatedCompany != null) {
             return ResponseEntity.ok(updatedCompany);
         // }

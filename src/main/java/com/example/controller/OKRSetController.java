@@ -98,6 +98,7 @@ public class OKRSetController {
     public ResponseEntity<OKRSet> updateOKRSet(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull OKRSet okrSet) {
         okrSet.setUuid(UUID.fromString(id.toString()));
         OKRSet updatedOKRSet = okrSetService.save(okrSet);
+        updatedOKRSet = okrSetService.findById(id).get();
         //if (updatedOKRSet != null) {
             return ResponseEntity.ok(updatedOKRSet);
         // }
