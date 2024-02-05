@@ -74,6 +74,7 @@ public class KeyResultController {
     @PostMapping
     public ResponseEntity<KeyResult> createKeyResult(@RequestBody @NonNull KeyResult keyResult) {
         KeyResult createdKeyResult = keyResultService.insert(keyResult);
+        keyResultHistoryService.insert(new KeyResultHistory(createdKeyResult));
         UUID keyResultUuid = createdKeyResult.getUuid();
         if(keyResultUuid != null) {
             Optional<KeyResult> keyResultOptional = keyResultService.findById(keyResultUuid);
