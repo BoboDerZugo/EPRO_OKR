@@ -19,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * This class represents the controller for managing business units.
+ */
 @RestController
 @RequestMapping("/businessunit")
 public class BusinessUnitController {
@@ -26,13 +29,23 @@ public class BusinessUnitController {
     @Autowired
     private BusinessUnitService businessUnitService;
 
+    /**
+     * Retrieves all business units.
+     *
+     * @return The response entity containing a list of business units.
+     */
     @GetMapping
     public ResponseEntity<List<BusinessUnit>> getAllBusinessUnits() {
         List<BusinessUnit> businessUnits = businessUnitService.findAll();
         return ResponseEntity.ok(businessUnits);
     }
 
-    // get units by business unit id
+    /**
+     * Retrieves units by business unit id.
+     *
+     * @param id The business unit id.
+     * @return The response entity containing a set of units.
+     */
     @GetMapping("/units/{id}")
     public ResponseEntity<Set<Unit>> getUnitsByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
@@ -44,6 +57,12 @@ public class BusinessUnitController {
         }
     }
 
+    /**
+     * Retrieves a business unit by id.
+     *
+     * @param id The business unit id.
+     * @return The response entity containing a business unit.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<BusinessUnit> getBusinessUnitById(@PathVariable("id") @NonNull UUID id) {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
@@ -56,6 +75,12 @@ public class BusinessUnitController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Retrieves OKR sets by business unit id.
+     *
+     * @param id The business unit id.
+     * @return The response entity containing a set of OKR sets.
+     */
     @GetMapping("/{id}/okr")
     public ResponseEntity<Set<OKRSet>> getOKRsByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
@@ -68,18 +93,12 @@ public class BusinessUnitController {
         return ResponseEntity.notFound().build();
     }
 
-    // @GetMapping("/{id}/employees")
-    // public ResponseEntity<Set<User>>
-    // getEmployeesByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
-    // Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
-    // if (businessUnit.isPresent()) {
-    // Set<User> employees = businessUnit.get().getEmployeeSet();
-    // if (employees != null)
-    // return ResponseEntity.ok(employees);
-    // }
-    // return ResponseEntity.notFound().build();
-    // }
-
+    /**
+     * Creates a new business unit.
+     *
+     * @param businessUnit The business unit to be created.
+     * @return The response entity containing the created business unit.
+     */
     @PostMapping
     public ResponseEntity<BusinessUnit> createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit) {
         BusinessUnit createdBusinessUnit = businessUnitService.insert(businessUnit);
@@ -95,10 +114,16 @@ public class BusinessUnitController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    // Add OKRSet to BusinessUnit
+    /**
+     * Adds an OKR set to a business unit.
+     *
+     * @param id     The business unit id.
+     * @param okrSet The OKR set to be added.
+     * @return The response entity containing the updated business unit.
+     */
     @PostMapping("/{id}/okrset")
     public ResponseEntity<BusinessUnit> addOKRSetToBusinessUnit(@PathVariable("id") @NonNull UUID id,
-            @RequestBody @NonNull OKRSet okrSet) {
+                                                                @RequestBody @NonNull OKRSet okrSet) {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
         if (businessUnit.isPresent()) {
             BusinessUnit bu = businessUnit.get();
@@ -113,9 +138,16 @@ public class BusinessUnitController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Updates a business unit.
+     *
+     * @param id            The business unit id.
+     * @param businessUnit  The updated business unit.
+     * @return The response entity containing the updated business unit.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id,
-            @RequestBody BusinessUnit businessUnit) {
+                                                            @RequestBody BusinessUnit businessUnit) {
         businessUnit.setUuid(UUID.fromString(id.toString()));
         BusinessUnit updatedBusinessUnit = businessUnitService.save(businessUnit);
         updatedBusinessUnit = businessUnitService.findById(id).get();
@@ -126,6 +158,12 @@ public class BusinessUnitController {
 
     }
 
+    /**
+     * Deletes a business unit.
+     *
+     * @param id The business unit id.
+     * @return The response entity containing the deleted business unit.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<BusinessUnit> deleteBusinessUnit(@PathVariable("id") UUID id) {
         Optional<BusinessUnit> businessUnitToDelete = businessUnitService.deleteByUuid(id);

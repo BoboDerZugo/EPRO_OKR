@@ -1,3 +1,6 @@
+/**
+ * This package contain the controller classes for managing OKR sets.
+ */
 package com.example.controller;
 
 import com.example.service.OKRSetService;
@@ -13,6 +16,12 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 
+/**
+ * This class represents the controller for managing OKRSet entities.
+ */
+/**
+ * Controller class for managing OKRSet entities.
+ */
 @RestController
 @RequestMapping("/okrset")
 public class OKRSetController {
@@ -21,12 +30,23 @@ public class OKRSetController {
     @Autowired
     private OKRSetService okrSetService;
 
+    /**
+     * Get all OKRSets.
+     *
+     * @return ResponseEntity containing a list of OKRSet objects
+     */
     @GetMapping
     public ResponseEntity<List<OKRSet>> getAllOKRSets() {
         List<OKRSet> okrSets = okrSetService.findAll();
         return ResponseEntity.ok(okrSets);
     }
 
+    /**
+     * Get an OKRSet by ID.
+     *
+     * @param id the ID of the OKRSet
+     * @return ResponseEntity containing the OKRSet object if found, or a not found response
+     */
     @GetMapping("/{id}")
     public ResponseEntity<OKRSet> getOKRSetById(@PathVariable("id") @NonNull UUID id) {
         Optional<OKRSet> okrSet = okrSetService.findById(id);
@@ -37,50 +57,12 @@ public class OKRSetController {
         }
     }
 
-    // // ??
-    // // returns the aggregated objective and keyResults of the OKRSet as JSON string
-    // @GetMapping("/{id}/aggregatedObjective")
-    // public ResponseEntity<String> getAggregatedObjective(@PathVariable("id") @NonNull UUID id) {
-    //     Optional<OKRSet> okrSet = okrSetService.findById(id);
-    //     if (okrSet.isPresent()) {
-    //         OKRSet okr = okrSet.get();
-    //         // JSON String
-    //         /*
-    //          * {
-    //          * "objective": {
-    //          * "name": "name",
-    //          * "fullfilled": "fullfilled",}
-    //          * "keyResults": [
-    //          * {
-    //          * "description": "description",
-    //          * "fullfillment": "fullfillment",
-    //          * "goal": "goal",
-    //          * "current": "current"
-    //          * },
-    //          * {
-    //          * "description": "description",
-    //          * "fullfillment": "fullfillment",
-    //          * "goal": "goal",
-    //          * "current": "current"
-    //          * }
-    //          * ]
-    //          * }
-    //          */
-    //         String fullfillment = "{\"objective\": {\"name\": \"" + okr.getObjective().getName()
-    //                 + "\", \"fullfilled\": \"" +
-    //                 okr.getObjective().getFulfilled() + "\"}, \"keyResults\": ["
-    //                 + okr.getKeyResults().stream()
-    //                         .map(kr -> "{\"description\": \"" + kr.getDescription() + "\", \"fullfillment\": \""
-    //                                 + kr.getFulfilled() + "\", \"goal\": \"" +
-    //                                 kr.getGoal() + "\", \"current\": \"" + kr.getCurrent() + "\"}")
-    //                         .collect(Collectors.joining(","))
-    //                 + "]}";
-    //         return ResponseEntity.ok(fullfillment);
-    //     } else {
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
-
+    /**
+     * Create a new OKRSet.
+     *
+     * @param okrSet the OKRSet object to create
+     * @return ResponseEntity containing the created OKRSet object if successful, or an error response
+     */
     @PostMapping
     public ResponseEntity<OKRSet> createOKRSet(@RequestBody @NonNull OKRSet okrSet) {
         OKRSet createdOKRSet = okrSetService.insert(okrSet);
@@ -94,17 +76,27 @@ public class OKRSetController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    /**
+     * Update an existing OKRSet.
+     *
+     * @param id      the ID of the OKRSet to update
+     * @param okrSet  the updated OKRSet object
+     * @return ResponseEntity containing the updated OKRSet object if successful, or an error response
+     */
     @PutMapping("/{id}")
     public ResponseEntity<OKRSet> updateOKRSet(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull OKRSet okrSet) {
         okrSet.setUuid(UUID.fromString(id.toString()));
         OKRSet updatedOKRSet = okrSetService.save(okrSet);
         updatedOKRSet = okrSetService.findById(id).get();
-        //if (updatedOKRSet != null) {
-            return ResponseEntity.ok(updatedOKRSet);
-        // }
-        // return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(updatedOKRSet);
     }
 
+    /**
+     * Delete an OKRSet by ID.
+     *
+     * @param id the ID of the OKRSet to delete
+     * @return ResponseEntity containing the deleted OKRSet object if found, or a not found response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<OKRSet> deleteOKRSet(@PathVariable("id") @NonNull UUID id) {
         Optional<OKRSet> okrSetToDelete = okrSetService.deleteByUuid(id);

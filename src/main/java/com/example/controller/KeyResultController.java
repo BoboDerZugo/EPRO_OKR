@@ -16,6 +16,9 @@ import java.util.UUID;
 import org.springframework.lang.NonNull;
 
 //CRUD operations for KeyResults
+/**
+ * Controller class for managing Key Results.
+ */
 @RestController
 @RequestMapping("/keyresult")
 public class KeyResultController {
@@ -25,12 +28,23 @@ public class KeyResultController {
     @Autowired
     private KeyResultHistoryService keyResultHistoryService;
 
+    /**
+     * Get all Key Results.
+     *
+     * @return The list of Key Results.
+     */
     @GetMapping
     public ResponseEntity<List<KeyResult>> getAllKeyResults() {
         List<KeyResult> keyResults = keyResultService.findAll();
         return ResponseEntity.ok(keyResults);
     }
 
+    /**
+     * Get a Key Result by ID.
+     *
+     * @param id The ID of the Key Result.
+     * @return The Key Result if found, otherwise returns a not found response.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<KeyResult> getKeyResultById(@PathVariable("id") @NonNull UUID id) {
         Optional<KeyResult> keyResult = keyResultService.findById(id);
@@ -41,36 +55,12 @@ public class KeyResultController {
         }
     }
 
-    // // ??
-    // @GetMapping("/{id}/fullfillment")
-    // // Returns the fullfillment of a key result JSON
-    // public ResponseEntity<String> getKeyResultFullfillment(@PathVariable("id")
-    // @NonNull UUID id) {
-    // Optional<KeyResult> keyResult = keyResultService.findById(id);
-    // if (keyResult.isPresent()) {
-    // KeyResult keyRes = keyResult.get();
-    // // JSON String
-    // /*
-    // * {
-    // * "description": "description",
-    // * "fullfillment": "fullfillment",
-    // * "goal": "goal",
-    // * "current": "current",
-    // * "contributingUnit" : "contributingUnit"
-    // *
-    // * }
-    // */
-    // String fullfillment = "{\"description\": \"" + keyRes.getDescription() + "\",
-    // \"fullfillment\": \"" +
-    // keyRes.getFulfilled() + "\", \"goal\": \"" + keyRes.getGoal() + "\",
-    // \"current\": \""
-    // + keyRes.getCurrent() + "\"}";
-    // return ResponseEntity.ok(fullfillment);
-    // } else {
-    // return ResponseEntity.notFound().build();
-    // }
-    // }
-
+    /**
+     * Create a new Key Result.
+     *
+     * @param keyResult The Key Result to create.
+     * @return The created Key Result if successful, otherwise returns an internal server error response.
+     */
     @PostMapping
     public ResponseEntity<KeyResult> createKeyResult(@RequestBody @NonNull KeyResult keyResult) {
         KeyResult createdKeyResult = keyResultService.insert(keyResult);
@@ -85,6 +75,13 @@ public class KeyResultController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    /**
+     * Update a Key Result.
+     *
+     * @param id The ID of the Key Result to update.
+     * @param keyResult The updated Key Result.
+     * @return The updated Key Result if successful, otherwise returns a not found response.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<KeyResult> updateKeyResult(@PathVariable("id") UUID id,
             @RequestBody KeyResult keyResult) {
@@ -99,6 +96,12 @@ public class KeyResultController {
         // return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Delete a Key Result.
+     *
+     * @param id The ID of the Key Result to delete.
+     * @return The deleted Key Result if found, otherwise returns a not found response.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<KeyResult> deleteKeyResult(@PathVariable("id") UUID id) {
         Optional<KeyResult> keyResultToDelete = keyResultService.deleteByUuid(id);
