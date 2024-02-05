@@ -18,21 +18,21 @@ public class Company {
     private Set<BusinessUnit> businessUnits;
     @DBRef
     private Set<OKRSet> okrSets;
-    @DBRef
-    private Set<User> employeeSet;
+    //@DBRef
+    //private Set<User> employeeSet;
 
     @PersistenceCreator
-    public Company(Set<BusinessUnit> businessUnits, Set<OKRSet> okrSets, Set<User> employeeSet) {
+    public Company(Set<BusinessUnit> businessUnits, Set<OKRSet> okrSets/*, Set<User> employeeSet*/) {
         this.uuid = UUID.randomUUID();
         this.businessUnits = businessUnits;
         this.okrSets = okrSets;
-        this.employeeSet = employeeSet;
+        //this.employeeSet = employeeSet;
     }
 
     public Company(OKRSet... okrSets) {
         this.okrSets = Set.of(okrSets);
         this.businessUnits = new HashSet<>();
-        this.employeeSet = new HashSet<>();
+        //this.employeeSet = new HashSet<>();
         this.okrSets = Set.of(okrSets);
     }
 
@@ -48,17 +48,17 @@ public class Company {
         return okrSets;
     }
 
-    public Set<User> getEmployeeSet() {
-        return employeeSet;
-    }
+    // public Set<User> getEmployeeSet() {
+    //     return employeeSet;
+    // }
 
     public void addBusinessUnit(BusinessUnit bu){
         this.businessUnits.add(bu);
     }
 
-    public void addEmployee(User u){
-        this.employeeSet.add(u);
-    }
+    // public void addEmployee(User u){
+    //     this.employeeSet.add(u);
+    // }
 
     public void setOkrSets(Set<OKRSet> okrSets){
         this.okrSets = okrSets;
