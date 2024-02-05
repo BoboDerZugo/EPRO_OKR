@@ -21,12 +21,23 @@ public class ObjectiveController {
     @Autowired
     private ObjectiveService objectiveService;
 
+    /**
+     * Retrieves all objectives.
+     *
+     * @return ResponseEntity containing a list of objectives
+     */
     @GetMapping
     public ResponseEntity<List<Objective>> getAllObjectives() {
         List<Objective> objectives = objectiveService.findAll();
         return ResponseEntity.ok(objectives);
     }
 
+    /**
+     * Retrieves an objective by its ID.
+     *
+     * @param id the ID of the objective to retrieve
+     * @return ResponseEntity containing the objective if found, or a not found response if not
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Objective> getObjectiveById(@PathVariable("id") @NonNull UUID id) {
         Optional<Objective> objective = objectiveService.findById(id);
@@ -37,6 +48,12 @@ public class ObjectiveController {
         }
     }
 
+    /**
+     * Creates a new objective.
+     *
+     * @param objective the objective to create
+     * @return ResponseEntity containing the created objective if successful, or an internal server error response if not
+     */
     @PostMapping
     public ResponseEntity<Objective> createObjective(@RequestBody @NonNull Objective objective) {
         Objective createdObjective = objectiveService.insert(objective);
@@ -50,9 +67,16 @@ public class ObjectiveController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    /**
+     * Updates an existing objective.
+     *
+     * @param id        the ID of the objective to update
+     * @param objective the updated objective
+     * @return ResponseEntity containing the updated objective if successful, or a not found response if not
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Objective> updateObjective(@PathVariable("id") UUID id,
-            @RequestBody @NonNull Objective objective) {
+                                                     @RequestBody @NonNull Objective objective) {
         objective.setUuid(UUID.fromString(id.toString()));
         Objective updatedObjective = objectiveService.save(objective);
         updatedObjective = objectiveService.findById(id).get();
@@ -62,6 +86,12 @@ public class ObjectiveController {
         // return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Deletes an objective by its ID.
+     *
+     * @param id the ID of the objective to delete
+     * @return ResponseEntity containing the deleted objective if found, or a not found response if not
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Objective> deleteObjective(@PathVariable("id") @NonNull UUID id) {
         Optional<Objective> objectiveToDelete = objectiveService.deleteByUuid(id);

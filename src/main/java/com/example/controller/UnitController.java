@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * The UnitController class handles HTTP requests related to units.
+ */
 @RestController
 @RequestMapping("/unit")
 public class UnitController {
@@ -19,12 +22,23 @@ public class UnitController {
     @Autowired
     private UnitService unitService;
 
+    /**
+     * Retrieves all units.
+     *
+     * @return ResponseEntity containing a list of units
+     */
     @GetMapping
     public ResponseEntity<List<Unit>> getAllUnits() {
         List<Unit> units = unitService.findAll();
         return ResponseEntity.ok(units);
     }
 
+    /**
+     * Retrieves a unit by its ID.
+     *
+     * @param id the ID of the unit to retrieve
+     * @return ResponseEntity containing the unit if found, or a not found response if not found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Unit> getUnitById(@PathVariable("id") @NonNull UUID id) {
         Optional<Unit> unit = unitService.findById(id);
@@ -35,6 +49,12 @@ public class UnitController {
         }
     }
 
+    /**
+     * Creates a new unit.
+     *
+     * @param unit the unit to create
+     * @return ResponseEntity containing the created unit if successful, or an internal server error response if not successful
+     */
     @PostMapping
     public ResponseEntity<Unit> createUnit(@RequestBody @NonNull Unit unit) {
         Unit createdUnit = unitService.insert(unit);
@@ -49,6 +69,13 @@ public class UnitController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    /**
+     * Updates a unit.
+     *
+     * @param id   the ID of the unit to update
+     * @param unit the updated unit
+     * @return ResponseEntity containing the updated unit if successful, or a not found response if not found
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Unit> updateUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull Unit unit) {
         unit.setUuid(UUID.fromString(id.toString()));
@@ -61,6 +88,12 @@ public class UnitController {
 
     }
 
+    /**
+     * Deletes a unit.
+     *
+     * @param id the ID of the unit to delete
+     * @return ResponseEntity containing the deleted unit if successful, or a not found response if not found
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Unit> deleteUnit(@PathVariable("id") @NonNull UUID id) {
         Optional<Unit> unitToDelete = unitService.deleteByUuid(id);

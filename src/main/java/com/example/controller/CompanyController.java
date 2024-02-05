@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * The CompanyController class handles the HTTP requests related to the Company entity.
+ */
 @RestController
 @RequestMapping("/company")
 public class CompanyController {
@@ -24,11 +27,23 @@ public class CompanyController {
     private CompanyService companyService;
 
     // Crud operations
+
+    /**
+     * Retrieves all companies.
+     *
+     * @return ResponseEntity containing the list of companies
+     */
     @GetMapping
     public ResponseEntity<List<Company>> getAllCompanies() {
         return ResponseEntity.ok(companyService.findAll());
     }
 
+    /**
+     * Retrieves a company by its ID.
+     *
+     * @param id the ID of the company
+     * @return ResponseEntity containing the company if found, or a not found response if not found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable("id") @NonNull UUID id) {
         Optional<Company> company = companyService.findById(id);
@@ -39,119 +54,12 @@ public class CompanyController {
         }
     }
 
-    // // ??
-    // // Aggregated OKR
-    // @GetMapping("/{id}/aggregatedOKR")
-    // public ResponseEntity<String> getAggregatedOKR(@PathVariable("id") @NonNull UUID id) {
-    //     Optional<Company> company = companyService.findById(id);
-    //     if (company.isPresent()) {
-    //         Company c = company.get();
-    //         // JSON String
-    //         /*
-    //          * {
-    //          * "company": {
-    //          * "name": "name",
-    //          * "okrSets": [
-    //          * {
-    //          * "objective": {
-    //          * "name": "name",
-    //          * "fullfilled": "fullfilled"
-    //          * }
-    //          * "keyResults": [
-    //          * {
-    //          * "description": "description",
-    //          * "fullfillment": "fullfillment",
-    //          * "goal": "goal",
-    //          * "current": "current",
-    //          * "OKRSet": { (optional)
-    //          * "objective": {
-    //          * "name": "name",
-    //          * "fullfilled": "fullfilled"
-    //          * }
-    //          * "keyResults": [ .......
-    //          * 
-    //          * }
-    //          * },
-    //          * {
-    //          * "description": "description",
-    //          * "fullfillment": "fullfillment",
-    //          * "goal": "goal",
-    //          * "current": "current",
-    //          * "OKRSet": { (optional)
-    //          * "objective": {
-    //          * "name": "name",
-    //          * "fullfilled": "fullfilled"
-    //          * }
-    //          * "keyResults": [ .......
-    //          * }
-    //          * }
-    //          * ]
-    //          * },
-    //          * {
-    //          * "objective": {
-    //          * "name": "name",
-    //          * "fullfilled": "fullfilled"
-    //          * }
-    //          * "keyResults": [
-    //          * {
-    //          * "description": "description",
-    //          * "fullfillment": "fullfillment",
-    //          * "goal": "goal",
-    //          * "current": "current",
-    //          * "OKRSet": { (optional)
-    //          * "objective": {
-    //          * "name": "name",
-    //          * "fullfilled": "fullfilled"
-    //          * }
-    //          * "keyResults": [ .......
-    //          * }
-    //          * },
-    //          * {
-    //          * "description": "description",
-    //          * "fullfillment": "fullfillment",
-    //          * "goal": "goal",
-    //          * "current": "current",
-    //          * "OKRSet": { (optional)
-    //          * "objective": {
-    //          * "name": "name",
-    //          * "fullfilled": "fullfilled"
-    //          * }
-    //          * "keyResults": [ .......
-    //          * }
-    //          * }
-    //          * ]
-    //          * }
-    //          * ]
-    //          * }
-    //          * }
-    //          * 
-    //          */
-    //         String aggregatedOKR = "{\"company\": {\"name\": \"" + "-" + "\", \"okrSets\": ["
-    //                 + c.getOkrSets().stream().map(okrSet -> "{\"objective\": {\"name\": \""
-    //                         + okrSet.getObjective().getName() + "\", \"fullfilled\": \"" +
-    //                         okrSet.getObjective().getFulfilled() + "\"}, \"keyResults\": ["
-    //                         + okrSet.getKeyResults().stream().map(kr -> "{\"description\": \"" + kr.getDescription()
-    //                                 + "\", \"fullfillment\": \"" + kr.getFulfilled() + "\", \"goal\": \"" +
-    //                                 kr.getGoal() + "\", \"current\": \"" + kr.getCurrent() + "\", \"OKRSet\": {"
-    //                                 + "\"objective\": {\"name\": \"" + okrSet.getObjective().getName()
-    //                                 + "\", \"fullfilled\": \"" +
-    //                                 okrSet.getObjective().getFulfilled() + "\"}, \"keyResults\": ["
-    //                                 + okrSet.getKeyResults().stream()
-    //                                         .map(kr2 -> "{\"description\": \"" + kr2.getDescription()
-    //                                                 + "\", \"fullfillment\": \"" + kr2.getFulfilled()
-    //                                                 + "\", \"goal\": \"" +
-    //                                                 kr2.getGoal() + "\", \"current\": \"" + kr2.getCurrent() + "\"}")
-    //                                         .collect(Collectors.joining(","))
-    //                                 + "]}}").collect(Collectors.joining(","))
-    //                         + "]}").collect(Collectors.joining(","))
-    //                 + "]}";
-
-    //         return ResponseEntity.ok(aggregatedOKR);
-    //     } else {
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
-
+    /**
+     * Creates a new company.
+     *
+     * @param company the company to be created
+     * @return ResponseEntity containing the created company if successful, or an internal server error response if not successful
+     */
     @PostMapping
     public ResponseEntity<Company> createCompany(@RequestBody @NonNull Company company) {
         Company createdCompany = companyService.insert(company);
@@ -168,9 +76,17 @@ public class CompanyController {
     }
 
     // Add OKRSet to Company
+
+    /**
+     * Adds an OKRSet to a company.
+     *
+     * @param id      the ID of the company
+     * @param okrSet  the OKRSet to be added
+     * @return ResponseEntity containing the updated company if successful, or a not found response if the company is not found or a bad request response if the company already has 5 OKRSets
+     */
     @PostMapping("/{id}/okrset")
     public ResponseEntity<Company> addOKRSetToCompany(@PathVariable("id") @NonNull UUID id,
-            @RequestBody @NonNull OKRSet okrSet) {
+                                                      @RequestBody @NonNull OKRSet okrSet) {
         Optional<Company> company = companyService.findById(id);
         if (company.isPresent()) {
             Company c = company.get();
@@ -183,22 +99,33 @@ public class CompanyController {
                 return ResponseEntity.ok(c);
         }
         return ResponseEntity.notFound().build();
-
     }
 
+    /**
+     * Updates a company.
+     *
+     * @param id      the ID of the company
+     * @param company the updated company
+     * @return ResponseEntity containing the updated company if successful, or a not found response if the company is not found
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Company> updateCompany(@PathVariable("id") @NonNull UUID id,
-            @RequestBody @NonNull Company company) {
+                                                 @RequestBody @NonNull Company company) {
         company.setUuid(UUID.fromString(id.toString()));
         Company updatedCompany = companyService.save(company);
         updatedCompany = companyService.findById(id).get();
         //if (updatedCompany != null) {
-            return ResponseEntity.ok(updatedCompany);
+        return ResponseEntity.ok(updatedCompany);
         // }
         // return ResponseEntity.notFound().build();
-
     }
 
+    /**
+     * Deletes a company.
+     *
+     * @param id the ID of the company
+     * @return ResponseEntity containing the deleted company if successful, or a not found response if the company is not found
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Company> deleteCompany(@PathVariable("id") @NonNull UUID id) {
