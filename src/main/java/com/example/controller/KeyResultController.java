@@ -91,6 +91,7 @@ public class KeyResultController {
         keyResultHistoryService.insert(new KeyResultHistory(keyResult));
         keyResult.setUuid(UUID.fromString(id.toString()));
         KeyResult updatedKeyResult = keyResultService.save(keyResult);
+        updatedKeyResult = keyResultService.findById(id).get();
         // if (updatedKeyResult != null) {
         return ResponseEntity.ok(updatedKeyResult);
         // }

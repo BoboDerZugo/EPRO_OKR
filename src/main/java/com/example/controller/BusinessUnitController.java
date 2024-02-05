@@ -118,6 +118,7 @@ public class BusinessUnitController {
             @RequestBody BusinessUnit businessUnit) {
         businessUnit.setUuid(UUID.fromString(id.toString()));
         BusinessUnit updatedBusinessUnit = businessUnitService.save(businessUnit);
+        updatedBusinessUnit = businessUnitService.findById(id).get();
         // if (updatedBusinessUnit != null)
         return ResponseEntity.ok(updatedBusinessUnit);
 

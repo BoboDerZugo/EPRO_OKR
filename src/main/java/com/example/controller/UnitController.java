@@ -53,6 +53,7 @@ public class UnitController {
     public ResponseEntity<Unit> updateUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull Unit unit) {
         unit.setUuid(UUID.fromString(id.toString()));
         Unit updatedUnit = unitService.save(unit);
+        updatedUnit = unitService.findById(id).get();
         // if (updatedUnit != null) {
         return ResponseEntity.ok(updatedUnit);
         // }

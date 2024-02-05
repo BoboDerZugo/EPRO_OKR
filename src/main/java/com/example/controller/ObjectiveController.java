@@ -55,6 +55,7 @@ public class ObjectiveController {
             @RequestBody @NonNull Objective objective) {
         objective.setUuid(UUID.fromString(id.toString()));
         Objective updatedObjective = objectiveService.save(objective);
+        updatedObjective = objectiveService.findById(id).get();
         // if (updatedObjective != null) {
         return ResponseEntity.ok(updatedObjective);
         // }
