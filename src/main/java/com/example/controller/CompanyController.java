@@ -9,7 +9,6 @@ import com.example.model.OKRSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -156,11 +155,14 @@ public class CompanyController {
     @PostMapping
     public ResponseEntity<Company> createCompany(@RequestBody @NonNull Company company) {
         Company createdCompany = companyService.insert(company);
-        Optional<Company> companyOptional = companyService.findById(createdCompany.getUuid());
-        if (companyOptional.isPresent()) {
-            Company c = companyOptional.get();
-            if (c != null)
-                return ResponseEntity.status(HttpStatus.CREATED).body(c);
+        UUID companyUuid = createdCompany.getUuid();
+        if(companyUuid != null) {
+            Optional<Company> companyOptional = companyService.findById(companyUuid);
+            if (companyOptional.isPresent()) {
+                Company c = companyOptional.get();
+                if (c != null)
+                    return ResponseEntity.status(HttpStatus.CREATED).body(c);
+            }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -189,10 +191,10 @@ public class CompanyController {
             @RequestBody @NonNull Company company) {
         company.setUuid(UUID.fromString(id.toString()));
         Company updatedCompany = companyService.save(company);
-        if (updatedCompany != null) {
+        //if (updatedCompany != null) {
             return ResponseEntity.ok(updatedCompany);
-        }
-        return ResponseEntity.notFound().build();
+        // }
+        // return ResponseEntity.notFound().build();
 
     }
 

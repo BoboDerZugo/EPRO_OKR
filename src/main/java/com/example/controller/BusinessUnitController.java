@@ -69,24 +69,28 @@ public class BusinessUnitController {
     }
 
     // @GetMapping("/{id}/employees")
-    // public ResponseEntity<Set<User>> getEmployeesByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
-    //     Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
-    //     if (businessUnit.isPresent()) {
-    //         Set<User> employees = businessUnit.get().getEmployeeSet();
-    //         if (employees != null)
-    //             return ResponseEntity.ok(employees);
-    //     }
-    //     return ResponseEntity.notFound().build();
+    // public ResponseEntity<Set<User>>
+    // getEmployeesByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
+    // Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
+    // if (businessUnit.isPresent()) {
+    // Set<User> employees = businessUnit.get().getEmployeeSet();
+    // if (employees != null)
+    // return ResponseEntity.ok(employees);
+    // }
+    // return ResponseEntity.notFound().build();
     // }
 
     @PostMapping
     public ResponseEntity<BusinessUnit> createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit) {
         BusinessUnit createdBusinessUnit = businessUnitService.insert(businessUnit);
-        Optional<BusinessUnit> businessUnitOptional = businessUnitService.findById(createdBusinessUnit.getUuid());
-        if (businessUnitOptional.isPresent()) {
-            BusinessUnit bu = businessUnitOptional.get();
-            if (bu != null)
-                return ResponseEntity.status(HttpStatus.CREATED).body(bu);
+        UUID businessUnitUuid = createdBusinessUnit.getUuid();
+        if (businessUnitUuid != null) {
+            Optional<BusinessUnit> businessUnitOptional = businessUnitService.findById(businessUnitUuid);
+            if (businessUnitOptional.isPresent()) {
+                BusinessUnit bu = businessUnitOptional.get();
+                if (bu != null)
+                    return ResponseEntity.status(HttpStatus.CREATED).body(bu);
+            }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -114,10 +118,10 @@ public class BusinessUnitController {
             @RequestBody BusinessUnit businessUnit) {
         businessUnit.setUuid(UUID.fromString(id.toString()));
         BusinessUnit updatedBusinessUnit = businessUnitService.save(businessUnit);
-        if (updatedBusinessUnit != null)
-            return ResponseEntity.ok(updatedBusinessUnit);
-                
-        return ResponseEntity.notFound().build();
+        // if (updatedBusinessUnit != null)
+        return ResponseEntity.ok(updatedBusinessUnit);
+
+        // return ResponseEntity.notFound().build();
 
     }
 
