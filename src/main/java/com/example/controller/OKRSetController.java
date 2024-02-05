@@ -5,7 +5,6 @@ import com.example.service.OKRSetService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -85,9 +84,12 @@ public class OKRSetController {
     @PostMapping
     public ResponseEntity<OKRSet> createOKRSet(@RequestBody @NonNull OKRSet okrSet) {
         OKRSet createdOKRSet = okrSetService.insert(okrSet);
-        Optional<OKRSet> okrSetOptional = okrSetService.findById(createdOKRSet.getUuid());
-        if (okrSetOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(okrSetOptional.get());
+        UUID okrSetUuid = createdOKRSet.getUuid();
+        if (okrSetUuid != null) {
+            Optional<OKRSet> okrSetOptional = okrSetService.findById(okrSetUuid);
+            if (okrSetOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(okrSetOptional.get());
+            }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -96,10 +98,10 @@ public class OKRSetController {
     public ResponseEntity<OKRSet> updateOKRSet(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull OKRSet okrSet) {
         okrSet.setUuid(UUID.fromString(id.toString()));
         OKRSet updatedOKRSet = okrSetService.save(okrSet);
-        if (updatedOKRSet != null) {
+        //if (updatedOKRSet != null) {
             return ResponseEntity.ok(updatedOKRSet);
-        }
-        return ResponseEntity.notFound().build();
+        // }
+        // return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

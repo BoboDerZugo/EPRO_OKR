@@ -38,10 +38,13 @@ public class UnitController {
     @PostMapping
     public ResponseEntity<Unit> createUnit(@RequestBody @NonNull Unit unit) {
         Unit createdUnit = unitService.insert(unit);
-        Optional<Unit> unitOptional = unitService.findById(createdUnit.getUuid());
-        if (unitOptional.isPresent()) {
-            System.out.println("Unit created" + unitOptional.get());
-            return ResponseEntity.status(HttpStatus.CREATED).body(unitOptional.get());
+        UUID unitUuid = createdUnit.getUuid();
+        if (unitUuid != null) {
+            Optional<Unit> unitOptional = unitService.findById(unitUuid);
+            if (unitOptional.isPresent()) {
+                System.out.println("Unit created" + unitOptional.get());
+                return ResponseEntity.status(HttpStatus.CREATED).body(unitOptional.get());
+            }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -50,10 +53,10 @@ public class UnitController {
     public ResponseEntity<Unit> updateUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull Unit unit) {
         unit.setUuid(UUID.fromString(id.toString()));
         Unit updatedUnit = unitService.save(unit);
-        if (updatedUnit != null) {
-            return ResponseEntity.ok(updatedUnit);
-        }
-        return ResponseEntity.notFound().build();
+        // if (updatedUnit != null) {
+        return ResponseEntity.ok(updatedUnit);
+        // }
+        // return ResponseEntity.notFound().build();
 
     }
 

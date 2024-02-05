@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.lang.NonNull;
 
@@ -45,36 +44,42 @@ public class KeyResultController {
     // // ??
     // @GetMapping("/{id}/fullfillment")
     // // Returns the fullfillment of a key result JSON
-    // public ResponseEntity<String> getKeyResultFullfillment(@PathVariable("id") @NonNull UUID id) {
-    //     Optional<KeyResult> keyResult = keyResultService.findById(id);
-    //     if (keyResult.isPresent()) {
-    //         KeyResult keyRes = keyResult.get();
-    //         // JSON String
-    //         /*
-    //          * {
-    //          * "description": "description",
-    //          * "fullfillment": "fullfillment",
-    //          * "goal": "goal",
-    //          * "current": "current",
-    //          * "contributingUnit" : "contributingUnit"
-    //          * 
-    //          * }
-    //          */
-    //         String fullfillment = "{\"description\": \"" + keyRes.getDescription() + "\", \"fullfillment\": \"" +
-    //                 keyRes.getFulfilled() + "\", \"goal\": \"" + keyRes.getGoal() + "\", \"current\": \""
-    //                 + keyRes.getCurrent() + "\"}";
-    //         return ResponseEntity.ok(fullfillment);
-    //     } else {
-    //         return ResponseEntity.notFound().build();
-    //     }
+    // public ResponseEntity<String> getKeyResultFullfillment(@PathVariable("id")
+    // @NonNull UUID id) {
+    // Optional<KeyResult> keyResult = keyResultService.findById(id);
+    // if (keyResult.isPresent()) {
+    // KeyResult keyRes = keyResult.get();
+    // // JSON String
+    // /*
+    // * {
+    // * "description": "description",
+    // * "fullfillment": "fullfillment",
+    // * "goal": "goal",
+    // * "current": "current",
+    // * "contributingUnit" : "contributingUnit"
+    // *
+    // * }
+    // */
+    // String fullfillment = "{\"description\": \"" + keyRes.getDescription() + "\",
+    // \"fullfillment\": \"" +
+    // keyRes.getFulfilled() + "\", \"goal\": \"" + keyRes.getGoal() + "\",
+    // \"current\": \""
+    // + keyRes.getCurrent() + "\"}";
+    // return ResponseEntity.ok(fullfillment);
+    // } else {
+    // return ResponseEntity.notFound().build();
+    // }
     // }
 
     @PostMapping
     public ResponseEntity<KeyResult> createKeyResult(@RequestBody @NonNull KeyResult keyResult) {
         KeyResult createdKeyResult = keyResultService.insert(keyResult);
-        Optional<KeyResult> keyResultOptional = keyResultService.findById(createdKeyResult.getUuid());
-        if (keyResultOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(keyResultOptional.get());
+        UUID keyResultUuid = createdKeyResult.getUuid();
+        if(keyResultUuid != null) {
+            Optional<KeyResult> keyResultOptional = keyResultService.findById(keyResultUuid);
+            if (keyResultOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(keyResultOptional.get());
+            }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -86,10 +91,10 @@ public class KeyResultController {
         keyResultHistoryService.insert(new KeyResultHistory(keyResult));
         keyResult.setUuid(UUID.fromString(id.toString()));
         KeyResult updatedKeyResult = keyResultService.save(keyResult);
-        if (updatedKeyResult != null) {
-            return ResponseEntity.ok(updatedKeyResult);
-        }
-        return ResponseEntity.notFound().build();
+        // if (updatedKeyResult != null) {
+        return ResponseEntity.ok(updatedKeyResult);
+        // }
+        // return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
