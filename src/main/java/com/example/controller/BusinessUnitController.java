@@ -81,7 +81,7 @@ public class BusinessUnitController {
      * @param id The business unit id.
      * @return The response entity containing a set of OKR sets.
      */
-    @GetMapping("/{id}/okr")
+    @GetMapping("/okrset/{id}")
     public ResponseEntity<Set<OKRSet>> getOKRsByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
         if (businessUnit.isPresent()) {
@@ -121,7 +121,7 @@ public class BusinessUnitController {
      * @param okrSet The OKR set to be added.
      * @return The response entity containing the updated business unit.
      */
-    @PostMapping("/{id}/okrset")
+    @PostMapping("/okrset/{id}")
     public ResponseEntity<BusinessUnit> addOKRSetToBusinessUnit(@PathVariable("id") @NonNull UUID id,
                                                                 @RequestBody @NonNull OKRSet okrSet) {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);

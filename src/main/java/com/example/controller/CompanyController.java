@@ -84,7 +84,7 @@ public class CompanyController {
      * @param okrSet  the OKRSet to be added
      * @return ResponseEntity containing the updated company if successful, or a not found response if the company is not found or a bad request response if the company already has 5 OKRSets
      */
-    @PostMapping("/{id}/okrset")
+    @PostMapping("/okrset/{id}")
     public ResponseEntity<Company> addOKRSetToCompany(@PathVariable("id") @NonNull UUID id,
                                                       @RequestBody @NonNull OKRSet okrSet) {
         Optional<Company> company = companyService.findById(id);
