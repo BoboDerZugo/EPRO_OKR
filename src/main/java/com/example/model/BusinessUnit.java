@@ -63,7 +63,7 @@ public class BusinessUnit {
         this.okrSets = okrSets;
     }
 
-    public void addOKRSet(OKRSet okrSet) {
+    public void addOkrSet(OKRSet okrSet) {
         this.okrSets.add(okrSet);
     }
 

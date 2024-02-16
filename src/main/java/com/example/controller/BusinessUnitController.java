@@ -170,7 +170,7 @@ public class BusinessUnitController {
             if (bu.getOkrSets().size() > 4) {
                 return ResponseEntity.badRequest().build();
             }
-            bu.addOKRSet(okrSet);
+            bu.addOkrSet(okrSet);
             BusinessUnit updatedBusinessUnit = businessUnitService.save(bu);
             if (updatedBusinessUnit != null)
                 return ResponseEntity.ok(updatedBusinessUnit);
@@ -213,7 +213,7 @@ public class BusinessUnitController {
             BusinessUnit bu = businessUnit.get();
             bu.getOkrSets().removeIf(okr -> okr.getUuid().equals(okrSetId));
             okrSet.setUuid(okrSetId);
-            bu.addOKRSet(okrSet);
+            bu.addOkrSet(okrSet);
             BusinessUnit updatedBusinessUnit = businessUnitService.save(bu);
             if (updatedBusinessUnit != null)
                 return ResponseEntity.ok(updatedBusinessUnit);

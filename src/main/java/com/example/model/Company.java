@@ -64,7 +64,7 @@ public class Company {
         this.okrSets = okrSets;
     }
 
-    public void addOKRSet(OKRSet okrSet) {
+    public void addOkrSet(OKRSet okrSet) {
         // TODO Auto-generated method stub
         this.okrSets.add(okrSet);
     }

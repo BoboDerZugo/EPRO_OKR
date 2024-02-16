@@ -130,7 +130,7 @@ public class CompanyController {
             if (c.getOkrSets().size() > 4) {
                 return ResponseEntity.badRequest().build();
             }
-            c.addOKRSet(okrSet);
+            c.addOkrSet(okrSet);
             c = companyService.save(c);
             if(c != null)
                 return ResponseEntity.ok(c);
@@ -174,7 +174,7 @@ public class CompanyController {
             Company c = company.get();
             c.getOkrSets().removeIf(okrSet1 -> okrSet1.getUuid().equals(okrSetId));
             okrSet.setUuid(okrSetId);
-            c.addOKRSet(okrSet);
+            c.addOkrSet(okrSet);
             c = companyService.save(c);
             if(c != null)
                 return ResponseEntity.ok(c);
