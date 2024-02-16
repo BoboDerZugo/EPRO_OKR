@@ -74,13 +74,6 @@ public class KeyResultController {
         }
     }
 
-    /**
-     * Create a new Key Result.
-     *
-     * @param keyResult The Key Result to create.
-     * @return The created Key Result if successful, otherwise returns an internal
-     *         server error response.
-     */
     @PostMapping
     public ResponseEntity<KeyResult> createKeyResult(@RequestBody @NonNull KeyResult keyResult,
             @PathVariable("companyId") Optional<UUID> companyId,

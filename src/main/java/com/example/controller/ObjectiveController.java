@@ -40,7 +40,6 @@ public class ObjectiveController {
                 if (okrId.isPresent()) {
                     OKRSet okrSet = okrSetService.findById(okrId.get()).get();
                     Objective objectives = okrSet.getObjective();
-
                     return ResponseEntity.ok(objectives);
                 }
             } else if (okrId.isPresent()) {
@@ -119,8 +118,8 @@ public class ObjectiveController {
                     objective.setUuid(okrSet.getObjective().getUuid());
                     if (AuthorizationService.isAuthorized(company, businessUnit)) {
                         objectiveService.save(objective);
-                        okrSet.setObjective(objective);
-                        okrSetService.save(okrSet);
+                        // okrSet.setObjective(objective);
+                        // okrSetService.save(okrSet);
                         return ResponseEntity.ok(okrSet.getObjective());
                     }
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -130,8 +129,8 @@ public class ObjectiveController {
                 objective.setUuid(okrSet.getObjective().getUuid());
                 if (AuthorizationService.isAuthorized(company, null)) {
                     objectiveService.save(objective);
-                    okrSet.setObjective(objective);
-                    okrSetService.save(okrSet);
+                    // okrSet.setObjective(objective);
+                    // okrSetService.save(okrSet);
                     return ResponseEntity.ok(okrSet.getObjective());
                 }
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -152,7 +151,7 @@ public class ObjectiveController {
                 if (okrId.isPresent()) {
                     OKRSet okrSet = okrSetService.findById(okrId.get()).get();
                     if (AuthorizationService.isAuthorized(company, businessUnit)) {
-                        objectiveService.deleteById(okrSet.getObjective().getUuid());
+                        objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
                         okrSet.setObjective(null);
                         okrSetService.save(okrSet);
                         return ResponseEntity.ok(okrSet.getObjective());
@@ -162,7 +161,7 @@ public class ObjectiveController {
             } else if (okrId.isPresent()) {
                 OKRSet okrSet = okrSetService.findById(okrId.get()).get();
                 if (AuthorizationService.isAuthorized(company, null)) {
-                    objectiveService.deleteById(okrSet.getObjective().getUuid());
+                    objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
                     okrSet.setObjective(null);
                     okrSetService.save(okrSet);
                     return ResponseEntity.ok(okrSet.getObjective());

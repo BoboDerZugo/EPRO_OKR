@@ -102,21 +102,13 @@ public class OKRSetController {
             if (buId.isPresent()) {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
                 if (AuthorizationService.isAuthorized(company, businessUnit)) {
-                    if (businessUnit.getOkrSets().removeIf(okrSet1 -> okrSet1.getUuid().equals(id))) {
-                        okrSet.setUuid(id);
-                        okrSetService.save(okrSet);
-                        businessUnit.addOkrSet(okrSet);
-                        businessUnitService.save(businessUnit);
-                    }
+                    okrSet.setUuid(id);
+                    okrSetService.save(okrSet);
                 }
             } else {
                 if (AuthorizationService.isAuthorized(company, null)) {
-                    if (company.getOkrSets().removeIf(okrSet1 -> okrSet1.getUuid().equals(id))) {
-                        okrSet.setUuid(id);
-                        okrSetService.save(okrSet);
-                        company.addOkrSet(okrSet);
-                        companyService.save(company);
-                    }
+                    okrSet.setUuid(id);
+                    okrSetService.save(okrSet);
                 }
             }
         }
