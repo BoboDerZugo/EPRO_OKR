@@ -2,6 +2,7 @@ package com.example.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -22,10 +23,16 @@ public class SecurityConfig{
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 			.authorizeHttpRequests((authorize) -> authorize
-				.requestMatchers("/example").permitAll()
-                .requestMatchers("/user").permitAll()
-                .requestMatchers("/company").hasRole("CO_ADMIN")
-                .anyRequest().permitAll()
+				.requestMatchers(HttpMethod.GET, "/company/**").hasAnyRole("CO_ADMIN", "BU_ADMIN", "NORMAL")
+                .requestMatchers(HttpMethod.POST, "/company/**").hasAnyRole("CO_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/company/**").hasAnyRole("CO_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/company/**").hasAnyRole("CO_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/company/**/businessunit/**").hasAnyRole("CO_ADMIN", "BU_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/company/**/businessunit/**").hasAnyRole("CO_ADMIN", "BU_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/company/**/businessunit/**").hasAnyRole("CO_ADMIN", "BU_ADMIN")
+                .requestMatchers("/unit/**").hasAnyRole("CO_ADMIN")
+                .requestMatchers("/user/**").hasAnyRole("CO_ADMIN")
+                .anyRequest().hasAnyRole("CO_ADMIN")
 			)
 			.httpBasic(Customizer.withDefaults());
 
