@@ -34,21 +34,19 @@ public class ObjectiveController {
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
 
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            //Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                //BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
                 if (okrId.isPresent()) {
                     OKRSet okrSet = okrSetService.findById(okrId.get()).get();
                     Objective objectives = okrSet.getObjective();
 
-                    return AuthorizationService.isAuthorized(company, businessUnit) ? ResponseEntity.ok(objectives)
-                            : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                    return ResponseEntity.ok(objectives);
                 }
             } else if (okrId.isPresent()) {
                 OKRSet okrSet = okrSetService.findById(okrId.get()).get();
                 Objective objectives = okrSet.getObjective();
-                return AuthorizationService.isAuthorized(company, null) ? ResponseEntity.ok(objectives)
-                        : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return ResponseEntity.ok(objectives);
             }
         }
         return ResponseEntity.notFound().build();
@@ -85,7 +83,7 @@ public class ObjectiveController {
                         return ResponseEntity.status(HttpStatus.CONFLICT).build();
                     }
                     if (AuthorizationService.isAuthorized(company, businessUnit)) {
-                        objectiveService.save(objective);
+                        objectiveService.insert(objective);
                         okrSet.setObjective(objective);
                         okrSetService.save(okrSet);
                         return ResponseEntity.status(HttpStatus.CREATED).body(okrSet.getObjective());
@@ -98,7 +96,7 @@ public class ObjectiveController {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
                 if (AuthorizationService.isAuthorized(company, null)) {
-                    objectiveService.save(objective);
+                    objectiveService.insert(objective);
                     okrSet.setObjective(objective);
                     okrSetService.save(okrSet);
                     return ResponseEntity.status(HttpStatus.CREATED).body(okrSet.getObjective());
