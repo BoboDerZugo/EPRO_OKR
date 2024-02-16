@@ -2,6 +2,7 @@
 
 package com.example.controller;
 
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -10,13 +11,17 @@ import java.util.UUID;
 import com.example.model.BusinessUnit;
 //import com.example.model.User;
 import com.example.service.BusinessUnitService;
+import com.example.service.MyUserDetailsService;
+import com.example.service.MyUserDetailsService.MyUserPrincipal;
 import com.example.model.Unit;
+import com.example.model.User;
 import com.example.model.OKRSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -107,6 +112,9 @@ public class BusinessUnitController {
         if (businessUnit.isPresent()) {
             BusinessUnit bu = businessUnit.get();
             for (OKRSet okrSet : bu.getOkrSets()) {
+                if(okrSet == null){
+                    return ResponseEntity.ok(null);
+                }
                 if (okrSet.getUuid().equals(okrSetId)) {
                     return ResponseEntity.ok(okrSet);
                 }
@@ -143,12 +151,24 @@ public class BusinessUnitController {
      * @param okrSet The OKR set to be added.
      * @return The response entity containing the updated business unit.
      */
-    @PostMapping("/okrset/{id}")
+    @PostMapping("/{id}/okrset")
     public ResponseEntity<BusinessUnit> addOKRSetToBusinessUnit(@PathVariable("id") @NonNull UUID id,
             @RequestBody @NonNull OKRSet okrSet) {
+        //get authenticated user
+        if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof MyUserPrincipal)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+
+        MyUserDetailsService.MyUserPrincipal user = (MyUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User u = user.getUser();
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
         if (businessUnit.isPresent()) {
             BusinessUnit bu = businessUnit.get();
+            //check if user is in the business unit
+            if(bu.getUnits().stream().map(unit -> unit.getEmployeeSet().contains(u)).findAny().orElse(false)){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             if (bu.getOkrSets().size() > 4) {
                 return ResponseEntity.badRequest().build();
             }
