@@ -35,6 +35,14 @@ public class OKRSetController {
     @Autowired
     private BusinessUnitService businessUnitService;
 
+    /**
+     * Retrieves all OKR sets for a given company (and business unit).
+     *
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @return ResponseEntity containing the set of OKR sets if found, or a not
+     *         found response if not
+     */
     @GetMapping
     public ResponseEntity<Set<OKRSet>> getAllOKRSets(@PathVariable("companyId") Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
@@ -69,6 +77,15 @@ public class OKRSetController {
         }
     }
 
+    /**
+     * Create a new OKRSet.
+     *
+     * @param okrSet    the OKRSet to create
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @return ResponseEntity containing the OKRSet if created, or a not authorized
+     *         response
+     */
     @PostMapping
     public ResponseEntity<OKRSet> createOKRSet(@RequestBody @NonNull OKRSet okrSet,
             @PathVariable("companyId") Optional<UUID> companyId,
@@ -93,6 +110,16 @@ public class OKRSetController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    /**
+     * Update an OKRSet.
+     *
+     * @param id        the ID of the OKRSet
+     * @param okrSet    the OKRSet to update
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @return ResponseEntity containing the updated OKRSet if successful, or a not
+     *         authorized response
+     */
     @PutMapping("/{id}")
     public ResponseEntity<OKRSet> updateOKRSet(@PathVariable("id") @NonNull UUID id,
             @RequestBody @NonNull OKRSet okrSet, @PathVariable("companyId") Optional<UUID> companyId,
@@ -115,6 +142,15 @@ public class OKRSetController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    /**
+     * Delete an OKRSet.
+     *
+     * @param id        the ID of the OKRSet
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @return ResponseEntity containing the OKRSet if deleted, or a not authorized
+     *         response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<OKRSet> deleteOKRSet(@PathVariable("id") @NonNull UUID id,
             @PathVariable("companyId") Optional<UUID> companyId,

@@ -29,6 +29,15 @@ public class ObjectiveController {
     @Autowired
     private OKRSetService okrSetService;
 
+    /**
+     * Retrieves all objectives for a given company, (business unit), and OKRSet.
+     *
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @param okrId     the ID of the OKRSet
+     * @return ResponseEntity containing the set of objectives if found, or a not
+     *         found response if not
+     */
     @GetMapping
     public ResponseEntity<Objective> getObjective(@PathVariable("companyId") Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
@@ -68,6 +77,16 @@ public class ObjectiveController {
         }
     }
 
+    /**
+     * Creates a new objective for a given company, (business unit), and OKRSet.
+     *
+     * @param objective the objective to create
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @param okrId     the ID of the OKRSet
+     * @return ResponseEntity containing the created objective if successful, or a
+     *         conflict response if the objective already exists
+     */
     @PostMapping
     public ResponseEntity<Objective> createObjective(@RequestBody @NonNull Objective objective,
             @PathVariable("companyId") Optional<UUID> companyId,
@@ -105,6 +124,16 @@ public class ObjectiveController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    /**
+     * Updates an existing objective for a given company, (business unit),and OKRSet.
+     *
+     * @param objective the updated objective
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @param okrId     the ID of the OKRSet
+     * @return ResponseEntity containing the updated objective if successful, or a
+     *         not found response if the objective does not exist
+     */
     @PutMapping
     public ResponseEntity<Objective> updateObjective(
             @RequestBody @NonNull Objective objective, @PathVariable("companyId") Optional<UUID> companyId,
@@ -140,6 +169,15 @@ public class ObjectiveController {
 
     }
 
+    /**
+     * Deletes an existing objective for a given company, (business unit), and OKRSet.
+     *
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @param okrId     the ID of the OKRSet
+     * @return ResponseEntity containing the deleted objective if successful, or a
+     *         not found response if the objective does not exist
+     */
     @DeleteMapping
     public ResponseEntity<Objective> deleteObjective(
             @PathVariable("companyId") Optional<UUID> companyId,

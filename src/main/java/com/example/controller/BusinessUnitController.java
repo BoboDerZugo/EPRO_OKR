@@ -27,6 +27,12 @@ public class BusinessUnitController {
     @Autowired
     private CompanyService companyService;
 
+    /**
+     * Retrieves all business units for a given company.
+     *
+     * @param companyId The ID of the company.
+     * @return The response entity containing a set of business units.
+     */
     @GetMapping
     public ResponseEntity<Set<BusinessUnit>> getAllBusinessUnits(@PathVariable("companyId") Optional<UUID> companyId) {
         if (companyId.isPresent()) {
@@ -72,6 +78,13 @@ public class BusinessUnitController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Creates a new business unit for a given company.
+     *
+     * @param businessUnit The business unit to be created.
+     * @param companyId    The ID of the company.
+     * @return The response entity containing the created business unit.
+     */
     @PostMapping
     public ResponseEntity<BusinessUnit> createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit,
             @PathVariable("companyId") Optional<UUID> companyId) {
@@ -85,6 +98,14 @@ public class BusinessUnitController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    /**
+     * Updates an existing business unit.
+     *
+     * @param id            The ID of the business unit to be updated.
+     * @param businessUnit  The updated business unit.
+     * @param companyId     The ID of the company.
+     * @return The response entity containing the updated business unit.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id,
             @RequestBody BusinessUnit businessUnit, @PathVariable("companyId") Optional<UUID> companyId) {
@@ -100,6 +121,13 @@ public class BusinessUnitController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    /**
+     * Deletes a business unit.
+     *
+     * @param id            The ID of the business unit to be deleted.
+     * @param companyId     The ID of the company.
+     * @return The response entity containing the deleted business unit.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<BusinessUnit> deleteBusinessUnit(@PathVariable("id") UUID id,
             @PathVariable("companyId") Optional<UUID> companyId) {
