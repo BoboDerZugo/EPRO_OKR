@@ -7,17 +7,13 @@ import com.example.service.AuthorizationService;
 import com.example.service.BusinessUnitService;
 import com.example.service.CompanyService;
 import com.example.service.OKRSetService;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 
