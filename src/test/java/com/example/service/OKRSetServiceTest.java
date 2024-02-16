@@ -21,11 +21,10 @@ public class OKRSetServiceTest {
     OKRSetService okrSetService;
 
     @Test
-    public void KeyResultService_save(){
+    public void OKRSetService_save(){
         //arrange
         User user = new User("John Doe","CO_ADMIN");
-        Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
+        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
         Objective objective = new Objective("test", (short) 4);
         OKRSet okrSet = new OKRSet(objective,keyResult);
         //act
@@ -36,11 +35,11 @@ public class OKRSetServiceTest {
     }
 
     @Test
-    public void KeyResult_findObjective(){
+    public void OKRSetService_findObjective(){
         //arrange
         User user = new User("John Doe","CO_ADMIN");
-        Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
+
+        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
         Objective objective = new Objective("test", (short) 4);
         OKRSet okrSet = new OKRSet(objective,keyResult);
 
@@ -54,11 +53,11 @@ public class OKRSetServiceTest {
     }
 
     @Test
-    public void KeyResult_findByKeyResultsContains(){
+    public void OKRSetService_findByKeyResultsContains(){
         //arrange
         User user = new User("John Doe","CO_ADMIN");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
+        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
         Objective objective = new Objective("test", (short) 4);
         OKRSet okrSet = new OKRSet(objective,keyResult);
 
@@ -69,5 +68,16 @@ public class OKRSetServiceTest {
         //assert
 
         Assertions.assertThat(foundOKRSet.getUuid()).isEqualByComparingTo(savedOKRSet.getUuid());
+    }
+
+    @Test
+    public void OKRSetService_deleteByUuid(){
+        OKRSet okrSet = new OKRSet();
+
+        okrSetService.save(okrSet);
+
+        okrSetService.deleteByUuid(okrSet.getUuid());
+
+        Assertions.assertThat(okrSetService.deleteByUuid(okrSet.getUuid())).isEmpty();
     }
 }

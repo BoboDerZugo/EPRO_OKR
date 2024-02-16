@@ -43,4 +43,14 @@ public class UserServiceTest {
         Assertions.assertThat(hands).doesNotContain(boss);
         //assert
     }
+
+    @Test
+    public void UserService_deleteByUuid(){
+        User user = new User("User","NORMAL");
+        userService.save(user);
+
+        userService.deleteByUuid(user.getUuid());
+
+        Assertions.assertThat(userService.findById(user.getUuid())).isEmpty();
+    }
 }

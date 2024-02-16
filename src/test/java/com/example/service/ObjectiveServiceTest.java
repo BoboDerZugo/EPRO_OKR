@@ -66,11 +66,23 @@ public class ObjectiveServiceTest {
         objectiveService.save(objective3);
         objectiveService.save(objective4);
 
-        Iterable<Objective> objectivesFiltered = objectiveService.findObjectivesByFulfilledGreaterThanEqual((short)2);
+        Iterable<Objective> objectivesFiltered = objectiveService.findObjectivesByFulfilledLessThan((short)2);
 
         //assert
 
         Assertions.assertThat(objectivesFiltered).doesNotContain(objective2,objective3,objective4);
         Assertions.assertThat(objectivesFiltered).contains(objective1);
+    }
+
+    @Test
+    public void ObjectiveService_deleteByUuid(){
+
+        Objective objective = new Objective("Test Objective",(short) 1);
+
+        objectiveService.save(objective);
+
+        objectiveService.deleteByUuid(objective.getUuid());
+
+        Assertions.assertThat(objectiveService.findById(objective.getUuid())).isEmpty();
     }
 }

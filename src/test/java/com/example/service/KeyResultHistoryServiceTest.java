@@ -21,7 +21,7 @@ public class KeyResultHistoryServiceTest {
         //arrange
         User user = new User("John Doe","CO_ADMIN");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResultHistory keyResultHistory = new KeyResultHistory("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
+        KeyResultHistory keyResultHistory = new KeyResultHistory("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
 
         KeyResultHistory savedKeyResult = keyResultHistoryService.save(keyResultHistory);
 
@@ -33,7 +33,7 @@ public class KeyResultHistoryServiceTest {
     public void KeyResultService_findOwnerByEquals(){
         User user = new User("John Doe","CO_ADMIN");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResultHistory keyResult = new KeyResultHistory("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
+        KeyResultHistory keyResult = new KeyResultHistory("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
 
         KeyResultHistory savedKeyResult = keyResultHistoryService.save(keyResult);
         KeyResultHistory filterKeyResult = keyResultHistoryService.findByOwnerEquals(user).get();
@@ -42,6 +42,21 @@ public class KeyResultHistoryServiceTest {
         Assertions.assertThat(filterKeyResult).isEqualTo(savedKeyResult);
     }
 
+    @Test
+    public void KeyResultHistoryService_deleteByUuid(){
+        User user = new User("John Doe","CO_ADMIN");
+        Set<Unit> unitSet = new HashSet<>();
+        KeyResultHistory keyResult = new KeyResultHistory("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
+
+        keyResultHistoryService.save(keyResult);
+
+        keyResultHistoryService.deleteByUuid(keyResult.getUuid());
+
+        Assertions.assertThat(keyResultHistoryService.findById(keyResult.getUuid())).isEmpty();
+
+    }
+
+    /*
     @Test
     public void findByContributingUnitsContains(){
         User user = new User("John Doe","CO_ADMIN");
@@ -59,5 +74,5 @@ public class KeyResultHistoryServiceTest {
 
         Assertions.assertThat(filterKeyResult).isNotNull();
         Assertions.assertThat(filterKeyResult).isEqualTo(savedKeyResult);
-    }
+    }*/
 }

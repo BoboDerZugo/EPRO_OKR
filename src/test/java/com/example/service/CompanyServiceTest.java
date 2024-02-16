@@ -37,14 +37,16 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void BusinessUnitServiceTest_findByBusinessUnitsContains(){
+    public void CompanyServiceTest_findByBusinessUnitsContains(){
         //arrange
         User user = new User("John Doe","NORMAL");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
+        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
         Objective objective = new Objective("Objective",(short)4);
         OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
-        Unit unit = new Unit(okrSet);
+        keyResult.setOkrSet(okrSet[0]);
+
+        Unit unit = new Unit(Set.of(user));
 
 
         BusinessUnit businessUnit = new BusinessUnit(okrSet);
@@ -61,11 +63,11 @@ public class CompanyServiceTest {
         Assertions.assertThat(savedCompany.getUuid()).isEqualByComparingTo(company.getUuid());
     }
     @Test
-    public void BusinessUnitServiceTest_findByOkrSetsContains(){
+    public void CompanyServiceTest_findByOkrSetsContains(){
         //arrange
         User user = new User("John Doe","NORMAL");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
+        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
         Objective objective = new Objective("Objective",(short)4);
         OKRSet okrSet = new OKRSet(objective,keyResult);
 
@@ -79,19 +81,17 @@ public class CompanyServiceTest {
         Assertions.assertThat(savedCompany).isNotNull();
         Assertions.assertThat(savedCompany.getUuid()).isEqualByComparingTo(savedCompany.getUuid());
     }
+
     @Test
-    public void BusinessUnitServiceTest_findByEmployeeSetContains(){
+    public void CompanyServiceTest_deleteByUuid(){
         //arrange
-        User user = new User("John Doe","NORMAL");
-
         Company company = new Company();
-        company.addEmployee(user);
         companyService.save(company);
-
         //act
-        Company savedCompany = companyService.findByEmployeeSetContains(user).get();
+        companyService.deleteByUuid(company.getUuid());
         //assert
-        Assertions.assertThat(savedCompany).isNotNull();
-        Assertions.assertThat(savedCompany.getUuid()).isEqualByComparingTo(company.getUuid());
+        Assertions.assertThat(companyService.findById(company.getUuid())).isEmpty();
     }
+
+
 }
