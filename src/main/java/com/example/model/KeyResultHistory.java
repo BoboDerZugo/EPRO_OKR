@@ -11,7 +11,8 @@ import java.util.UUID;
 @Document(collection = "KeyResultHistory")
 public class KeyResultHistory {
     @Id
-    UUID uuid;
+    private UUID uuid;
+
     @Indexed
     private String name;
     private short fulfilled;
@@ -25,7 +26,6 @@ public class KeyResultHistory {
     // private Set<Unit> contributingUnits;
     @DBRef
     private OKRSet okrSet;
-
 
 
     public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description/*, Set<Unit> contributingUnits*/, OKRSet okrSet) {
@@ -66,7 +66,11 @@ public class KeyResultHistory {
         this.description = keyResult.getDescription();
         //this.contributingUnits = keyResult.getContributingUnits();
     }
-    
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
 
     public String getName() {
         return name;
