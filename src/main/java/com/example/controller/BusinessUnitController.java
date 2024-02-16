@@ -158,8 +158,6 @@ public class BusinessUnitController {
         if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof MyUserPrincipal)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
-
         MyUserDetailsService.MyUserPrincipal user = (MyUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User u = user.getUser();
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);

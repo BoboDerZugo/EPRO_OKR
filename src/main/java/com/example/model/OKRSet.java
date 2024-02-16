@@ -54,4 +54,8 @@ public class OKRSet {
         this.uuid = fromString;
     }
 
+    public void setObjective(Objective objective) {
+        this.objective = objective;
+    }
+
 }
