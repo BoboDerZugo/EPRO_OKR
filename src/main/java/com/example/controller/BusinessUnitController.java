@@ -112,6 +112,8 @@ public class BusinessUnitController {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             businessUnit.setUuid(id);
+            company.getBusinessUnits().forEach(e -> System.out.println(e.getUuid()));
+            System.err.println(businessUnit.getUuid());
             if (company.getBusinessUnits().contains(businessUnit)) {
                 businessUnitService.save(businessUnit);
                 return ResponseEntity.ok(businessUnit);

@@ -20,9 +20,6 @@ import com.example.model.*;
 /**
  * This class represents the controller for managing OKRSet entities.
  */
-/**
- * Controller class for managing OKRSet entities.
- */
 @RestController
 @RequestMapping(value = { "/okrset", "/company/{companyId}/okrset", "/company/{companyId}/businessunit/{buId}/okrset" })
 public class OKRSetController {

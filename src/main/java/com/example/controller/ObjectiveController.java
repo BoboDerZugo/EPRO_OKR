@@ -14,6 +14,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 
+/**
+ * This class represents the controller for managing Objective entities.
+ */
 @RestController
 @RequestMapping(value = { "/objective", "/company/{companyId}/okrset/{okrId}/objective",
         "/company/{companyId}/businessunit/{buId}/okrset/{okrId}/objective" })

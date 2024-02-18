@@ -5,6 +5,7 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -81,4 +82,10 @@ public class BusinessUnit {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
+    }
+
 }
