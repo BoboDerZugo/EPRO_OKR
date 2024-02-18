@@ -45,8 +45,8 @@ public class KeyResultController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<KeyResult>> getAllKeyResults(@PathVariable("companyId") Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
+    public ResponseEntity<List<KeyResult>> getAllKeyResults(@PathVariable("companyId") @NonNull Optional<UUID>  companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
             // Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
@@ -92,8 +92,8 @@ public class KeyResultController {
      */
     @PostMapping
     public ResponseEntity<KeyResult> createKeyResult(@RequestBody @NonNull KeyResult keyResult,
-            @PathVariable("companyId") Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
@@ -141,9 +141,9 @@ public class KeyResultController {
      * @return The updated Key Result if successful, otherwise returns an unauthorized or conflict response.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<KeyResult> updateKeyResult(@PathVariable("id") UUID id,
-            @RequestBody KeyResult keyResult, @PathVariable("companyId") Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
+    public ResponseEntity<KeyResult> updateKeyResult(@PathVariable("id") @NonNull UUID id,
+            @RequestBody @NonNull KeyResult keyResult, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
@@ -190,9 +190,9 @@ public class KeyResultController {
      * @return The deleted Key Result if successful, otherwise returns an unauthorized or conflict response.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<KeyResult> deleteKeyResult(@PathVariable("id") UUID id,
-            @PathVariable("companyId") Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
+    public ResponseEntity<KeyResult> deleteKeyResult(@PathVariable("id") @NonNull UUID id,
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {

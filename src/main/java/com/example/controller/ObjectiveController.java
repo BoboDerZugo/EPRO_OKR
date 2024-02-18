@@ -39,8 +39,8 @@ public class ObjectiveController {
      *         found response if not
      */
     @GetMapping
-    public ResponseEntity<Objective> getObjective(@PathVariable("companyId") Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
+    public ResponseEntity<Objective> getObjective(@PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
 
         if (companyId.isPresent()) {
             //Company company = companyService.findById(companyId.get()).get();
@@ -89,8 +89,8 @@ public class ObjectiveController {
      */
     @PostMapping
     public ResponseEntity<Objective> createObjective(@RequestBody @NonNull Objective objective,
-            @PathVariable("companyId") Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
@@ -136,8 +136,8 @@ public class ObjectiveController {
      */
     @PutMapping
     public ResponseEntity<Objective> updateObjective(
-            @RequestBody @NonNull Objective objective, @PathVariable("companyId") Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
+            @RequestBody @NonNull Objective objective, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
@@ -180,8 +180,8 @@ public class ObjectiveController {
      */
     @DeleteMapping
     public ResponseEntity<Objective> deleteObjective(
-            @PathVariable("companyId") Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") Optional<UUID> okrId) {
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {

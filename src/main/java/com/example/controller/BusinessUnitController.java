@@ -34,7 +34,7 @@ public class BusinessUnitController {
      * @return The response entity containing a set of business units.
      */
     @GetMapping
-    public ResponseEntity<Set<BusinessUnit>> getAllBusinessUnits(@PathVariable("companyId") Optional<UUID> companyId) {
+    public ResponseEntity<Set<BusinessUnit>> getAllBusinessUnits(@PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             Set<BusinessUnit> businessUnits = company.getBusinessUnits();
@@ -87,7 +87,7 @@ public class BusinessUnitController {
      */
     @PostMapping
     public ResponseEntity<BusinessUnit> createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit,
-            @PathVariable("companyId") Optional<UUID> companyId) {
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             businessUnitService.insert(businessUnit);
@@ -108,7 +108,7 @@ public class BusinessUnitController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id,
-            @RequestBody BusinessUnit businessUnit, @PathVariable("companyId") Optional<UUID> companyId) {
+            @RequestBody BusinessUnit businessUnit, @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             if (company.getBusinessUnits().contains(businessUnit)) {
@@ -130,7 +130,7 @@ public class BusinessUnitController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<BusinessUnit> deleteBusinessUnit(@PathVariable("id") UUID id,
-            @PathVariable("companyId") Optional<UUID> companyId) {
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
             Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);

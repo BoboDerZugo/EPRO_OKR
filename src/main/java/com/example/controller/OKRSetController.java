@@ -44,7 +44,7 @@ public class OKRSetController {
      *         found response if not
      */
     @GetMapping
-    public ResponseEntity<Set<OKRSet>> getAllOKRSets(@PathVariable("companyId") Optional<UUID> companyId,
+    public ResponseEntity<Set<OKRSet>> getAllOKRSets(@PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             if (buId.isPresent()) {
@@ -88,7 +88,7 @@ public class OKRSetController {
      */
     @PostMapping
     public ResponseEntity<OKRSet> createOKRSet(@RequestBody @NonNull OKRSet okrSet,
-            @PathVariable("companyId") Optional<UUID> companyId,
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
@@ -122,7 +122,7 @@ public class OKRSetController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<OKRSet> updateOKRSet(@PathVariable("id") @NonNull UUID id,
-            @RequestBody @NonNull OKRSet okrSet, @PathVariable("companyId") Optional<UUID> companyId,
+            @RequestBody @NonNull OKRSet okrSet, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
@@ -154,7 +154,7 @@ public class OKRSetController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<OKRSet> deleteOKRSet(@PathVariable("id") @NonNull UUID id,
-            @PathVariable("companyId") Optional<UUID> companyId,
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
