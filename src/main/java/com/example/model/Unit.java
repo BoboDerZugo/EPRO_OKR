@@ -60,4 +60,15 @@ public class Unit {
     // public void setOkr(OKRSet... okr) {
     //     this.okrSets = Set.of(okr);
     // }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Unit) {
+            Unit other = (Unit) obj;
+            if(this.uuid.equals(other.uuid)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

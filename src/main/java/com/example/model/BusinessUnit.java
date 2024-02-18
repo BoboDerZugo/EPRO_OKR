@@ -70,4 +70,15 @@ public class BusinessUnit {
     public void setUuid(UUID fromString) {
         this.uuid = fromString;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BusinessUnit) {
+            BusinessUnit other = (BusinessUnit) obj;
+            if(this.uuid.equals(other.uuid)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

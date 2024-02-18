@@ -76,5 +76,16 @@ public class User {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            User other = (User) obj;
+            if(this.uuid.equals(other.uuid)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

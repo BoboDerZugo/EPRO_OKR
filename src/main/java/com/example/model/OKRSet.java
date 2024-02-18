@@ -58,4 +58,15 @@ public class OKRSet {
         this.objective = objective;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OKRSet) {
+            OKRSet other = (OKRSet) obj;
+            if(this.uuid.equals(other.uuid)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

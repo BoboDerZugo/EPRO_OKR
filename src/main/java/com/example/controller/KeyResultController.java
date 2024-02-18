@@ -207,7 +207,7 @@ public class KeyResultController {
                             okrSetService.save(okrSet);
                             return ResponseEntity.ok(keyResult);
                         }
-                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                     }
                 }
             } else if (okrId.isPresent()) {
@@ -220,7 +220,7 @@ public class KeyResultController {
                         okrSetService.save(okrSet);
                         return ResponseEntity.ok(keyResult);
                     }
-                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             }
         }
