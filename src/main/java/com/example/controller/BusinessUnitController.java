@@ -1,18 +1,14 @@
 //Busines Unit Controller
-
 package com.example.controller;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
 import com.example.model.BusinessUnit;
-//import com.example.model.User;
+import com.example.model.Company;
 import com.example.service.BusinessUnitService;
+import com.example.service.CompanyService;
 import com.example.model.Unit;
-import com.example.model.OKRSet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,21 +19,28 @@ import org.springframework.web.bind.annotation.*;
  * This class represents the controller for managing business units.
  */
 @RestController
-@RequestMapping("/businessunit")
+@RequestMapping(value = { "/businessunit", "/company/{companyId}/businessunit" })
 public class BusinessUnitController {
 
     @Autowired
     private BusinessUnitService businessUnitService;
+    @Autowired
+    private CompanyService companyService;
 
     /**
-     * Retrieves all business units.
+     * Retrieves all business units for a given company.
      *
-     * @return The response entity containing a list of business units.
+     * @param companyId The ID of the company.
+     * @return The response entity containing a set of business units.
      */
     @GetMapping
-    public ResponseEntity<List<BusinessUnit>> getAllBusinessUnits() {
-        List<BusinessUnit> businessUnits = businessUnitService.findAll();
-        return ResponseEntity.ok(businessUnits);
+    public ResponseEntity<Set<BusinessUnit>> getAllBusinessUnits(@PathVariable("companyId") @NonNull Optional<UUID> companyId) {
+        if (companyId.isPresent()) {
+            Company company = companyService.findById(companyId.get()).get();
+            Set<BusinessUnit> businessUnits = company.getBusinessUnits();
+            return ResponseEntity.ok(businessUnits);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -46,7 +49,7 @@ public class BusinessUnitController {
      * @param id The business unit id.
      * @return The response entity containing a set of units.
      */
-    @GetMapping("/units/{id}")
+    @GetMapping("/{id}/units")
     public ResponseEntity<Set<Unit>> getUnitsByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
         Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
         if (businessUnit.isPresent()) {
@@ -76,103 +79,74 @@ public class BusinessUnitController {
     }
 
     /**
-     * Retrieves OKR sets by business unit id.
-     *
-     * @param id The business unit id.
-     * @return The response entity containing a set of OKR sets.
-     */
-    @GetMapping("/{id}/okr")
-    public ResponseEntity<Set<OKRSet>> getOKRsByBusinessUnitId(@PathVariable("id") @NonNull UUID id) {
-        Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
-        if (businessUnit.isPresent()) {
-            Set<OKRSet> okrSets = businessUnit.get().getOkrSets();
-            if (okrSets != null) {
-                return ResponseEntity.ok(okrSets);
-            }
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    /**
-     * Creates a new business unit.
+     * Creates a new business unit for a given company.
      *
      * @param businessUnit The business unit to be created.
+     * @param companyId    The ID of the company.
      * @return The response entity containing the created business unit.
      */
     @PostMapping
-    public ResponseEntity<BusinessUnit> createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit) {
-        BusinessUnit createdBusinessUnit = businessUnitService.insert(businessUnit);
-        UUID businessUnitUuid = createdBusinessUnit.getUuid();
-        if (businessUnitUuid != null) {
-            Optional<BusinessUnit> businessUnitOptional = businessUnitService.findById(businessUnitUuid);
-            if (businessUnitOptional.isPresent()) {
-                BusinessUnit bu = businessUnitOptional.get();
-                if (bu != null)
-                    return ResponseEntity.status(HttpStatus.CREATED).body(bu);
-            }
+    public ResponseEntity<BusinessUnit> createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit,
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
+        if (companyId.isPresent()) {
+            Company company = companyService.findById(companyId.get()).get();
+            businessUnitService.insert(businessUnit);
+            company.addBusinessUnit(businessUnit);
+            companyService.save(company);
+            return ResponseEntity.status(HttpStatus.CREATED).body(businessUnit);
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     /**
-     * Adds an OKR set to a business unit.
+     * Updates an existing business unit.
      *
-     * @param id     The business unit id.
-     * @param okrSet The OKR set to be added.
-     * @return The response entity containing the updated business unit.
-     */
-    @PostMapping("/{id}/okrset")
-    public ResponseEntity<BusinessUnit> addOKRSetToBusinessUnit(@PathVariable("id") @NonNull UUID id,
-                                                                @RequestBody @NonNull OKRSet okrSet) {
-        Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
-        if (businessUnit.isPresent()) {
-            BusinessUnit bu = businessUnit.get();
-            if (bu.getOkrSets().size() > 4) {
-                return ResponseEntity.badRequest().build();
-            }
-            bu.addOKRSet(okrSet);
-            BusinessUnit updatedBusinessUnit = businessUnitService.save(bu);
-            if (updatedBusinessUnit != null)
-                return ResponseEntity.ok(updatedBusinessUnit);
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    /**
-     * Updates a business unit.
-     *
-     * @param id            The business unit id.
+     * @param id            The ID of the business unit to be updated.
      * @param businessUnit  The updated business unit.
+     * @param companyId     The ID of the company.
      * @return The response entity containing the updated business unit.
      */
     @PutMapping("/{id}")
     public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id,
-                                                            @RequestBody BusinessUnit businessUnit) {
-        businessUnit.setUuid(UUID.fromString(id.toString()));
-        BusinessUnit updatedBusinessUnit = businessUnitService.save(businessUnit);
-        updatedBusinessUnit = businessUnitService.findById(id).get();
-        // if (updatedBusinessUnit != null)
-        return ResponseEntity.ok(updatedBusinessUnit);
-
-        // return ResponseEntity.notFound().build();
-
+            @RequestBody BusinessUnit businessUnit, @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
+        if (companyId.isPresent()) {
+            Company company = companyService.findById(companyId.get()).get();
+            if (company.getBusinessUnits().contains(businessUnit)) {
+                businessUnit.setUuid(id);
+                businessUnitService.save(businessUnit);
+                return ResponseEntity.ok(businessUnit);
+            }
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     /**
      * Deletes a business unit.
      *
-     * @param id The business unit id.
+     * @param id            The ID of the business unit to be deleted.
+     * @param companyId     The ID of the company.
      * @return The response entity containing the deleted business unit.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<BusinessUnit> deleteBusinessUnit(@PathVariable("id") UUID id) {
-        Optional<BusinessUnit> businessUnitToDelete = businessUnitService.deleteByUuid(id);
-        if (businessUnitToDelete.isPresent()) {
-            BusinessUnit deletedBusinessUnit = businessUnitToDelete.get();
-            if (deletedBusinessUnit != null)
-                return ResponseEntity.ok(deletedBusinessUnit);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<BusinessUnit> deleteBusinessUnit(@PathVariable("id") UUID id,
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
+        if (companyId.isPresent()) {
+            Company company = companyService.findById(companyId.get()).get();
+            Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
+            if (businessUnit.isPresent()) {
+                if (company.getBusinessUnits().contains(businessUnit.get())) {
+                    company.getBusinessUnits().remove(businessUnit.get());
+                    companyService.save(company);
+                    businessUnitService.delete(businessUnit.get());
+                    return ResponseEntity.ok(businessUnit.get());
+                }
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+            return ResponseEntity.notFound().build();
 
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
 }

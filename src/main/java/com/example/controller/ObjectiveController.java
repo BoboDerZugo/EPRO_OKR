@@ -1,10 +1,11 @@
 package com.example.controller;
 
+import com.example.service.AuthorizationService;
+import com.example.service.BusinessUnitService;
+import com.example.service.CompanyService;
+import com.example.service.OKRSetService;
 import com.example.service.ObjectiveService;
-
-import java.util.List;
 import java.util.UUID;
-
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,29 +15,57 @@ import org.springframework.web.bind.annotation.*;
 import com.example.model.*;
 
 @RestController
-@RequestMapping("/objective")
+@RequestMapping(value = { "/objective", "/company/{companyId}/okrset/{okrId}/objective",
+        "/company/{companyId}/businessunit/{buId}/okrset/{okrId}/objective" })
 public class ObjectiveController {
 
     // CRUD operations for Objectives
     @Autowired
     private ObjectiveService objectiveService;
+    @Autowired
+    private BusinessUnitService businessUnitService;
+    @Autowired
+    private CompanyService companyService;
+    @Autowired
+    private OKRSetService okrSetService;
 
     /**
-     * Retrieves all objectives.
+     * Retrieves all objectives for a given company, (business unit), and OKRSet.
      *
-     * @return ResponseEntity containing a list of objectives
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @param okrId     the ID of the OKRSet
+     * @return ResponseEntity containing the set of objectives if found, or a not
+     *         found response if not
      */
     @GetMapping
-    public ResponseEntity<List<Objective>> getAllObjectives() {
-        List<Objective> objectives = objectiveService.findAll();
-        return ResponseEntity.ok(objectives);
+    public ResponseEntity<Objective> getObjective(@PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+
+        if (companyId.isPresent()) {
+            //Company company = companyService.findById(companyId.get()).get();
+            if (buId.isPresent()) {
+                //BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                if (okrId.isPresent()) {
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    Objective objectives = okrSet.getObjective();
+                    return ResponseEntity.ok(objectives);
+                }
+            } else if (okrId.isPresent()) {
+                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                Objective objectives = okrSet.getObjective();
+                return ResponseEntity.ok(objectives);
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
     /**
      * Retrieves an objective by its ID.
      *
      * @param id the ID of the objective to retrieve
-     * @return ResponseEntity containing the objective if found, or a not found response if not
+     * @return ResponseEntity containing the objective if found, or a not found
+     *         response if not
      */
     @GetMapping("/{id}")
     public ResponseEntity<Objective> getObjectiveById(@PathVariable("id") @NonNull UUID id) {
@@ -49,56 +78,138 @@ public class ObjectiveController {
     }
 
     /**
-     * Creates a new objective.
+     * Creates a new objective for a given company, (business unit), and OKRSet.
      *
      * @param objective the objective to create
-     * @return ResponseEntity containing the created objective if successful, or an internal server error response if not
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @param okrId     the ID of the OKRSet
+     * @return ResponseEntity containing the created objective if successful, or a
+     *         conflict response if the objective already exists
      */
     @PostMapping
-    public ResponseEntity<Objective> createObjective(@RequestBody @NonNull Objective objective) {
-        Objective createdObjective = objectiveService.insert(objective);
-        UUID uuid = createdObjective.getUuid();
-        if (uuid != null) {
-            Optional<Objective> newObjective = objectiveService.findById(uuid);
-            if (newObjective.isPresent()) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(newObjective.get());
+    public ResponseEntity<Objective> createObjective(@RequestBody @NonNull Objective objective,
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        if (companyId.isPresent()) {
+            Company company = companyService.findById(companyId.get()).get();
+            if (buId.isPresent()) {
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                if (okrId.isPresent()) {
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    if (okrSet.getObjective() != null) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                    }
+                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                        objectiveService.insert(objective);
+                        okrSet.setObjective(objective);
+                        okrSetService.save(okrSet);
+                        return ResponseEntity.status(HttpStatus.CREATED).body(okrSet.getObjective());
+                    }
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+            } else if (okrId.isPresent()) {
+                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                if (okrSet.getObjective() != null) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                }
+                if (AuthorizationService.isAuthorized(company, null, null)) {
+                    objectiveService.insert(objective);
+                    okrSet.setObjective(objective);
+                    okrSetService.save(okrSet);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(okrSet.getObjective());
+                }
             }
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     /**
-     * Updates an existing objective.
+     * Updates an existing objective for a given company, (business unit),and OKRSet.
      *
-     * @param id        the ID of the objective to update
      * @param objective the updated objective
-     * @return ResponseEntity containing the updated objective if successful, or a not found response if not
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @param okrId     the ID of the OKRSet
+     * @return ResponseEntity containing the updated objective if successful, or a
+     *         not found response if the objective does not exist
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Objective> updateObjective(@PathVariable("id") UUID id,
-                                                     @RequestBody @NonNull Objective objective) {
-        objective.setUuid(UUID.fromString(id.toString()));
-        Objective updatedObjective = objectiveService.save(objective);
-        updatedObjective = objectiveService.findById(id).get();
-        // if (updatedObjective != null) {
-        return ResponseEntity.ok(updatedObjective);
-        // }
-        // return ResponseEntity.notFound().build();
+    @PutMapping
+    public ResponseEntity<Objective> updateObjective(
+            @RequestBody @NonNull Objective objective, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        if (companyId.isPresent()) {
+            Company company = companyService.findById(companyId.get()).get();
+            if (buId.isPresent()) {
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                if (okrId.isPresent()) {
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    objective.setUuid(okrSet.getObjective().getUuid());
+                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                        objectiveService.save(objective);
+                        // okrSet.setObjective(objective);
+                        // okrSetService.save(okrSet);
+                        return ResponseEntity.ok(objective);
+                    }
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+            } else if (okrId.isPresent()) {
+                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                objective.setUuid(okrSet.getObjective().getUuid());
+                if (AuthorizationService.isAuthorized(company, null, null)) {
+                    objectiveService.save(objective);
+                    // okrSet.setObjective(objective);
+                    // okrSetService.save(okrSet);
+                    return ResponseEntity.ok(objective);
+                }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
     }
 
     /**
-     * Deletes an objective by its ID.
+     * Deletes an existing objective for a given company, (business unit), and OKRSet.
      *
-     * @param id the ID of the objective to delete
-     * @return ResponseEntity containing the deleted objective if found, or a not found response if not
+     * @param companyId the ID of the company
+     * @param buId      the ID of the business unit
+     * @param okrId     the ID of the OKRSet
+     * @return ResponseEntity containing the deleted objective if successful, or a
+     *         not found response if the objective does not exist
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Objective> deleteObjective(@PathVariable("id") @NonNull UUID id) {
-        Optional<Objective> objectiveToDelete = objectiveService.deleteByUuid(id);
-        if (objectiveToDelete.isPresent()) {
-            return ResponseEntity.ok(objectiveToDelete.get());
-        } else {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping
+    public ResponseEntity<Objective> deleteObjective(
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        if (companyId.isPresent()) {
+            Company company = companyService.findById(companyId.get()).get();
+            if (buId.isPresent()) {
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                if (okrId.isPresent()) {
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    Objective objective = okrSet.getObjective();
+                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                        objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
+                        okrSet.setObjective(null);
+                        okrSetService.save(okrSet);
+                        return ResponseEntity.ok(objective);
+                    }
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+            } else if (okrId.isPresent()) {
+                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                Objective objective = okrSet.getObjective();
+                if (AuthorizationService.isAuthorized(company, null, null)) {
+                    objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
+                    okrSet.setObjective(null);
+                    okrSetService.save(okrSet);
+                    return ResponseEntity.ok(objective);
+                }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
     }
 }

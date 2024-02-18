@@ -54,4 +54,19 @@ public class OKRSet {
         this.uuid = fromString;
     }
 
+    public void setObjective(Objective objective) {
+        this.objective = objective;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OKRSet) {
+            OKRSet other = (OKRSet) obj;
+            if(this.uuid.equals(other.uuid)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

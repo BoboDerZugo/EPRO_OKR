@@ -6,9 +6,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserService extends MongoRepository<User, UUID> {
+public interface UserService extends MongoRepository<User, UUID>{
 
     Iterable<User> findByRoleEquals(User.Role role);
+
+    Optional<User> findByName(String name);
 
     Optional<User> deleteByUuid(UUID id);
 }

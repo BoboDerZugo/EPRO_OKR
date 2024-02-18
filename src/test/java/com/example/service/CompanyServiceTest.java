@@ -72,7 +72,7 @@ public class CompanyServiceTest {
         OKRSet okrSet = new OKRSet(objective,keyResult);
 
         Company company = new Company();
-        company.addOKRSet(okrSet);
+        company.addOkrSet(okrSet);
         companyService.save(company);
 
         //act

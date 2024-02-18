@@ -19,7 +19,6 @@ public class KeyResultHistory {
     private double current;
     private double goal;
     private double confidence;
-    private User owner;
     private String statusUpdate;
     private String description;
     // @DBRef
@@ -28,27 +27,26 @@ public class KeyResultHistory {
     private OKRSet okrSet;
 
 
-    public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description/*, Set<Unit> contributingUnits*/, OKRSet okrSet) {
+
+    public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, String statusUpdate, String description/*, Set<Unit> contributingUnits*/, OKRSet okrSet) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.fulfilled = fulfilled;
         this.current = current;
         this.goal = goal;
         this.confidence = confidence;
-        this.owner = owner;
         this.statusUpdate = statusUpdate;
         this.description = description;
         //this.contributingUnits = contributingUnits;
     }
 
-    public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, User owner, String statusUpdate, String description/*, Set<Unit> contributingUnits*/) {
+    public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, String statusUpdate, String description/*, Set<Unit> contributingUnits*/) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.fulfilled = fulfilled;
         this.current = current;
         this.goal = goal;
         this.confidence = confidence;
-        this.owner = owner;
         this.statusUpdate = statusUpdate;
         this.description = description;
         //this.contributingUnits = contributingUnits;
@@ -61,7 +59,6 @@ public class KeyResultHistory {
         this.current = keyResult.getCurrent();
         this.goal = keyResult.getGoal();
         this.confidence = keyResult.getConfidence();
-        this.owner = keyResult.getOwner();
         this.statusUpdate = keyResult.getStatusUpdate();
         this.description = keyResult.getDescription();
         //this.contributingUnits = keyResult.getContributingUnits();
@@ -92,9 +89,6 @@ public class KeyResultHistory {
         return confidence;
     }
 
-    public User getOwner() {
-        return owner;
-    }
 
     public String getStatusUpdate() {
         return statusUpdate;
@@ -135,5 +129,16 @@ public class KeyResultHistory {
     // public void addContributingUnit(Unit u){
     //     this.contributingUnits.add(u);
     // }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof KeyResultHistory) {
+            KeyResultHistory other = (KeyResultHistory) obj;
+            if(this.uuid.equals(other.uuid)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
