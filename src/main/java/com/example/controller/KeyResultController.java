@@ -101,7 +101,7 @@ public class KeyResultController {
                 if (okrId.isPresent()) {
                     OKRSet okrSet = okrSetService.findById(okrId.get()).get();
                     if (okrSet.getKeyResults().size() < 5) {
-                        if (AuthorizationService.isAuthorized(company, businessUnit)) {
+                        if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                             KeyResult createdKeyResult = keyResultService.insert(keyResult);
                             keyResultHistoryService.insert(new KeyResultHistory(createdKeyResult));
                             okrSet.getKeyResults().add(createdKeyResult);
@@ -115,7 +115,7 @@ public class KeyResultController {
             } else if (okrId.isPresent()) {
                 OKRSet okrSet = okrSetService.findById(okrId.get()).get();
                 if (okrSet.getKeyResults().size() < 5) {
-                    if (AuthorizationService.isAuthorized(company, null)) {
+                    if (AuthorizationService.isAuthorized(company, null, null)) {
                         KeyResult createdKeyResult = keyResultService.insert(keyResult);
                         keyResultHistoryService.insert(new KeyResultHistory(createdKeyResult));
                         okrSet.getKeyResults().add(createdKeyResult);
@@ -150,7 +150,7 @@ public class KeyResultController {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
                 if (okrId.isPresent()) {
                     OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                    if (AuthorizationService.isAuthorized(company, businessUnit)) {
+                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                         UUID oldId = keyResult.getUuid();
                         keyResult.setUuid(id);
                         if (okrSet.getKeyResults().contains(keyResult)) {
@@ -164,7 +164,7 @@ public class KeyResultController {
                 }
             } else if (okrId.isPresent()) {
                 OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                if (AuthorizationService.isAuthorized(company, null)) {
+                if (AuthorizationService.isAuthorized(company, null, null)) {
                     UUID oldId = keyResult.getUuid();
                     keyResult.setUuid(id);
                     if (okrSet.getKeyResults().contains(keyResult)) {
@@ -199,7 +199,7 @@ public class KeyResultController {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
                 if (okrId.isPresent()) {
                     OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                    if (AuthorizationService.isAuthorized(company, businessUnit)) {
+                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                         KeyResult keyResult = keyResultService.findById(id).get();
                         if (okrSet.getKeyResults().contains(keyResult)) {
                             keyResultService.delete(keyResult);
@@ -212,7 +212,7 @@ public class KeyResultController {
                 }
             } else if (okrId.isPresent()) {
                 OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                if (AuthorizationService.isAuthorized(company, null)) {
+                if (AuthorizationService.isAuthorized(company, null, null)) {
                     KeyResult keyResult = keyResultService.findById(id).get();
                     if (okrSet.getKeyResults().contains(keyResult)) {
                         keyResultService.delete(keyResult);

@@ -3,6 +3,7 @@ package com.example.service;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.example.model.BusinessUnit;
 import com.example.model.Company;
+import com.example.model.OKRSet;
 import com.example.model.User;
 import com.example.service.MyUserDetailsService.MyUserPrincipal;
 
@@ -16,7 +17,7 @@ public class AuthorizationService {
      * @param businessUnit The business unit.
      * @return True if the user is authorized, false otherwise.
      */
-    public static boolean isAuthorized(Company company, BusinessUnit businessUnit) {
+    public static boolean isAuthorized(Company company, BusinessUnit businessUnit, OKRSet okrSet) {
         // get authenticated user
         if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof MyUserPrincipal)) {
             return false;
@@ -42,9 +43,14 @@ public class AuthorizationService {
             //Check if user is part of the business unit
             if (businessUnit.getUnits().stream().map(unit -> unit.getEmployeeSet().contains(user)).findAny()
                     .orElse(false)) {
+                //check if okrSet is part of the business unit
+                if(okrSet != null){
+                    return businessUnit.getOkrSets().contains(okrSet);
+                }
                 return true;
             }
         }
+
         return false;
     }
 }

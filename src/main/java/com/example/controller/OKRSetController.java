@@ -94,13 +94,13 @@ public class OKRSetController {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                if (AuthorizationService.isAuthorized(company, businessUnit)) {
+                if (AuthorizationService.isAuthorized(company, businessUnit, null)) {
                     okrSetService.insert(okrSet);
                     businessUnit.addOkrSet(okrSet);
                     businessUnitService.save(businessUnit);
                 }
             } else {
-                if (AuthorizationService.isAuthorized(company, null)) {
+                if (AuthorizationService.isAuthorized(company, null, null)) {
                     okrSetService.insert(okrSet);
                     company.addOkrSet(okrSet);
                     companyService.save(company);
@@ -128,12 +128,13 @@ public class OKRSetController {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                if (AuthorizationService.isAuthorized(company, businessUnit)) {
+                OKRSet okrSetToUpdate = okrSetService.findById(id).get();
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSetToUpdate)) {
                     okrSet.setUuid(id);
                     okrSetService.save(okrSet);
                 }
             } else {
-                if (AuthorizationService.isAuthorized(company, null)) {
+                if (AuthorizationService.isAuthorized(company, null, null)) {
                     okrSet.setUuid(id);
                     okrSetService.save(okrSet);
                 }
@@ -159,16 +160,17 @@ public class OKRSetController {
             Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                if (AuthorizationService.isAuthorized(company, businessUnit)) {
-                    if (businessUnit.getOkrSets().removeIf(okrSet -> okrSet.getUuid().equals(id))) {
+                OKRSet okrSet = okrSetService.findById(id).get();
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                    if (businessUnit.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         okrSetService.deleteByUuid(id);
                         businessUnitService.save(businessUnit);
                         return ResponseEntity.ok().build();
                     }
                 }
             } else {
-                if (AuthorizationService.isAuthorized(company, null)) {
-                    if (company.getOkrSets().removeIf(okrSet -> okrSet.getUuid().equals(id))) {
+                if (AuthorizationService.isAuthorized(company, null, null)) {
+                    if (company.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         okrSetService.deleteByUuid(id);
                         companyService.save(company);
                         return ResponseEntity.ok().build();

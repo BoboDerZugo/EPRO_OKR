@@ -13,12 +13,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-
+/**
+ * This class represents the security configuration for the application.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
 
-
+    /**
+     * This method creates a security filter chain bean.
+     * @param http
+     * @return The security filter chain.
+     * @throws Exception
+     */
     @SuppressWarnings("removal")
     @Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,6 +47,12 @@ public class SecurityConfig{
 		return http.build();
 	}
 
+    /**
+     * This method creates an authentication manager bean.
+     * @param userDetailsService
+     * @param passwordEncoder
+     * @return The authentication manager.
+     */
     @Bean
 	public AuthenticationManager authenticationManager(
 			UserDetailsService userDetailsService,
@@ -51,11 +64,10 @@ public class SecurityConfig{
 		return new ProviderManager(authenticationProvider);
 	}
 
-    // @Bean
-	// public MyUserDetailsService customUserDetailsService() {
-    //     return new MyUserDetailsService();
-	// }
-
+    /**
+     * This method creates a password encoder bean.
+     * @return The password encoder.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoder() {
