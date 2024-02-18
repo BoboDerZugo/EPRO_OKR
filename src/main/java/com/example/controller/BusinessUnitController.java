@@ -111,8 +111,8 @@ public class BusinessUnitController {
             @RequestBody BusinessUnit businessUnit, @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get()).get();
+            businessUnit.setUuid(id);
             if (company.getBusinessUnits().contains(businessUnit)) {
-                businessUnit.setUuid(id);
                 businessUnitService.save(businessUnit);
                 return ResponseEntity.ok(businessUnit);
             }
