@@ -37,6 +37,7 @@ public class OKRSetController {
      *
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
+     * @throws IllegalArgumentException if the company or business unit is not found
      * @return ResponseEntity containing the set of OKR sets if found, or a not
      *         found response if not
      */
@@ -45,11 +46,13 @@ public class OKRSetController {
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElseThrow(() -> new IllegalArgumentException("Business unit not found"));
                 Set<OKRSet> okrSets = businessUnit.getOkrSets();
                 return ResponseEntity.ok(okrSets);
             } else {
-                Company company = companyService.findById(companyId.get()).get();
+                Company company = companyService.findById(companyId.get())
+                        .orElseThrow(() -> new IllegalArgumentException("Company not found"));
                 Set<OKRSet> okrSets = company.getOkrSets();
                 return ResponseEntity.ok(okrSets);
             }
@@ -80,6 +83,7 @@ public class OKRSetController {
      * @param okrSet    the OKRSet to create
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
+     * @throws IllegalArgumentException if the company or business unit is not found
      * @return ResponseEntity containing the OKRSet if created, or a not authorized
      *         response
      */
@@ -88,9 +92,11 @@ public class OKRSetController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get())
+                    .orElseThrow(() -> new IllegalArgumentException("Company not found"));
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElseThrow(() -> new IllegalArgumentException("Business unit not found"));
                 if (AuthorizationService.isAuthorized(company, businessUnit, null)) {
                     okrSetService.insert(okrSet);
                     businessUnit.addOkrSet(okrSet);
@@ -116,7 +122,8 @@ public class OKRSetController {
      * @param id        the ID of the OKRSet
      * @param okrSet    the OKRSet to update
      * @param companyId the ID of the company
-     * @param buId      the ID of the business unit
+     * @param buId      the ID of the business Unit
+     * @throws IllegalArgumentException if the company or business unit is not found
      * @return ResponseEntity containing the updated OKRSet if successful, or a not
      *         authorized response
      */
@@ -125,9 +132,11 @@ public class OKRSetController {
             @RequestBody @NonNull OKRSet okrSet, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get())
+                    .orElseThrow(() -> new IllegalArgumentException("Company not found"));
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElseThrow(() -> new IllegalArgumentException("Business unit not found"));
                 OKRSet okrSetToUpdate = okrSetService.findById(id).get();
                 if (AuthorizationService.isAuthorized(company, businessUnit, okrSetToUpdate)) {
                     okrSet.setUuid(id);
@@ -151,6 +160,7 @@ public class OKRSetController {
      * @param id        the ID of the OKRSet
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
+     * @throws IllegalArgumentException if the company or business unit is not found
      * @return ResponseEntity containing the OKRSet if deleted, or a not authorized
      *         response
      */
@@ -159,10 +169,13 @@ public class OKRSetController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get())
+                    .orElseThrow(() -> new IllegalArgumentException("Company not found"));
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                OKRSet okrSet = okrSetService.findById(id).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElseThrow(() -> new IllegalArgumentException("Business unit not found"));
+                OKRSet okrSet = okrSetService.findById(id)
+                        .orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                 if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                     if (businessUnit.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         okrSetService.deleteByUuid(id);
@@ -173,7 +186,8 @@ public class OKRSetController {
             } else {
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     company.getOkrSets().forEach(okr -> System.out.println(okr.getUuid()));
-                    OKRSet okrSet = okrSetService.findById(id).get();
+                    OKRSet okrSet = okrSetService.findById(id)
+                            .orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                     if (company.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         System.err.println("OKRSet removed from company");
                         okrSetService.deleteByUuid(id);

@@ -38,6 +38,7 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
+     * @throws IllegalArgumentException if the OKRSet is not found
      * @return ResponseEntity containing the set of objectives if found, or a not
      *         found response if not
      */
@@ -50,12 +51,12 @@ public class ObjectiveController {
             if (buId.isPresent()) {
                 //BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                     Objective objectives = okrSet.getObjective();
                     return ResponseEntity.ok(objectives);
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                 Objective objectives = okrSet.getObjective();
                 return ResponseEntity.ok(objectives);
             }
@@ -87,6 +88,7 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found
      * @return ResponseEntity containing the created objective if successful, or a
      *         conflict response if the objective already exists
      */
@@ -95,11 +97,11 @@ public class ObjectiveController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                     if (okrSet.getObjective() != null) {
                         return ResponseEntity.status(HttpStatus.CONFLICT).build();
                     }
@@ -112,7 +114,7 @@ public class ObjectiveController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                 if (okrSet.getObjective() != null) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
@@ -134,6 +136,7 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found
      * @return ResponseEntity containing the updated objective if successful, or a
      *         not found response if the objective does not exist
      */
@@ -142,11 +145,11 @@ public class ObjectiveController {
             @RequestBody @NonNull Objective objective, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                     objective.setUuid(okrSet.getObjective().getUuid());
                     if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                         objectiveService.save(objective);
@@ -157,7 +160,7 @@ public class ObjectiveController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                 objective.setUuid(okrSet.getObjective().getUuid());
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     objectiveService.save(objective);
@@ -178,6 +181,7 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found
      * @return ResponseEntity containing the deleted objective if successful, or a
      *         not found response if the objective does not exist
      */
@@ -186,11 +190,11 @@ public class ObjectiveController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                     Objective objective = okrSet.getObjective();
                     if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                         objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
@@ -201,7 +205,7 @@ public class ObjectiveController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
                 Objective objective = okrSet.getObjective();
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
