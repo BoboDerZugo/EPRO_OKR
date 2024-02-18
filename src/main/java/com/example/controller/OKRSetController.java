@@ -98,12 +98,15 @@ public class OKRSetController {
                     okrSetService.insert(okrSet);
                     businessUnit.addOkrSet(okrSet);
                     businessUnitService.save(businessUnit);
+                    return ResponseEntity.ok(okrSet);
                 }
             } else {
+                System.out.println(AuthorizationService.isAuthorized(company, null, null));
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     okrSetService.insert(okrSet);
                     company.addOkrSet(okrSet);
                     companyService.save(company);
+                    return ResponseEntity.ok(okrSet);
                 }
             }
         }
@@ -132,11 +135,13 @@ public class OKRSetController {
                 if (AuthorizationService.isAuthorized(company, businessUnit, okrSetToUpdate)) {
                     okrSet.setUuid(id);
                     okrSetService.save(okrSet);
+                    return ResponseEntity.ok(okrSet);
                 }
             } else {
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     okrSet.setUuid(id);
                     okrSetService.save(okrSet);
+                    return ResponseEntity.ok(okrSet);
                 }
             }
         }
@@ -165,15 +170,18 @@ public class OKRSetController {
                     if (businessUnit.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         okrSetService.deleteByUuid(id);
                         businessUnitService.save(businessUnit);
-                        return ResponseEntity.ok().build();
+                        return ResponseEntity.ok(okrSet);
                     }
                 }
             } else {
                 if (AuthorizationService.isAuthorized(company, null, null)) {
+                    company.getOkrSets().forEach(okr -> System.out.println(okr.getUuid()));
+                    OKRSet okrSet = okrSetService.findById(id).get();
                     if (company.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
+                        System.err.println("OKRSet removed from company");
                         okrSetService.deleteByUuid(id);
                         companyService.save(company);
-                        return ResponseEntity.ok().build();
+                        return ResponseEntity.ok(okrSet);
                     }
                 }
             }
