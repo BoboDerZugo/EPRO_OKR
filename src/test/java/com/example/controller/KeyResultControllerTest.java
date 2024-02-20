@@ -3,7 +3,6 @@ package com.example.controller;
 import com.example.model.BusinessUnit;
 import com.example.model.Company;
 import com.example.model.KeyResult;
-import com.example.model.MyUserPrincipal;
 import com.example.model.OKRSet;
 import com.example.model.Objective;
 import com.example.model.Unit;
@@ -21,7 +20,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.*;
@@ -84,6 +82,7 @@ public class KeyResultControllerTest {
 
     @Test
     public void testGetAllKeyResults_CompanyBuOkrFound() {
+        // Arrange
         when(companyService.findById(company.getUuid())).thenReturn(Optional.of(company));
         when(businessUnitService.findById(businessUnit.getUuid())).thenReturn(Optional.of(businessUnit));
         when(okrSetService.findById(okrSet.getUuid())).thenReturn(Optional.of(okrSet));

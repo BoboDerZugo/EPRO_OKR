@@ -47,9 +47,9 @@ public class ObjectiveController {
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
 
         if (companyId.isPresent()) {
-            //Company company = companyService.findById(companyId.get()).get();
+            // Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
-                //BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                // BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
                 if (okrId.isPresent()) {
                     OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
                     if (okrSet == null) {
@@ -94,7 +94,8 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
+     *                                  not found
      * @return ResponseEntity containing the created objective if successful, or a
      *         conflict response if the objective already exists
      */
@@ -102,59 +103,57 @@ public class ObjectiveController {
     public ResponseEntity<Objective> createObjective(@RequestBody @NonNull Objective objective,
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        boolean isAuthorized = false;
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElse(null);
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
             if (company == null) {
                 return ResponseEntity.notFound().build();
             }
+            OKRSet okrSet = okrId.isPresent() ? okrSetService.findById(okrId.get()).orElse(null) : null;
+            if (okrSet == null) {
+                return ResponseEntity.notFound().build();
+            }
+            // Check if the user is authorized to create a key result for the given company,
+            // business unit, and OKRSet
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElse(null);
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
                 if (businessUnit == null) {
                     return ResponseEntity.notFound().build();
                 }
-                if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
-                    if (okrSet == null) {
-                        return ResponseEntity.notFound().build();
-                    }
-                    if (okrSet.getObjective() != null) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
-                    }
-                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
-                        objectiveService.insert(objective);
-                        okrSet.setObjective(objective);
-                        okrSetService.save(okrSet);
-                        return ResponseEntity.status(HttpStatus.CREATED).body(okrSet.getObjective());
-                    }
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                    isAuthorized = true;
                 }
-            } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
-                if (okrSet == null) {
-                    return ResponseEntity.notFound().build();
-                }
+            }
+            // CO Admins can change any OKRSet
+            else if (AuthorizationService.isAuthorized(company, null, null)) {
+                isAuthorized = true;
+            }
+            if (isAuthorized) {
                 if (okrSet.getObjective() != null) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
-                if (AuthorizationService.isAuthorized(company, null, null)) {
-                    objectiveService.insert(objective);
-                    okrSet.setObjective(objective);
-                    okrSetService.save(okrSet);
-                    return ResponseEntity.status(HttpStatus.CREATED).body(okrSet.getObjective());
-                }
+                objectiveService.insert(objective);
+                okrSet.setObjective(objective);
+                okrSetService.save(okrSet);
+                return ResponseEntity.status(HttpStatus.CREATED).body(okrSet.getObjective());
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
     }
 
     /**
-     * Updates an existing objective for a given company, (business unit),and OKRSet.
+     * Updates an existing objective for a given company, (business unit),and
+     * OKRSet.
      *
      * @param objective the updated objective
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
+     *                                  not found
      * @return ResponseEntity containing the updated objective if successful, or a
      *         not found response if the objective does not exist
      */
@@ -162,56 +161,53 @@ public class ObjectiveController {
     public ResponseEntity<Objective> updateObjective(
             @RequestBody @NonNull Objective objective, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        boolean isAuthorized = false;
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElse(null);
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
             if (company == null) {
                 return ResponseEntity.notFound().build();
             }
+            OKRSet okrSet = okrId.isPresent() ? okrSetService.findById(okrId.get()).orElse(null) : null;
+            if (okrSet == null) {
+                return ResponseEntity.notFound().build();
+            }
+            // Check if the user is authorized to create a key result for the given company,
+            // business unit, and OKRSet
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElse(null);
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
                 if (businessUnit == null) {
                     return ResponseEntity.notFound().build();
                 }
-                if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
-                    if (okrSet == null) {
-                        return ResponseEntity.notFound().build();
-                    }
-                    objective.setUuid(okrSet.getObjective().getUuid());
-                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
-                        objectiveService.save(objective);
-                        // okrSet.setObjective(objective);
-                        // okrSetService.save(okrSet);
-                        return ResponseEntity.ok(objective);
-                    }
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                    isAuthorized = true;
                 }
-            } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
-                if (okrSet == null) {
-                    return ResponseEntity.notFound().build();
-                }
-                objective.setUuid(okrSet.getObjective().getUuid());
-                if (AuthorizationService.isAuthorized(company, null, null)) {
-                    objectiveService.save(objective);
-                    // okrSet.setObjective(objective);
-                    // okrSetService.save(okrSet);
-                    return ResponseEntity.ok(objective);
-                }
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
+            // CO Admins can change any OKRSet
+            else if (AuthorizationService.isAuthorized(company, null, null)) {
+                isAuthorized = true;
+            }
+            if (isAuthorized) {
+                objective.setUuid(okrSet.getObjective().getUuid());
+                objectiveService.save(objective);
+                return ResponseEntity.ok(objective);
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
     }
 
     /**
-     * Deletes an existing objective for a given company, (business unit), and OKRSet.
+     * Deletes an existing objective for a given company, (business unit), and
+     * OKRSet.
      *
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
+     *                                  not found
      * @return ResponseEntity containing the deleted objective if successful, or a
      *         not found response if the objective does not exist
      */
@@ -219,45 +215,43 @@ public class ObjectiveController {
     public ResponseEntity<Objective> deleteObjective(
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        boolean isAuthorized = false;
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElse(null);
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
             if (company == null) {
                 return ResponseEntity.notFound().build();
             }
+            OKRSet okrSet = okrId.isPresent() ? okrSetService.findById(okrId.get()).orElse(null) : null;
+            if (okrSet == null) {
+                return ResponseEntity.notFound().build();
+            }
+            // Check if the user is authorized to create a key result for the given company,
+            // business unit, and OKRSet
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElse(null);
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
                 if (businessUnit == null) {
                     return ResponseEntity.notFound().build();
                 }
-                if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
-                    if (okrSet == null) {
-                        return ResponseEntity.notFound().build();
-                    }
-                    Objective objective = okrSet.getObjective();
-                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
-                        objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
-                        okrSet.setObjective(null);
-                        okrSetService.save(okrSet);
-                        return ResponseEntity.ok(objective);
-                    }
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                    isAuthorized = true;
                 }
-            } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
-                if (okrSet != null) {
-                    return ResponseEntity.notFound().build();
-                }
-                Objective objective = okrSet.getObjective();
-                if (AuthorizationService.isAuthorized(company, null, null)) {
-                    objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
-                    okrSet.setObjective(null);
-                    okrSetService.save(okrSet);
-                    return ResponseEntity.ok(objective);
-                }
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
+            // CO Admins can change any OKRSet
+            else if (AuthorizationService.isAuthorized(company, null, null)) {
+                isAuthorized = true;
+            }
+            if (isAuthorized) {
+                Objective objective = okrSet.getObjective();
+                objectiveService.deleteByUuid(objective.getUuid());
+                okrSet.setObjective(null);
+                okrSetService.save(okrSet);
+                return ResponseEntity.ok(objective);
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
     }
