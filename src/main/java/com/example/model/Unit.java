@@ -29,6 +29,8 @@ public class Unit {
     @JsonCreator
     public Unit() {
         this.uuid = UUID.randomUUID();
+        Set<User> employeeSet = Set.of();
+        this.employeeSet = employeeSet;
     }
 
     // public Unit(OKRSet[] okr) {
@@ -70,5 +72,10 @@ public class Unit {
             }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 }

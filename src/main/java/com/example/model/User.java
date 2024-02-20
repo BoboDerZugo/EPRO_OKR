@@ -31,6 +31,7 @@ public class User {
     @JsonCreator
     public User() {
         this.uuid = UUID.randomUUID();
+        this.role = Role.NORMAL;
     }
 
     
@@ -85,6 +86,11 @@ public class User {
             }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 
 

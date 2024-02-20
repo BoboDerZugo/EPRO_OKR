@@ -47,12 +47,18 @@ public class OKRSetController {
         if (companyId.isPresent()) {
             if (buId.isPresent()) {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get())
-                        .orElseThrow(() -> new IllegalArgumentException("Business unit not found"));
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 Set<OKRSet> okrSets = businessUnit.getOkrSets();
                 return ResponseEntity.ok(okrSets);
             } else {
                 Company company = companyService.findById(companyId.get())
-                        .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+                        .orElse(null);
+                if (company == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 Set<OKRSet> okrSets = company.getOkrSets();
                 return ResponseEntity.ok(okrSets);
             }
@@ -93,10 +99,16 @@ public class OKRSetController {
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get())
-                    .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get())
-                        .orElseThrow(() -> new IllegalArgumentException("Business unit not found"));
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (AuthorizationService.isAuthorized(company, businessUnit, null)) {
                     okrSetService.insert(okrSet);
                     businessUnit.addOkrSet(okrSet);
@@ -133,10 +145,16 @@ public class OKRSetController {
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get())
-                    .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+                    .orElse(null);
+                    if (company == null) {
+                        return ResponseEntity.notFound().build();
+                    }
             if (buId.isPresent()) {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get())
-                        .orElseThrow(() -> new IllegalArgumentException("Business unit not found"));
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 OKRSet okrSetToUpdate = okrSetService.findById(id).get();
                 if (AuthorizationService.isAuthorized(company, businessUnit, okrSetToUpdate)) {
                     okrSet.setUuid(id);
@@ -170,12 +188,18 @@ public class OKRSetController {
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get())
-                    .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
                 BusinessUnit businessUnit = businessUnitService.findById(buId.get())
-                        .orElseThrow(() -> new IllegalArgumentException("Business unit not found"));
+                        .orElse(null);
                 OKRSet okrSet = okrSetService.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                        .orElse(null);
+                if (businessUnit == null || okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                     if (businessUnit.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         okrSetService.deleteByUuid(id);
@@ -187,7 +211,10 @@ public class OKRSetController {
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     company.getOkrSets().forEach(okr -> System.out.println(okr.getUuid()));
                     OKRSet okrSet = okrSetService.findById(id)
-                            .orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                            .orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     if (company.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         System.err.println("OKRSet removed from company");
                         okrSetService.deleteByUuid(id);

@@ -42,8 +42,10 @@ public class KeyResultController {
      * @param companyId
      * @param buId
      * @param okrId
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found.
-     * @return A list of Key Results if successful, otherwise returns a not found response.
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
+     *                                  not found.
+     * @return A list of Key Results if successful, otherwise returns a not found
+     *         response.
      */
     @GetMapping
     public ResponseEntity<List<KeyResult>> getAllKeyResults(
@@ -53,13 +55,19 @@ public class KeyResultController {
             if (buId.isPresent()) {
                 if (okrId.isPresent()) {
                     OKRSet okrSet = okrSetService.findById(okrId.get())
-                            .orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                            .orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     List<KeyResult> keyResults = okrSet.getKeyResults();
                     return ResponseEntity.ok(keyResults);
                 }
             } else if (okrId.isPresent()) {
                 OKRSet okrSet = okrSetService.findById(okrId.get())
-                        .orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                        .orElse(null);
+                if (okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 List<KeyResult> keyResults = okrSet.getKeyResults();
                 return ResponseEntity.ok(keyResults);
             }
@@ -90,7 +98,8 @@ public class KeyResultController {
      * @param companyId The ID of the company.
      * @param buId      The ID of the business unit.
      * @param okrId     The ID of the OKRSet.
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found.
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
+     *                                  not found.
      * @return The created Key Result if successful, otherwise returns an
      *         unauthorized or conflict response.
      */
@@ -98,39 +107,42 @@ public class KeyResultController {
     public ResponseEntity<KeyResult> createKeyResult(@RequestBody @NonNull KeyResult keyResult,
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        boolean isAuthorized = false;
         if (companyId.isPresent()) {
             Company company = companyService.findById(companyId.get())
-                    .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
+            OKRSet okrSet = okrId.isPresent() ? okrSetService.findById(okrId.get()).orElse(null) : null;
+            if (okrSet == null) {
+                return ResponseEntity.notFound().build();
+            }
+            //Check if the user is authorized to create a key result for the given company, business unit, and OKRSet
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
-                if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
-                    if (okrSet.getKeyResults().size() < 5) {
-                        if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
-                            KeyResult createdKeyResult = keyResultService.insert(keyResult);
-                            keyResultHistoryService.insert(new KeyResultHistory(createdKeyResult));
-                            okrSet.getKeyResults().add(createdKeyResult);
-                            okrSetService.save(okrSet);
-                            return ResponseEntity.status(HttpStatus.CREATED).body(keyResult);
-                        }
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                    }
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                    isAuthorized = true;
+                }
+            }
+            //CO Admins can change any OKRSet
+            else
+            if (AuthorizationService.isAuthorized(company, null, null)) {
+                isAuthorized = true;
+            }
+            if (isAuthorized) {
+                KeyResult createdKeyResult = keyResultService.insert(keyResult);
+                if(!okrSet.addKeyResult(createdKeyResult)){
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
-            } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
-                if (okrSet.getKeyResults().size() < 5) {
-                    if (AuthorizationService.isAuthorized(company, null, null)) {
-                        KeyResult createdKeyResult = keyResultService.insert(keyResult);
-                        keyResultHistoryService.insert(new KeyResultHistory(createdKeyResult));
-                        okrSet.getKeyResults().add(createdKeyResult);
-                        okrSetService.save(okrSet);
-                        return ResponseEntity.status(HttpStatus.CREATED).body(keyResult);
-                    }
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                }
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                okrSetService.save(okrSet);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdKeyResult);
             }
+            //return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
@@ -143,7 +155,8 @@ public class KeyResultController {
      * @param companyId The ID of the company.
      * @param buId      The ID of the business unit.
      * @param okrId     The ID of the OKRSet.
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found.
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
+     *                                  not found.
      * @return The updated Key Result if successful, otherwise returns an
      *         unauthorized or conflict response.
      */
@@ -152,11 +165,23 @@ public class KeyResultController {
             @RequestBody @NonNull KeyResult keyResult, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                    OKRSet okrSet = okrSetService.findById(okrId.get())
+                            .orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                         UUID oldId = keyResult.getUuid();
                         keyResult.setUuid(id);
@@ -170,7 +195,11 @@ public class KeyResultController {
                     }
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                OKRSet okrSet = okrSetService.findById(okrId.get())
+                        .orElse(null);
+                if (okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     UUID oldId = keyResult.getUuid();
                     keyResult.setUuid(id);
@@ -193,8 +222,9 @@ public class KeyResultController {
      * @param id        The ID of the Key Result to delete.
      * @param companyId The ID of the company.
      * @param buId      The ID of the business unit.
-     * @param okrId     The ID of the OKRSet.   
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is not found.
+     * @param okrId     The ID of the OKRSet.
+     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
+     *                                  not found.
      * @return The deleted Key Result if successful, otherwise returns an
      *         unauthorized or conflict response.
      */
@@ -203,13 +233,29 @@ public class KeyResultController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                    OKRSet okrSet = okrSetService.findById(okrId.get())
+                            .orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
-                        KeyResult keyResult = keyResultService.findById(id).orElseThrow(() -> new IllegalArgumentException("Key Result not found"));
+                        KeyResult keyResult = keyResultService.findById(id)
+                                .orElse(null);
+                        if (keyResult == null) {
+                            return ResponseEntity.notFound().build();
+                        }
                         if (okrSet.getKeyResults().contains(keyResult)) {
                             keyResultService.delete(keyResult);
                             okrSet.getKeyResults().remove(keyResult);
@@ -220,9 +266,17 @@ public class KeyResultController {
                     }
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                OKRSet okrSet = okrSetService.findById(okrId.get())
+                        .orElse(null);
+                if (okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (AuthorizationService.isAuthorized(company, null, null)) {
-                    KeyResult keyResult = keyResultService.findById(id).orElseThrow(() -> new IllegalArgumentException("Key Result not found"));
+                    KeyResult keyResult = keyResultService.findById(id)
+                            .orElse(null);
+                    if (keyResult == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     if (okrSet.getKeyResults().contains(keyResult)) {
                         keyResultService.delete(keyResult);
                         okrSet.getKeyResults().remove(keyResult);

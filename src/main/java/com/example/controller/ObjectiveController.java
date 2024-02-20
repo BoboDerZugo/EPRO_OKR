@@ -51,12 +51,18 @@ public class ObjectiveController {
             if (buId.isPresent()) {
                 //BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     Objective objectives = okrSet.getObjective();
                     return ResponseEntity.ok(objectives);
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
+                if (okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 Objective objectives = okrSet.getObjective();
                 return ResponseEntity.ok(objectives);
             }
@@ -97,11 +103,20 @@ public class ObjectiveController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get()).orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     if (okrSet.getObjective() != null) {
                         return ResponseEntity.status(HttpStatus.CONFLICT).build();
                     }
@@ -114,7 +129,10 @@ public class ObjectiveController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
+                if (okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (okrSet.getObjective() != null) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
@@ -145,11 +163,20 @@ public class ObjectiveController {
             @RequestBody @NonNull Objective objective, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get()).orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     objective.setUuid(okrSet.getObjective().getUuid());
                     if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                         objectiveService.save(objective);
@@ -160,7 +187,10 @@ public class ObjectiveController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
+                if (okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 objective.setUuid(okrSet.getObjective().getUuid());
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     objectiveService.save(objective);
@@ -190,11 +220,20 @@ public class ObjectiveController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get()).orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElseThrow(() -> new IllegalArgumentException("Business Unit not found"));
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                    OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     Objective objective = okrSet.getObjective();
                     if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                         objectiveService.deleteByUuid(okrSet.getObjective().getUuid());
@@ -205,7 +244,10 @@ public class ObjectiveController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).orElseThrow(() -> new IllegalArgumentException("OKRSet not found"));
+                OKRSet okrSet = okrSetService.findById(okrId.get()).orElse(null);
+                if (okrSet != null) {
+                    return ResponseEntity.notFound().build();
+                }
                 Objective objective = okrSet.getObjective();
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     objectiveService.deleteByUuid(okrSet.getObjective().getUuid());

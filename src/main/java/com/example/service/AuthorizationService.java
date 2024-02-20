@@ -1,11 +1,14 @@
 package com.example.service;
 
+import java.util.Set;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.example.model.BusinessUnit;
 import com.example.model.Company;
+import com.example.model.MyUserPrincipal;
 import com.example.model.OKRSet;
 import com.example.model.User;
-import com.example.service.MyUserDetailsService.MyUserPrincipal;
+
 
 public class AuthorizationService {
 
@@ -22,7 +25,7 @@ public class AuthorizationService {
         if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof MyUserPrincipal)) {
             return false;
         }
-        MyUserDetailsService.MyUserPrincipal u = (MyUserPrincipal) SecurityContextHolder.getContext()
+        MyUserPrincipal u = (MyUserPrincipal) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
         User user = u.getUser();
 
@@ -41,16 +44,23 @@ public class AuthorizationService {
                 return false;
             }
             //Check if user is part of the business unit
-            if (businessUnit.getUnits().stream().map(unit -> unit.getEmployeeSet().contains(user)).findAny()
-                    .orElse(false)) {
+            Boolean contains = false;
+            Set<com.example.model.Unit> units = businessUnit.getUnits();
+            for (com.example.model.Unit unit : units) {
+                if (unit.getEmployeeSet().contains(user)) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (contains) {
                 //check if okrSet is part of the business unit
                 if(okrSet != null){
                     return businessUnit.getOkrSets().contains(okrSet);
                 }
-                return true;
+                return false;
             }
         }
-
+        
         return false;
     }
 }

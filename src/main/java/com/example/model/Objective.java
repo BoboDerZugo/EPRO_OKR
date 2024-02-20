@@ -52,4 +52,9 @@ public class Objective {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }

@@ -144,4 +144,10 @@ public class KeyResult {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+    
 }

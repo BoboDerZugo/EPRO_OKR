@@ -83,4 +83,9 @@ public class Company {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }

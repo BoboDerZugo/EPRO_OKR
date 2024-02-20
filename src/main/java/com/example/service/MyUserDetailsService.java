@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.model.MyUserPrincipal;
 import com.example.model.User;
 
 @Service
@@ -28,52 +29,4 @@ public class MyUserDetailsService implements UserDetailsService {
         return new MyUserPrincipal(user);
     }
 
-    public class MyUserPrincipal implements UserDetails {
-        private User user;
-
-        public MyUserPrincipal(User user) {
-            this.user = user;
-        }
-
-        public User getUser() {
-            return user;
-        }
-
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            String role = user.getRole();
-            return List.of(new SimpleGrantedAuthority("ROLE_" + role));
-        }
-
-
-        @Override
-        public String getPassword() {
-            return user.getPassword();
-        }
-
-        @Override
-        public String getUsername() {
-            return user.getName();
-        }
-
-        @Override
-        public boolean isAccountNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isAccountNonLocked() {
-            return true;
-        }
-
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
-    }
 }

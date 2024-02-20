@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 @Document(collection = "OKRSet")
@@ -30,12 +31,18 @@ public class OKRSet {
     @JsonCreator
     public OKRSet() {
         this.uuid = UUID.randomUUID();
+        List<KeyResult> keyResults = new ArrayList<>();
+        this.keyResults = keyResults;
     }
 
     public OKRSet(Objective objective, KeyResult... keyResults) {
         this.uuid = UUID.randomUUID();
         this.objective = objective;
-        this.keyResults = List.of(keyResults);
+        List<KeyResult> keyResultList = new ArrayList<>();
+        for (KeyResult keyResult : keyResults) {
+            keyResultList.add(keyResult);
+        }
+        this.keyResults = keyResultList; 
     }
 
     public UUID getUuid() {
@@ -58,6 +65,12 @@ public class OKRSet {
         this.objective = objective;
     }
 
+    public boolean addKeyResult(KeyResult keyResult) {
+        if(keyResults.size() < 5)
+            return keyResults.add(keyResult);
+        return false;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof OKRSet) {
@@ -67,6 +80,11 @@ public class OKRSet {
             }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 
 }

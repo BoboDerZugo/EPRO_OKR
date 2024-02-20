@@ -136,4 +136,9 @@ public class KeyResultHistory {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+    
 }

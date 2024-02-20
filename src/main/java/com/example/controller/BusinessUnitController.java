@@ -37,7 +37,10 @@ public class BusinessUnitController {
     @GetMapping
     public ResponseEntity<Set<BusinessUnit>> getAllBusinessUnits(@PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get()).orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             Set<BusinessUnit> businessUnits = company.getBusinessUnits();
             return ResponseEntity.ok(businessUnits);
         }
@@ -91,7 +94,10 @@ public class BusinessUnitController {
     public ResponseEntity<BusinessUnit> createBusinessUnit(@RequestBody @NonNull BusinessUnit businessUnit,
             @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get()).orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             businessUnitService.insert(businessUnit);
             company.addBusinessUnit(businessUnit);
             companyService.save(company);
@@ -113,15 +119,16 @@ public class BusinessUnitController {
     public ResponseEntity<BusinessUnit> updateBusinessUnit(@PathVariable("id") @NonNull UUID id,
             @RequestBody BusinessUnit businessUnit, @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get()).orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             businessUnit.setUuid(id);
-            company.getBusinessUnits().forEach(e -> System.out.println(e.getUuid()));
-            System.err.println(businessUnit.getUuid());
             if (company.getBusinessUnits().contains(businessUnit)) {
                 businessUnitService.save(businessUnit);
                 return ResponseEntity.ok(businessUnit);
             }
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
@@ -137,7 +144,10 @@ public class BusinessUnitController {
     public ResponseEntity<BusinessUnit> deleteBusinessUnit(@PathVariable("id") UUID id,
             @PathVariable("companyId") @NonNull Optional<UUID> companyId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).orElseThrow(() -> new IllegalArgumentException("Company not found"));
+            Company company = companyService.findById(companyId.get()).orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             Optional<BusinessUnit> businessUnit = businessUnitService.findById(id);
             if (businessUnit.isPresent()) {
                 if (company.getBusinessUnits().contains(businessUnit.get())) {
@@ -146,7 +156,6 @@ public class BusinessUnitController {
                     businessUnitService.delete(businessUnit.get());
                     return ResponseEntity.ok(businessUnit.get());
                 }
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
             return ResponseEntity.notFound().build();
 
