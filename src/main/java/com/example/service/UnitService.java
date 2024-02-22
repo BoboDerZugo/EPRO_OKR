@@ -9,7 +9,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UnitService extends MongoRepository<Unit, UUID> {
+
+    /**
+     * Searches for a Unit containing a certain user
+     * @param user
+     * @return Optional containing a Unit containing user or NULL
+     */
     Optional<Unit> findByEmployeeSetContains(User user);
     //Optional<Unit> findByOkrSetsContains(OKRSet okrSet);
+    /**
+     * Deletes Unit corresponding to the given ID
+     * @param id
+     * @return Optonal containing the deleted Unit or NULL
+     */
     Optional<Unit> deleteByUuid(UUID id);
 }
