@@ -15,6 +15,13 @@ public interface UserService extends MongoRepository<User, UUID> {
      */
     Iterable<User> findByRoleEquals(User.Role role);
     /**
+     * Find User with corresponding name
+     *
+     * @param name
+     * @return Optional containing User matching name or NULL
+     */
+    Optional<User> findByName(String name);
+    /**
      * Deletes User corresponding to the given ID
      * @param id
      * @return Optonal containing the deleted User or NULL
