@@ -38,7 +38,6 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
-     * @throws IllegalArgumentException if the OKRSet is not found
      * @return ResponseEntity containing the set of objectives if found, or a not
      *         found response if not
      */
@@ -94,8 +93,6 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
-     *                                  not found
      * @return ResponseEntity containing the created objective if successful, or a
      *         conflict response if the objective already exists
      */
@@ -152,8 +149,6 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
-     *                                  not found
      * @return ResponseEntity containing the updated objective if successful, or a
      *         not found response if the objective does not exist
      */
@@ -206,8 +201,6 @@ public class ObjectiveController {
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
      * @param okrId     the ID of the OKRSet
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
-     *                                  not found
      * @return ResponseEntity containing the deleted objective if successful, or a
      *         not found response if the objective does not exist
      */

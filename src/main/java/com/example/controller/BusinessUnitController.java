@@ -31,7 +31,6 @@ public class BusinessUnitController {
      * Retrieves all business units for a given company.
      *
      * @param companyId The ID of the company.
-     * @throws IllegalArgumentException If the company is not found.
      * @return The response entity containing a set of business units.
      */
     @GetMapping
@@ -87,7 +86,6 @@ public class BusinessUnitController {
      *
      * @param businessUnit The business unit to be created.
      * @param companyId    The ID of the company.
-     * @throws IllegalArgumentException If the company is not found.
      * @return The response entity containing the created business unit.
      */
     @PostMapping
@@ -112,7 +110,6 @@ public class BusinessUnitController {
      * @param id            The ID of the business unit to be updated.
      * @param businessUnit  The updated business unit.
      * @param companyId     The ID of the company.
-     * @throws IllegalArgumentException If the company is not found.
      * @return The response entity containing the updated business unit.
      */
     @PutMapping("/{id}")

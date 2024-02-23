@@ -58,8 +58,8 @@ public class UserController {
         @PostMapping
         public ResponseEntity<User> createUser(@RequestBody @NonNull User user) {
                 User createdUser = userService.insert(user);
-                UUID userUuid = createdUser.getUuid();
-                if(userUuid != null) {
+                if (createdUser != null) {
+                        UUID userUuid = createdUser.getUuid();
                         Optional<User> userOptional = userService.findById(userUuid);
                         if (userOptional.isPresent()) {
                                 return ResponseEntity.status(HttpStatus.CREATED).body(userOptional.get());
@@ -79,10 +79,10 @@ public class UserController {
         public ResponseEntity<User> updateUser(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull User user) {
                 user.setUuid(UUID.fromString(id.toString()));
                 User updatedUser = userService.save(user);
-                // if (updatedUser != null) {
-                return ResponseEntity.ok(updatedUser);
-                // }
-                // return ResponseEntity.notFound().build();
+                if (updatedUser != null) {
+                        return ResponseEntity.ok(updatedUser);
+                }
+                return ResponseEntity.notFound().build();
         }
 
         /**

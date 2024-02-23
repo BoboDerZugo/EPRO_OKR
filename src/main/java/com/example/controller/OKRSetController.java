@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,6 @@ public class OKRSetController {
      *
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
-     * @throws IllegalArgumentException if the company or business unit is not found
      * @return ResponseEntity containing the set of OKR sets if found, or a not
      *         found response if not
      */
@@ -89,7 +89,6 @@ public class OKRSetController {
      * @param okrSet    the OKRSet to create
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
-     * @throws IllegalArgumentException if the company or business unit is not found
      * @return ResponseEntity containing the OKRSet if created, or a not authorized
      *         response
      */
@@ -109,19 +108,18 @@ public class OKRSetController {
                 if (businessUnit == null) {
                     return ResponseEntity.notFound().build();
                 }
-                if (AuthorizationService.isAuthorized(company, businessUnit, null)) {
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                     okrSetService.insert(okrSet);
                     businessUnit.addOkrSet(okrSet);
                     businessUnitService.save(businessUnit);
-                    return ResponseEntity.ok(okrSet);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(okrSet);
                 }
             } else {
-                System.out.println(AuthorizationService.isAuthorized(company, null, null));
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     okrSetService.insert(okrSet);
                     company.addOkrSet(okrSet);
                     companyService.save(company);
-                    return ResponseEntity.ok(okrSet);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(okrSet);
                 }
             }
         }
@@ -135,7 +133,6 @@ public class OKRSetController {
      * @param okrSet    the OKRSet to update
      * @param companyId the ID of the company
      * @param buId      the ID of the business Unit
-     * @throws IllegalArgumentException if the company or business unit is not found
      * @return ResponseEntity containing the updated OKRSet if successful, or a not
      *         authorized response
      */
@@ -155,7 +152,10 @@ public class OKRSetController {
                 if (businessUnit == null) {
                     return ResponseEntity.notFound().build();
                 }
-                OKRSet okrSetToUpdate = okrSetService.findById(id).get();
+                OKRSet okrSetToUpdate = okrSetService.findById(id).orElse(null);
+                if (okrSetToUpdate == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (AuthorizationService.isAuthorized(company, businessUnit, okrSetToUpdate)) {
                     okrSet.setUuid(id);
                     okrSetService.save(okrSet);
@@ -178,7 +178,6 @@ public class OKRSetController {
      * @param id        the ID of the OKRSet
      * @param companyId the ID of the company
      * @param buId      the ID of the business unit
-     * @throws IllegalArgumentException if the company or business unit is not found
      * @return ResponseEntity containing the OKRSet if deleted, or a not authorized
      *         response
      */
@@ -209,7 +208,6 @@ public class OKRSetController {
                 }
             } else {
                 if (AuthorizationService.isAuthorized(company, null, null)) {
-                    company.getOkrSets().forEach(okr -> System.out.println(okr.getUuid()));
                     OKRSet okrSet = okrSetService.findById(id)
                             .orElse(null);
                     if (okrSet == null) {

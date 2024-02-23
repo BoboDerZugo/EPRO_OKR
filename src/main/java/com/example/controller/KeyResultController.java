@@ -42,8 +42,6 @@ public class KeyResultController {
      * @param companyId
      * @param buId
      * @param okrId
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
-     *                                  not found.
      * @return A list of Key Results if successful, otherwise returns a not found
      *         response.
      */
@@ -98,8 +96,6 @@ public class KeyResultController {
      * @param companyId The ID of the company.
      * @param buId      The ID of the business unit.
      * @param okrId     The ID of the OKRSet.
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
-     *                                  not found.
      * @return The created Key Result if successful, otherwise returns an
      *         unauthorized or conflict response.
      */
@@ -155,8 +151,6 @@ public class KeyResultController {
      * @param companyId The ID of the company.
      * @param buId      The ID of the business unit.
      * @param okrId     The ID of the OKRSet.
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
-     *                                  not found.
      * @return The updated Key Result if successful, otherwise returns an
      *         unauthorized or conflict response.
      */
@@ -213,8 +207,6 @@ public class KeyResultController {
      * @param companyId The ID of the company.
      * @param buId      The ID of the business unit.
      * @param okrId     The ID of the OKRSet.
-     * @throws IllegalArgumentException if the company, business unit, or OKRSet is
-     *                                  not found.
      * @return The deleted Key Result if successful, otherwise returns an
      *         unauthorized or conflict response.
      */
