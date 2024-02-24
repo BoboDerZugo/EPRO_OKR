@@ -11,11 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-/*
-    Optional<Company> findByBusinessUnitsContains(BusinessUnit businessUnit);
-    Optional<Company> findByOkrSetsContains(OKRSet okrSet);
-    Optional<Company> findByEmployeeSetContains(User user);
- */
 @DataMongoTest
 @AutoConfigureDataMongo
 public class CompanyServiceTest {
@@ -39,20 +34,11 @@ public class CompanyServiceTest {
     @Test
     public void CompanyServiceTest_findByBusinessUnitsContains(){
         //arrange
-        User user = new User("John Doe","NORMAL");
-        Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
-        keyResult.setOkrSet(okrSet[0]);
 
-        Unit unit = new Unit(Set.of(user));
-
-
-        BusinessUnit businessUnit = new BusinessUnit(okrSet);
-        businessUnit.addUnit(unit);
-
-        Company company = new Company();
+        Set<Unit> units = new HashSet<>();
+        Set<OKRSet> okrSets = new HashSet<>();
+        BusinessUnit businessUnit = new BusinessUnit(units,okrSets);
+        Company company = new Company(Set.of(businessUnit),okrSets);
         company.addBusinessUnit(businessUnit);
         companyService.save(company);
 
@@ -65,14 +51,13 @@ public class CompanyServiceTest {
     @Test
     public void CompanyServiceTest_findByOkrSetsContains(){
         //arrange
-        User user = new User("John Doe","NORMAL");
-        Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet okrSet = new OKRSet(objective,keyResult);
-
-        Company company = new Company();
+        Set<Unit> units = new HashSet<>();
+        Set<OKRSet> okrSets = new HashSet<>();
+        OKRSet okrSet = new OKRSet();
+        BusinessUnit businessUnit = new BusinessUnit(units,okrSets);
+        Company company = new Company(Set.of(businessUnit),okrSets);
         company.addOkrSet(okrSet);
+
         companyService.save(company);
 
         //act

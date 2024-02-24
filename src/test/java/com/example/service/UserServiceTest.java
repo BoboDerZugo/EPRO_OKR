@@ -17,9 +17,9 @@ public class UserServiceTest {
     UserService userService;
 
     @Test
-    public void UserServiceTest_save(){
+    public void UserServiceTest_save() {
         //arrange
-        User user = new User("John Doe","NORMAL");
+        User user = new User("John Doe", "password", "NORMAL");
 
         User savedUser = userService.save(user);
 
@@ -27,11 +27,11 @@ public class UserServiceTest {
     }
 
     @Test
-    public void UserServiceTest_findByRoleEquals(){
+    public void UserServiceTest_findByRoleEquals() {
         //arrange
-        User boss = new User("Bossman", "CO_ADMIN");
-        User rightHand = new User("His right hand", "BU_ADMIN");
-        User leftHand = new User("His left hand", "BU_ADMIN");
+        User boss = new User("Bossman", "password", "CO_ADMIN");
+        User rightHand = new User("His right hand", "password", "BU_ADMIN");
+        User leftHand = new User("His left hand", "password", "BU_ADMIN");
         userService.save(boss);
         userService.save(rightHand);
         userService.save(leftHand);
@@ -39,14 +39,14 @@ public class UserServiceTest {
         //act
         Iterable<User> hands = userService.findByRoleEquals(User.Role.BU_ADMIN);
 
-        Assertions.assertThat(hands).contains(rightHand,leftHand);
+        Assertions.assertThat(hands).contains(rightHand, leftHand);
         Assertions.assertThat(hands).doesNotContain(boss);
         //assert
     }
 
     @Test
-    public void UserService_deleteByUuid(){
-        User user = new User("User","NORMAL");
+    public void UserService_deleteByUuid() {
+        User user = new User("User","password", "NORMAL");
         userService.save(user);
 
         userService.deleteByUuid(user.getUuid());

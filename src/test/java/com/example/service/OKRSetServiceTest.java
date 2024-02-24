@@ -23,8 +23,7 @@ public class OKRSetServiceTest {
     @Test
     public void OKRSetService_save(){
         //arrange
-        User user = new User("John Doe","CO_ADMIN");
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
+        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,"Lorem Ipsum","Ongoing");
         Objective objective = new Objective("test", (short) 4);
         OKRSet okrSet = new OKRSet(objective,keyResult);
         //act
@@ -37,9 +36,8 @@ public class OKRSetServiceTest {
     @Test
     public void OKRSetService_findObjective(){
         //arrange
-        User user = new User("John Doe","CO_ADMIN");
 
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
+        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,"Lorem Ipsum","Ongoing");
         Objective objective = new Objective("test", (short) 4);
         OKRSet okrSet = new OKRSet(objective,keyResult);
 
@@ -55,9 +53,7 @@ public class OKRSetServiceTest {
     @Test
     public void OKRSetService_findByKeyResultsContains(){
         //arrange
-        User user = new User("John Doe","CO_ADMIN");
-        Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing");
+        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,"Lorem Ipsum","Ongoing");
         Objective objective = new Objective("test", (short) 4);
         OKRSet okrSet = new OKRSet(objective,keyResult);
 
