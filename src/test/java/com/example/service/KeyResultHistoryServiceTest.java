@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @DataMongoTest
 @AutoConfigureDataMongo
 public class KeyResultHistoryServiceTest {
