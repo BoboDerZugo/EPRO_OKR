@@ -210,4 +210,9 @@ public class KeyResultHistory {
         return obj instanceof KeyResultHistory other && this.uuid.equals(other.uuid);
     }
 
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+    
 }

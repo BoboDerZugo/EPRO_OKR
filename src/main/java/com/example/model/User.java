@@ -43,6 +43,7 @@ public class User {
     @JsonCreator
     public User() {
         this.uuid = UUID.randomUUID();
+        this.role = Role.NORMAL;
     }
 
     /**
@@ -141,6 +142,11 @@ public class User {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof User other && this.uuid.equals(other.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 
 

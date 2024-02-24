@@ -116,4 +116,9 @@ public class Company {
     public boolean equals(Object obj) {
         return obj instanceof Company other && this.uuid.equals(other.uuid);
     }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }

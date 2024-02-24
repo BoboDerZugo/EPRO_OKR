@@ -223,4 +223,10 @@ public class KeyResult {
     public boolean equals(Object obj) {
         return obj instanceof KeyResult other && this.uuid.equals(other.uuid);
     }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+    
 }

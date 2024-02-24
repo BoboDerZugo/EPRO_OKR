@@ -35,6 +35,8 @@ public class Unit {
     @JsonCreator
     public Unit() {
         this.uuid = UUID.randomUUID();
+        Set<User> employeeSet = Set.of();
+        this.employeeSet = employeeSet;
     }
 
     /**
@@ -82,5 +84,10 @@ public class Unit {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Unit other && this.uuid.equals(other.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 }

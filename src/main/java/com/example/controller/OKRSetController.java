@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,6 @@ import com.example.model.*;
 
 /**
  * This class represents the controller for managing OKRSet entities.
- */
-/**
- * Controller class for managing OKRSet entities.
  */
 @RestController
 @RequestMapping(value = { "/okrset", "/company/{companyId}/okrset", "/company/{companyId}/businessunit/{buId}/okrset" })
@@ -48,11 +46,19 @@ public class OKRSetController {
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 Set<OKRSet> okrSets = businessUnit.getOkrSets();
                 return ResponseEntity.ok(okrSets);
             } else {
-                Company company = companyService.findById(companyId.get()).get();
+                Company company = companyService.findById(companyId.get())
+                        .orElse(null);
+                if (company == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 Set<OKRSet> okrSets = company.getOkrSets();
                 return ResponseEntity.ok(okrSets);
             }
@@ -91,22 +97,29 @@ public class OKRSetController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                if (AuthorizationService.isAuthorized(company, businessUnit, null)) {
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                     okrSetService.insert(okrSet);
                     businessUnit.addOkrSet(okrSet);
                     businessUnitService.save(businessUnit);
-                    return ResponseEntity.ok(okrSet);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(okrSet);
                 }
             } else {
-                System.out.println(AuthorizationService.isAuthorized(company, null, null));
                 if (AuthorizationService.isAuthorized(company, null, null)) {
                     okrSetService.insert(okrSet);
                     company.addOkrSet(okrSet);
                     companyService.save(company);
-                    return ResponseEntity.ok(okrSet);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(okrSet);
                 }
             }
         }
@@ -119,7 +132,7 @@ public class OKRSetController {
      * @param id        the ID of the OKRSet
      * @param okrSet    the OKRSet to update
      * @param companyId the ID of the company
-     * @param buId      the ID of the business unit
+     * @param buId      the ID of the business Unit
      * @return ResponseEntity containing the updated OKRSet if successful, or a not
      *         authorized response
      */
@@ -128,10 +141,21 @@ public class OKRSetController {
             @RequestBody @NonNull OKRSet okrSet, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
+                    if (company == null) {
+                        return ResponseEntity.notFound().build();
+                    }
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                OKRSet okrSetToUpdate = okrSetService.findById(id).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
+                OKRSet okrSetToUpdate = okrSetService.findById(id).orElse(null);
+                if (okrSetToUpdate == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (AuthorizationService.isAuthorized(company, businessUnit, okrSetToUpdate)) {
                     okrSet.setUuid(id);
                     okrSetService.save(okrSet);
@@ -162,10 +186,19 @@ public class OKRSetController {
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId) {
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                OKRSet okrSet = okrSetService.findById(id).get();
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                OKRSet okrSet = okrSetService.findById(id)
+                        .orElse(null);
+                if (businessUnit == null || okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
                     if (businessUnit.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         okrSetService.deleteByUuid(id);
@@ -175,8 +208,11 @@ public class OKRSetController {
                 }
             } else {
                 if (AuthorizationService.isAuthorized(company, null, null)) {
-                    company.getOkrSets().forEach(okr -> System.out.println(okr.getUuid()));
-                    OKRSet okrSet = okrSetService.findById(id).get();
+                    OKRSet okrSet = okrSetService.findById(id)
+                            .orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     if (company.getOkrSets().removeIf(okr -> okr.getUuid().equals(id))) {
                         System.err.println("OKRSet removed from company");
                         okrSetService.deleteByUuid(id);

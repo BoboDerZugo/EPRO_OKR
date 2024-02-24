@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.lang.NonNull;
 
-
 //CRUD operations for KeyResults
 /**
  * Controller class for managing Key Results.
@@ -39,25 +38,34 @@ public class KeyResultController {
 
     /**
      * Retrieves all Key Results for a given company, (business unit), and OKRSet.
+     * 
      * @param companyId
      * @param buId
      * @param okrId
-     * @return
+     * @return A list of Key Results if successful, otherwise returns a not found
+     *         response.
      */
     @GetMapping
-    public ResponseEntity<List<KeyResult>> getAllKeyResults(@PathVariable("companyId") @NonNull Optional<UUID>  companyId,
+    public ResponseEntity<List<KeyResult>> getAllKeyResults(
+            @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
         if (companyId.isPresent()) {
-            // Company company = companyService.findById(companyId.get()).get();
             if (buId.isPresent()) {
-                // BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
                 if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                    OKRSet okrSet = okrSetService.findById(okrId.get())
+                            .orElse(null);
+                    if (okrSet == null) {
+                        return ResponseEntity.notFound().build();
+                    }
                     List<KeyResult> keyResults = okrSet.getKeyResults();
                     return ResponseEntity.ok(keyResults);
                 }
             } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
+                OKRSet okrSet = okrSetService.findById(okrId.get())
+                        .orElse(null);
+                if (okrSet == null) {
+                    return ResponseEntity.notFound().build();
+                }
                 List<KeyResult> keyResults = okrSet.getKeyResults();
                 return ResponseEntity.ok(keyResults);
             }
@@ -86,43 +94,105 @@ public class KeyResultController {
      *
      * @param keyResult The Key Result to create.
      * @param companyId The ID of the company.
-     * @param buId The ID of the business unit.
-     * @param okrId The ID of the OKRSet.
-     * @return The created Key Result if successful, otherwise returns an unauthorized or conflict response.
+     * @param buId      The ID of the business unit.
+     * @param okrId     The ID of the OKRSet.
+     * @return The created Key Result if successful, otherwise returns an
+     *         unauthorized or conflict response.
      */
     @PostMapping
     public ResponseEntity<KeyResult> createKeyResult(@RequestBody @NonNull KeyResult keyResult,
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        boolean isAuthorized = false;
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
+            OKRSet okrSet = okrId.isPresent() ? okrSetService.findById(okrId.get()).orElse(null) : null;
+            if (okrSet == null) {
+                return ResponseEntity.notFound().build();
+            }
+            // Check if the user is authorized to create a key result for the given company,
+            // business unit, and OKRSet
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                    if (okrSet.getKeyResults().size() < 5) {
-                        if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
-                            KeyResult createdKeyResult = keyResultService.insert(keyResult);
-                            keyResultHistoryService.insert(new KeyResultHistory(createdKeyResult));
-                            okrSet.getKeyResults().add(createdKeyResult);
-                            okrSetService.save(okrSet);
-                            return ResponseEntity.status(HttpStatus.CREATED).body(keyResult);
-                        }
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                    }
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                    isAuthorized = true;
+                }
+            }
+            // CO Admins can change any OKRSet
+            else if (AuthorizationService.isAuthorized(company, null, null)) {
+                isAuthorized = true;
+            }
+            if (isAuthorized) {
+                KeyResult createdKeyResult = keyResultService.insert(keyResult);
+                if (!okrSet.addKeyResult(createdKeyResult)) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
-            } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                if (okrSet.getKeyResults().size() < 5) {
-                    if (AuthorizationService.isAuthorized(company, null, null)) {
-                        KeyResult createdKeyResult = keyResultService.insert(keyResult);
-                        keyResultHistoryService.insert(new KeyResultHistory(createdKeyResult));
-                        okrSet.getKeyResults().add(createdKeyResult);
-                        okrSetService.save(okrSet);
-                        return ResponseEntity.status(HttpStatus.CREATED).body(keyResult);
-                    }
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                okrSetService.save(okrSet);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdKeyResult);
+            }
+            // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    /**
+     * Update an existing Key Result.
+     *
+     * @param id        The ID of the Key Result to update.
+     * @param keyResult The updated Key Result.
+     * @param companyId The ID of the company.
+     * @param buId      The ID of the business unit.
+     * @param okrId     The ID of the OKRSet.
+     * @return The updated Key Result if successful, otherwise returns an
+     *         unauthorized or conflict response.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<KeyResult> updateKeyResult(@PathVariable("id") @NonNull UUID id,
+            @RequestBody @NonNull KeyResult keyResult, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
+            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        boolean isAuthorized = false;
+        if (companyId.isPresent()) {
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
+            OKRSet okrSet = okrId.isPresent() ? okrSetService.findById(okrId.get()).orElse(null) : null;
+            if (okrSet == null) {
+                return ResponseEntity.notFound().build();
+            }
+            // Check if the user is authorized to create a key result for the given company,
+            // business unit, and OKRSet
+            if (buId.isPresent()) {
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
+                }
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                    isAuthorized = true;
+                }
+            }
+            // CO Admins can change any OKRSet
+            else if (AuthorizationService.isAuthorized(company, null, null)) {
+                isAuthorized = true;
+            }
+            if (isAuthorized) {
+                UUID oldId = keyResult.getUuid();
+                keyResult.setUuid(id);
+                if (okrSet.getKeyResults().contains(keyResult)) {
+                    KeyResult updatedKeyResult = keyResultService.save(keyResult);
+                    keyResult.setUuid(oldId);
+                    keyResultHistoryService.insert(new KeyResultHistory(keyResult));
+                    return ResponseEntity.ok(updatedKeyResult);
                 }
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
@@ -131,100 +201,63 @@ public class KeyResultController {
     }
 
     /**
-     * Update an existing Key Result.
-     *
-     * @param id The ID of the Key Result to update.
-     * @param keyResult The updated Key Result.
-     * @param companyId The ID of the company.
-     * @param buId The ID of the business unit.
-     * @param okrId The ID of the OKRSet.
-     * @return The updated Key Result if successful, otherwise returns an unauthorized or conflict response.
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<KeyResult> updateKeyResult(@PathVariable("id") @NonNull UUID id,
-            @RequestBody @NonNull KeyResult keyResult, @PathVariable("companyId") @NonNull Optional<UUID> companyId,
-            @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
-        if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
-            if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
-                        UUID oldId = keyResult.getUuid();
-                        keyResult.setUuid(id);
-                        if (okrSet.getKeyResults().contains(keyResult)) {
-                            KeyResult updatedKeyResult = keyResultService.save(keyResult);
-                            keyResult.setUuid(oldId);
-                            keyResultHistoryService.insert(new KeyResultHistory(keyResult));
-                            return ResponseEntity.ok(updatedKeyResult);
-                        }
-                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
-                    }
-                }
-            } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                if (AuthorizationService.isAuthorized(company, null, null)) {
-                    UUID oldId = keyResult.getUuid();
-                    keyResult.setUuid(id);
-                    if (okrSet.getKeyResults().contains(keyResult)) {
-                        KeyResult updatedKeyResult = keyResultService.save(keyResult);
-                        keyResult.setUuid(oldId);
-                        keyResultHistoryService.insert(new KeyResultHistory(keyResult));
-                        return ResponseEntity.ok(updatedKeyResult);
-                    }
-                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
-                }
-            }
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-    /**
      * Delete a Key Result.
      *
-     * @param id The ID of the Key Result to delete.
+     * @param id        The ID of the Key Result to delete.
      * @param companyId The ID of the company.
-     * @param buId The ID of the business unit.
-     * @param okrId The ID of the OKRSet.
-     * @return The deleted Key Result if successful, otherwise returns an unauthorized or conflict response.
+     * @param buId      The ID of the business unit.
+     * @param okrId     The ID of the OKRSet.
+     * @return The deleted Key Result if successful, otherwise returns an
+     *         unauthorized or conflict response.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<KeyResult> deleteKeyResult(@PathVariable("id") @NonNull UUID id,
             @PathVariable("companyId") @NonNull Optional<UUID> companyId,
             @PathVariable("buId") Optional<UUID> buId, @PathVariable("okrId") @NonNull Optional<UUID> okrId) {
+        boolean isAuthorized = false;
         if (companyId.isPresent()) {
-            Company company = companyService.findById(companyId.get()).get();
+            Company company = companyService.findById(companyId.get())
+                    .orElse(null);
+            if (company == null) {
+                return ResponseEntity.notFound().build();
+            }
+            OKRSet okrSet = okrId.isPresent() ? okrSetService.findById(okrId.get()).orElse(null) : null;
+            if (okrSet == null) {
+                return ResponseEntity.notFound().build();
+            }
+            // Check if the user is authorized to create a key result for the given company,
+            // business unit, and OKRSet
             if (buId.isPresent()) {
-                BusinessUnit businessUnit = businessUnitService.findById(buId.get()).get();
-                if (okrId.isPresent()) {
-                    OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                    if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
-                        KeyResult keyResult = keyResultService.findById(id).get();
-                        if (okrSet.getKeyResults().contains(keyResult)) {
-                            keyResultService.delete(keyResult);
-                            okrSet.getKeyResults().remove(keyResult);
-                            okrSetService.save(okrSet);
-                            return ResponseEntity.ok(keyResult);
-                        }
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                    }
+                BusinessUnit businessUnit = businessUnitService.findById(buId.get())
+                        .orElse(null);
+                if (businessUnit == null) {
+                    return ResponseEntity.notFound().build();
                 }
-            } else if (okrId.isPresent()) {
-                OKRSet okrSet = okrSetService.findById(okrId.get()).get();
-                if (AuthorizationService.isAuthorized(company, null, null)) {
-                    KeyResult keyResult = keyResultService.findById(id).get();
-                    if (okrSet.getKeyResults().contains(keyResult)) {
-                        keyResultService.delete(keyResult);
-                        okrSet.getKeyResults().remove(keyResult);
-                        okrSetService.save(okrSet);
-                        return ResponseEntity.ok(keyResult);
-                    }
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                if (AuthorizationService.isAuthorized(company, businessUnit, okrSet)) {
+                    isAuthorized = true;
                 }
+            }
+            // CO Admins can change any OKRSet
+            else if (AuthorizationService.isAuthorized(company, null, null)) {
+                isAuthorized = true;
+            }
+            if (isAuthorized) {
+                KeyResult keyResult = keyResultService.findById(id)
+                        .orElse(null);
+                if (keyResult == null) {
+                    return ResponseEntity.notFound().build();
+                }
+                if (okrSet.getKeyResults().contains(keyResult)) {
+                    keyResultService.delete(keyResult);
+                    okrSet.getKeyResults().remove(keyResult);
+                    okrSetService.save(okrSet);
+                    return ResponseEntity.ok(keyResult);
+                }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
     }
+
 }

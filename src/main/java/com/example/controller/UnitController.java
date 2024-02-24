@@ -37,7 +37,8 @@ public class UnitController {
      * Retrieves a unit by its ID.
      *
      * @param id the ID of the unit to retrieve
-     * @return ResponseEntity containing the unit if found, or a not found response if not found
+     * @return ResponseEntity containing the unit if found, or a not found response
+     *         if not found
      */
     @GetMapping("/{id}")
     public ResponseEntity<Unit> getUnitById(@PathVariable("id") @NonNull UUID id) {
@@ -53,13 +54,14 @@ public class UnitController {
      * Creates a new unit.
      *
      * @param unit the unit to create
-     * @return ResponseEntity containing the created unit if successful, or an internal server error response if not successful
+     * @return ResponseEntity containing the created unit if successful, or an
+     *         internal server error response if not successful
      */
     @PostMapping
     public ResponseEntity<Unit> createUnit(@RequestBody @NonNull Unit unit) {
         Unit createdUnit = unitService.insert(unit);
-        UUID unitUuid = createdUnit.getUuid();
-        if (unitUuid != null) {
+        if (createdUnit != null) {
+            UUID unitUuid = createdUnit.getUuid();
             Optional<Unit> unitOptional = unitService.findById(unitUuid);
             if (unitOptional.isPresent()) {
                 System.out.println("Unit created" + unitOptional.get());
@@ -74,17 +76,18 @@ public class UnitController {
      *
      * @param id   the ID of the unit to update
      * @param unit the updated unit
-     * @return ResponseEntity containing the updated unit if successful, or a not found response if not found
+     * @return ResponseEntity containing the updated unit if successful, or a not
+     *         found response if not found
      */
     @PutMapping("/{id}")
     public ResponseEntity<Unit> updateUnit(@PathVariable("id") @NonNull UUID id, @RequestBody @NonNull Unit unit) {
         unit.setUuid(UUID.fromString(id.toString()));
         Unit updatedUnit = unitService.save(unit);
-        updatedUnit = unitService.findById(id).get();
-        // if (updatedUnit != null) {
-        return ResponseEntity.ok(updatedUnit);
-        // }
-        // return ResponseEntity.notFound().build();
+        updatedUnit = unitService.findById(id).orElse(null);
+        if (updatedUnit != null) {
+            return ResponseEntity.ok(updatedUnit);
+        }
+        return ResponseEntity.notFound().build();
 
     }
 
@@ -92,7 +95,8 @@ public class UnitController {
      * Deletes a unit.
      *
      * @param id the ID of the unit to delete
-     * @return ResponseEntity containing the deleted unit if successful, or a not found response if not found
+     * @return ResponseEntity containing the deleted unit if successful, or a not
+     *         found response if not found
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Unit> deleteUnit(@PathVariable("id") @NonNull UUID id) {

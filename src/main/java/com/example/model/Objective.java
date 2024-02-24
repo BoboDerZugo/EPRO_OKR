@@ -85,4 +85,9 @@ public class Objective {
     public boolean equals(Object obj) {
         return obj instanceof Objective other && this.uuid.equals(other.uuid);
     }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }
