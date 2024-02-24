@@ -38,9 +38,7 @@ public class BusinessUnit {
      */
     public BusinessUnit(OKRSet[] okrSets) {
         this.uuid = UUID.randomUUID();
-        // this.employeeSet = new HashSet<>();
         this.units = new HashSet<>();
-        this.okrSets = new HashSet<>();
         this.okrSets = Set.of(okrSets);
     }
 

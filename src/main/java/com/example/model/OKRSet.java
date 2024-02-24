@@ -35,7 +35,7 @@ public class OKRSet {
     }
 
     /**
-     * Creates an OKRSet with generated UUID
+     * Creates an OKRSet with generated UUID  using Json
      */
     @JsonCreator
     public OKRSet() {

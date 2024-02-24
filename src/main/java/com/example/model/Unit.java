@@ -30,7 +30,7 @@ public class Unit {
     }
 
     /**
-     * Creates a Unit with Generated UUID
+     * Creates a Unit with Generated UUID  using Json
      */
     @JsonCreator
     public Unit() {

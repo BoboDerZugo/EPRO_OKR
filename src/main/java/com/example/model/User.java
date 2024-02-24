@@ -38,7 +38,7 @@ public class User {
     }
 
     /**
-     * Creates a User with Generated UUID
+     * Creates a User with Generated UUID  using Json
      */
     @JsonCreator
     public User() {

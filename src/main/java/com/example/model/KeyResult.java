@@ -70,7 +70,7 @@ public class KeyResult {
     }
 
     /**
-     * KeyResult with generated UUID
+     * KeyResult with generated UUID using Json
      */
     @JsonCreator
     public KeyResult() {
