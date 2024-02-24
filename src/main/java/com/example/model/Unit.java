@@ -6,69 +6,81 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.Set;
 import java.util.UUID;
 
 @Document(collection = "Unit")
 public class Unit {
-    
+
     @Id
     private UUID uuid;
     @DBRef
     private Set<User> employeeSet;
-    // @DBRef
-    // private Set<OKRSet> okrSets;
 
+    /**
+     * Creates a Unit with Generated UUID
+     *
+     * @param employeeSet Set of Employees for Unit
+     */
     @PersistenceCreator
-    public Unit(Set<User> employeeSet/*, Set<OKRSet> okrSets*/) {
+    public Unit(Set<User> employeeSet) {
         this.uuid = UUID.randomUUID();
         this.employeeSet = employeeSet;
-        //this.okrSets = okrSets;
     }
-    
+
+    /**
+     * Creates a Unit with Generated UUID
+     */
     @JsonCreator
     public Unit() {
         this.uuid = UUID.randomUUID();
     }
 
-    // public Unit(OKRSet[] okr) {
-    //     this.uuid = UUID.randomUUID();
-    //     this.employeeSet = new HashSet<>();
-    //     this.okrSets = Set.of(okr);
-    // }
-
+    /**
+     * UUID Getter
+     *
+     * @return UUID of Unit
+     */
     public UUID getUuid() {
         return uuid;
     }
 
+    /**
+     * EmployeeSet Getter
+     *
+     * @return Employees of Unit
+     */
     public Set<User> getEmployeeSet() {
         return employeeSet;
     }
 
-    // public Set<OKRSet> getOkr() {
-    //     return okrSets;
-    // }
-
-    public void addEmployee(User u){
+    /**
+     * Employee adder
+     *
+     * @param u New Employee for Unit
+     */
+    public void addEmployee(User u) {
         this.employeeSet.add(u);
     }
 
+    /**
+     * UUID Setter
+     *
+     * @param fromString New UUID for Unit
+     */
     public void setUuid(UUID fromString) {
         this.uuid = fromString;
     }
 
-    // public void setOkr(OKRSet... okr) {
-    //     this.okrSets = Set.of(okr);
-    // }
-
+    /**
+     * Override of equals() for Unit
+     *
+     * @param obj Compared Object
+     * @return Equality of Units
+     */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Unit) {
-            Unit other = (Unit) obj;
-            if(this.uuid.equals(other.uuid)){
-                return true;
-            }
-        }
-        return false;
+        return obj instanceof Unit other && this.uuid.equals(other.uuid);
     }
 }

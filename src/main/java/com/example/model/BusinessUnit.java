@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -12,21 +13,29 @@ import java.util.UUID;
 public class BusinessUnit {
     @Id
     private UUID uuid;
-    // @DBRef
-    // private Set<User> employeeSet;
     @DBRef
     private Set<Unit> units;
     @DBRef
     private Set<OKRSet> okrSets;
 
+    /**
+     * Creates a BusinessUnit with a generated UUID and Sets of units and OkrSets
+     *
+     * @param units   Set of Units
+     * @param okrSets Set of OKRSets
+     */
     @PersistenceCreator
-    public BusinessUnit(/*Set<User> employeeSet,*/ Set<Unit> units, Set<OKRSet> okrSets) {
+    public BusinessUnit(Set<Unit> units, Set<OKRSet> okrSets) {
         this.uuid = UUID.randomUUID();
-        //this.employeeSet = employeeSet;
         this.units = units;
         this.okrSets = okrSets;
     }
 
+    /**
+     * Creates a BusinessUnit with a generated UUID and an Array of OKRSets
+     *
+     * @param okrSets Array of OKRSets
+     */
     public BusinessUnit(OKRSet[] okrSets) {
         this.uuid = UUID.randomUUID();
         // this.employeeSet = new HashSet<>();
@@ -35,50 +44,79 @@ public class BusinessUnit {
         this.okrSets = Set.of(okrSets);
     }
 
+    /**
+     * UUID Getter
+     *
+     * @return UUID of BusinessUnit
+     */
     public UUID getUuid() {
         return uuid;
     }
 
-    // public Set<User> getEmployeeSet() {
-    //     return employeeSet;
-    // }
+    /**
+     * Units Getter
+     *
+     * @return Set of Units of BusinessUnit
+     */
 
     public Set<Unit> getUnits() {
         return units;
     }
 
+    /**
+     * OKRSets Getter
+     *
+     * @return Set of OKRSets
+     */
+
     public Set<OKRSet> getOkrSets() {
         return okrSets;
     }
 
-    // public void addEmployee(User u){
-    //     this.employeeSet.add(u);
-    // }
-
-    public void addUnit(Unit u){
+    /**
+     * Adds a Unit u into the Set of Units
+     *
+     * @param u New Unit added into Set of Units
+     */
+    public void addUnit(Unit u) {
         this.units.add(u);
     }
 
-    public void setOkrSets(Set<OKRSet> okrSets){
+    /**
+     * OKRSets Setter
+     *
+     * @param okrSets Set of OKRSets
+     */
+    public void setOkrSets(Set<OKRSet> okrSets) {
         this.okrSets = okrSets;
     }
 
+    /**
+     * Adds an OKRSet into the Set of OKRSets
+     *
+     * @param okrSet New OKRSet added into Set of Units
+     */
     public void addOkrSet(OKRSet okrSet) {
         this.okrSets.add(okrSet);
     }
 
+    /**
+     * UUID Setter
+     *
+     * @param fromString New UUID
+     */
     public void setUuid(UUID fromString) {
         this.uuid = fromString;
     }
 
+    /**
+     * Override of equals() for BusinessUnit
+     *
+     * @param obj Compared Object
+     * @return Equality of BusinessUnits
+     */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof BusinessUnit) {
-            BusinessUnit other = (BusinessUnit) obj;
-            if(this.uuid.equals(other.uuid)){
-                return true;
-            }
-        }
-        return false;
+        return obj instanceof BusinessUnit other && this.uuid.equals(other.uuid);
     }
 }
