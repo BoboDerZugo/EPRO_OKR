@@ -40,6 +40,7 @@ public class SecurityConfig{
                 .requestMatchers(HttpMethod.DELETE, "/company/*/businessunit/**").hasAnyRole("CO_ADMIN", "BU_ADMIN")
                 .requestMatchers("/unit/**").hasAnyRole("CO_ADMIN")
                 .requestMatchers("/user/**").hasAnyRole("CO_ADMIN")
+                .requestMatchers("/example/**").permitAll()
                 .anyRequest().hasAnyRole("CO_ADMIN")
 			)
 			.httpBasic(Customizer.withDefaults());
