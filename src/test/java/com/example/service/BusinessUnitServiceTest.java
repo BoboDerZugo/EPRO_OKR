@@ -26,13 +26,10 @@ public class BusinessUnitServiceTest {
     @Test
     public void BusinessUnitServiceTest_save(){
         //arrange
-        User user = new User("John Doe","NORMAL");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
+        Set<OKRSet> okrSets = new HashSet<>();
 
-        BusinessUnit businessUnit = new BusinessUnit(okrSet);
+        BusinessUnit businessUnit = new BusinessUnit(unitSet,okrSets);
 
         //act
         BusinessUnit savedUnit = businessUnitService.save(businessUnit);
@@ -45,15 +42,13 @@ public class BusinessUnitServiceTest {
     @Test
     public void BusinessUnitServiceTest_findByUnitsContains(){
         //arrange
-        User user = new User("John Doe","NORMAL");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
-        Unit unit = new Unit(okrSet);
+        Set<OKRSet> okrSets = new HashSet<>();
 
+        Unit unit = new Unit();
+        unitSet.add(unit);
+        BusinessUnit businessUnit = new BusinessUnit(unitSet,okrSets);
 
-        BusinessUnit businessUnit = new BusinessUnit(okrSet);
         businessUnit.addUnit(unit);
         businessUnitService.save(businessUnit);
 
@@ -66,40 +61,34 @@ public class BusinessUnitServiceTest {
     @Test
     public void BusinessUnitServiceTest_findByOkrSetsContains(){
         //arrange
-        User user = new User("John Doe","NORMAL");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
+        Set<OKRSet> okrSets = new HashSet<>();
 
-        BusinessUnit businessUnit = new BusinessUnit(okrSet);
+        OKRSet okrSet = new OKRSet();
+        BusinessUnit businessUnit = new BusinessUnit(unitSet,okrSets);
+
+        businessUnit.addOkrSet(okrSet);
         businessUnitService.save(businessUnit);
 
         //act
-        BusinessUnit savedUnit = businessUnitService.findByOkrSetsContains(okrSet[0]).get();
+        BusinessUnit savedUnit = businessUnitService.findByOkrSetsContains(okrSet).get();
         //assert
         Assertions.assertThat(savedUnit).isNotNull();
         Assertions.assertThat(savedUnit.getUuid()).isEqualByComparingTo(businessUnit.getUuid());
     }
+
     @Test
-    public void BusinessUnitServiceTest_findByEmployeeSetContains(){
+    public void BusinessUnitServiceTest_deleteByUuid(){
         //arrange
-        User user = new User("John Doe","NORMAL");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
+        Set<OKRSet> okrSets = new HashSet<>();
 
-
-        BusinessUnit businessUnit = new BusinessUnit(okrSet);
-        businessUnit.addEmployee(user);
+        BusinessUnit businessUnit = new BusinessUnit(unitSet,okrSets);
         businessUnitService.save(businessUnit);
-
         //act
-        BusinessUnit savedUnit = businessUnitService.findByEmployeeSetContains(user).get();
+        businessUnitService.deleteByUuid(businessUnit.getUuid());
         //assert
-        Assertions.assertThat(savedUnit).isNotNull();
-        Assertions.assertThat(savedUnit.getUuid()).isEqualByComparingTo(businessUnit.getUuid());
+        Assertions.assertThat(businessUnitService.findById(businessUnit.getUuid())).isEmpty();
     }
 
 }

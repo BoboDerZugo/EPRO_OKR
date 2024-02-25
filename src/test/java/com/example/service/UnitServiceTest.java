@@ -17,14 +17,14 @@ public class UnitServiceTest {
     UnitService unitService;
 
     @Test
-    public void UnitServiceTest_save(){
+    public void UnitServiceTest_save() {
         //arrange
-        User user = new User("John Doe","NORMAL");
+        User user = new User("John Doe", "password", "NORMAL");
         Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
-        Unit unit = new Unit(okrSet);
+        KeyResult keyResult = new KeyResult("Keys", (short) 2, 0.2, 1.0, 0.9, "Lorem Ipsum", "Ongoing");
+        Objective objective = new Objective("Objective", (short) 4);
+        OKRSet[] okrSet = {new OKRSet(objective, keyResult)};
+        Unit unit = new Unit(Set.of(user));
 
         //act
         Unit savedUnit = unitService.save(unit);
@@ -35,20 +35,13 @@ public class UnitServiceTest {
     }
 
     @Test
-    public void UnitServiceTest_findByEmployeeSetContains(){
-        //arrange
-        User user = new User("John Doe","NORMAL");
-        Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
-        Unit unit = new Unit(okrSet);
+    public void UnitService_deleteByUuid() {
+        Unit unit = new Unit();
+
         unitService.save(unit);
 
-        //act
-        Unit foundUnit = unitService.findByEmployeeSetContains(user).get();
+        unitService.deleteByUuid(unit.getUuid());
 
-        //assert
-        Assertions.assertThat(foundUnit.getUuid()).isEqualByComparingTo(unit.getUuid());
+        Assertions.assertThat(unitService.findById(unit.getUuid())).isEmpty();
     }
 }

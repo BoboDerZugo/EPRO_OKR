@@ -4,10 +4,8 @@ import com.example.model.Objective;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 @DataMongoTest
 @AutoConfigureDataMongo
@@ -66,11 +64,23 @@ public class ObjectiveServiceTest {
         objectiveService.save(objective3);
         objectiveService.save(objective4);
 
-        Iterable<Objective> objectivesFiltered = objectiveService.findObjectivesByFulfilledGreaterThanEqual((short)2);
+        Iterable<Objective> objectivesFiltered = objectiveService.findObjectivesByFulfilledLessThan((short)2);
 
         //assert
 
         Assertions.assertThat(objectivesFiltered).doesNotContain(objective2,objective3,objective4);
         Assertions.assertThat(objectivesFiltered).contains(objective1);
+    }
+
+    @Test
+    public void ObjectiveService_deleteByUuid(){
+
+        Objective objective = new Objective("Test Objective",(short) 1);
+
+        objectiveService.save(objective);
+
+        objectiveService.deleteByUuid(objective.getUuid());
+
+        Assertions.assertThat(objectiveService.findById(objective.getUuid())).isEmpty();
     }
 }

@@ -11,11 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-/*
-    Optional<Company> findByBusinessUnitsContains(BusinessUnit businessUnit);
-    Optional<Company> findByOkrSetsContains(OKRSet okrSet);
-    Optional<Company> findByEmployeeSetContains(User user);
- */
 @DataMongoTest
 @AutoConfigureDataMongo
 public class CompanyServiceTest {
@@ -37,20 +32,13 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void BusinessUnitServiceTest_findByBusinessUnitsContains(){
+    public void CompanyServiceTest_findByBusinessUnitsContains(){
         //arrange
-        User user = new User("John Doe","NORMAL");
-        Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet[] okrSet = {new OKRSet(objective,keyResult)};
-        Unit unit = new Unit(okrSet);
 
-
-        BusinessUnit businessUnit = new BusinessUnit(okrSet);
-        businessUnit.addUnit(unit);
-
-        Company company = new Company();
+        Set<Unit> units = new HashSet<>();
+        Set<OKRSet> okrSets = new HashSet<>();
+        BusinessUnit businessUnit = new BusinessUnit(units,okrSets);
+        Company company = new Company(Set.of(businessUnit),okrSets);
         company.addBusinessUnit(businessUnit);
         companyService.save(company);
 
@@ -61,16 +49,15 @@ public class CompanyServiceTest {
         Assertions.assertThat(savedCompany.getUuid()).isEqualByComparingTo(company.getUuid());
     }
     @Test
-    public void BusinessUnitServiceTest_findByOkrSetsContains(){
+    public void CompanyServiceTest_findByOkrSetsContains(){
         //arrange
-        User user = new User("John Doe","NORMAL");
-        Set<Unit> unitSet = new HashSet<>();
-        KeyResult keyResult = new KeyResult("Keys",(short)2,0.2,1.0,0.9,user,"Lorem Ipsum","Ongoing",unitSet);
-        Objective objective = new Objective("Objective",(short)4);
-        OKRSet okrSet = new OKRSet(objective,keyResult);
-
-        Company company = new Company();
+        Set<Unit> units = new HashSet<>();
+        Set<OKRSet> okrSets = new HashSet<>();
+        OKRSet okrSet = new OKRSet();
+        BusinessUnit businessUnit = new BusinessUnit(units,okrSets);
+        Company company = new Company(Set.of(businessUnit),okrSets);
         company.addOkrSet(okrSet);
+
         companyService.save(company);
 
         //act
@@ -79,19 +66,17 @@ public class CompanyServiceTest {
         Assertions.assertThat(savedCompany).isNotNull();
         Assertions.assertThat(savedCompany.getUuid()).isEqualByComparingTo(savedCompany.getUuid());
     }
+
     @Test
-    public void BusinessUnitServiceTest_findByEmployeeSetContains(){
+    public void CompanyServiceTest_deleteByUuid(){
         //arrange
-        User user = new User("John Doe","NORMAL");
-
         Company company = new Company();
-        company.addEmployee(user);
         companyService.save(company);
-
         //act
-        Company savedCompany = companyService.findByEmployeeSetContains(user).get();
+        companyService.deleteByUuid(company.getUuid());
         //assert
-        Assertions.assertThat(savedCompany).isNotNull();
-        Assertions.assertThat(savedCompany.getUuid()).isEqualByComparingTo(company.getUuid());
+        Assertions.assertThat(companyService.findById(company.getUuid())).isEmpty();
     }
+
+
 }
