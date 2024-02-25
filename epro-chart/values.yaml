@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: https://gitlab.rlp.net/martin.nebeling/epro_okr.git
+  repository: BoboDerZugo/EPRO_OKR
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
