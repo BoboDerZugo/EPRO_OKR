@@ -1,9 +1,11 @@
 package com.example.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.access.method.P;
 
 //import java.util.Set;
 import java.util.UUID;
@@ -25,6 +27,8 @@ public class KeyResultHistory {
     private OKRSet okrSet;
 
 
+
+    
     /**
      * Creates a new KeyResultHistory with generated UUID
      *
@@ -36,6 +40,7 @@ public class KeyResultHistory {
      * @param statusUpdate Current Status of KeyResultHistory
      * @param description  Description of KeyResultHistory
      */
+    @PersistenceCreator
     public KeyResultHistory(String name, short fulfilled, double current, double goal, double confidence, String statusUpdate, String description) {
         this.uuid = UUID.randomUUID();
         this.name = name;

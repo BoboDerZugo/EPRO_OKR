@@ -25,7 +25,7 @@ public class OKRSetServiceTest {
         OKRSet savedOKRSet = okrSetService.save(okrSet);
         //assert
         Assertions.assertThat(savedOKRSet).isNotNull();
-        Assertions.assertThat(savedOKRSet.getUuid()).isEqualByComparingTo(keyResult.getUuid());
+        Assertions.assertThat(savedOKRSet.getUuid()).isEqualByComparingTo(okrSet.getUuid());
     }
 
     @Test
