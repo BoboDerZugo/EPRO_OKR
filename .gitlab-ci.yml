@@ -44,4 +44,3 @@ helm-package:
       - main
     changes:
       - epro-chart/**/*                                                                                                                                     
-
