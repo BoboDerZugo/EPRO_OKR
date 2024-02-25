@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.model.*;
+import com.example.model.Unit;  
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

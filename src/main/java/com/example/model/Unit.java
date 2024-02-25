@@ -26,7 +26,8 @@ public class Unit {
     @PersistenceCreator
     public Unit(Set<User> employeeSet) {
         this.uuid = UUID.randomUUID();
-        this.employeeSet = employeeSet;
+        Set<User> employeeSet1 = Set.copyOf(employeeSet);
+        this.employeeSet = employeeSet1;
     }
 
     /**

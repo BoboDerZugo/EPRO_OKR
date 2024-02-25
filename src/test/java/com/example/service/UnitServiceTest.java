@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.model.Unit;
 import com.example.model.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,8 @@ public class UnitServiceTest {
         KeyResult keyResult = new KeyResult("Keys", (short) 2, 0.2, 1.0, 0.9, "Lorem Ipsum", "Ongoing");
         Objective objective = new Objective("Objective", (short) 4);
         OKRSet[] okrSet = {new OKRSet(objective, keyResult)};
-        Unit unit = new Unit(Set.of(user));
+        Set<User> userSet = new HashSet<>();
+        Unit unit = new Unit(userSet);
 
         //act
         Unit savedUnit = unitService.save(unit);

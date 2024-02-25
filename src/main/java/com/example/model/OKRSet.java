@@ -30,8 +30,9 @@ public class OKRSet {
     @PersistenceCreator
     public OKRSet(Objective objective, List<KeyResult> keyResults) {
         this.uuid = UUID.randomUUID();
+        List<KeyResult> keyResultList = new ArrayList<>(keyResults);
         this.objective = objective;
-        this.keyResults = keyResults;
+        this.keyResults = keyResultList;
 
     }
 

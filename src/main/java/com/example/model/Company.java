@@ -28,8 +28,10 @@ public class Company {
     @PersistenceCreator
     public Company(Set<BusinessUnit> businessUnits, Set<OKRSet> okrSets) {
         this.uuid = UUID.randomUUID();
-        this.businessUnits = businessUnits;
-        this.okrSets = okrSets;
+        Set<BusinessUnit> businessUnitSet = new HashSet<>(businessUnits);
+        Set<OKRSet> okrSetSet = new HashSet<>(okrSets);
+        this.businessUnits = businessUnitSet;
+        this.okrSets = okrSetSet;
     }
 
     /**
@@ -40,7 +42,11 @@ public class Company {
     public Company(OKRSet... okrSets) {
         this.uuid = UUID.randomUUID();
         this.businessUnits = new HashSet<>();
-        this.okrSets = Set.of(okrSets);
+        Set<OKRSet> okrSetSet = new HashSet<>();
+        for (OKRSet okrSet : okrSets) {
+            okrSetSet.add(okrSet);
+        }
+        this.okrSets = okrSetSet;
     }
 
     /**
@@ -85,7 +91,8 @@ public class Company {
      * @param okrSets Set of OKRSets
      */
     public void setOkrSets(Set<OKRSet> okrSets) {
-        this.okrSets = okrSets;
+        Set<OKRSet> okrSetSet = new HashSet<>(okrSets);
+        this.okrSets = okrSetSet;
     }
 
     /**
