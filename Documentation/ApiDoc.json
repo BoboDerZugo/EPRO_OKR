@@ -1338,7 +1338,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"",
+									""
 								],
 								"type": "text/javascript"
 							}
