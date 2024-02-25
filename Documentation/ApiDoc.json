@@ -1,0 +1,1494 @@
+{
+	"info": {
+		"_postman_id": "3fbaeb7c-9126-4f06-b8b5-e66f295308ec",
+		"name": "API documentation",
+		"description": "API for the Company",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31853174"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "testAdmin0",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role\": \"CO_ADMIN\",\n    \"password\": \"password\",\n    \"name\": \"testAdmin1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/user",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user"
+							]
+						},
+						"description": "Creates a new User"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user/{{userUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"{{userUuid}}"
+							]
+						},
+						"description": "Get a user with id"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role\": \"CO_ADMIN\",\n    \"name\": \"testAdmin1Update\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/user/{{userUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"{{userUuid}}"
+							]
+						},
+						"description": "Update user with id"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user/{{userUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"{{userUuid}}"
+							]
+						},
+						"description": "delete user with id"
+					},
+					"response": []
+				}
+			],
+			"description": "Controll Users"
+		},
+		{
+			"name": "Unit",
+			"item": [
+				{
+					"name": "Create Unit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"employeeSet\": [\n        {\n            \"uuid\": \"{{userUuid}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/unit",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"unit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Units",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/unit",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"unit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Unit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/unit/{{unitUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"unit",
+								"{{unitUuid}}"
+							]
+						},
+						"description": "Get unit with id"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Unit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"employeeSet\": [\n        {\n            \"uuid\": \"{{userUuid}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/unit/{{unitUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"unit",
+								"{{unitUuid}}"
+							]
+						},
+						"description": "update unit with id"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Unit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/unit/{{unitUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"unit",
+								"{{unitUuid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "KeyResult",
+			"item": [
+				{
+					"name": "Create KeyResult for CO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"krTest1\",\n    \"fulfilled\": 20,\n    \"current\": 20,\n    \"goal\": 100,\n    \"confidence\": 60,\n    \"owner\": {\n        \"uuid\": \"{{userUuid}}\"\n    },\n    \"statusUpdate\": \"Erster\",\n    \"description\": \"Test KR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}/keyresult",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"keyresult"
+							]
+						},
+						"description": "Add keyResult to CO OKR"
+					},
+					"response": []
+				},
+				{
+					"name": "Create KeyResult for BU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"krTest\",\n    \"fulfilled\": 20,\n    \"current\": 20,\n    \"goal\": 100,\n    \"confidence\": 60,\n    \"owner\": {\n        \"uuid\": \"{{userUuid}}\"\n    },\n    \"statusUpdate\": \"Erster\",\n    \"description\": \"Test KR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}/keyresult",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"keyresult"
+							]
+						},
+						"description": "Add keyResult to BU OKR"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All KeyResults CO",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}/keyresult",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"keyresult"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All KeyResults BU",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}/keyresult",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"keyresult"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get KeyResult by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/keyresult/{{krUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"keyresult",
+								"{{krUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update KeyResult CO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"krTest\",\n    \"fulfilled\": 20,\n    \"current\": 22,\n    \"goal\": 100,\n    \"confidence\": 60,\n    \"owner\": {\n        \"uuid\": \"{{userUuid}}\"\n    },\n    \"statusUpdate\": \"Update\",\n    \"description\": \"Test KR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}/keyresult/{{krUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"keyresult",
+								"{{krUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update KeyResult BU",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"krTest\",\n    \"fulfilled\": 20,\n    \"current\": 23,\n    \"goal\": 100,\n    \"confidence\": 60,\n    \"owner\": {\n        \"uuid\": \"{{userUuid}}\"\n    },\n    \"statusUpdate\": \"Update\",\n    \"description\": \"Test KR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}/keyresult/{{krUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"keyresult",
+								"{{krUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete KeyResult CO",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}/keyresult/{{krUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"keyresult",
+								"{{krUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete KeyResult BU",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}/keyresult/{{krUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"keyresult",
+								"{{krUuid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Objective",
+			"item": [
+				{
+					"name": "Create  Objective CO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"objectiveTest\",\n    \"fulfilled\": 60\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}/objective",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"objective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Objective BU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"objectiveTest\",\n    \"fulfilled\": 60\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}/objective",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"objective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Objective BU",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}/objective",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"objective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Objective CO",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}/objective",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"objective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Objective by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/objective/{{objectiveUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"objective",
+								"{{objectiveUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Objective CO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"objectiveTest\",\n    \"fulfilled\": 80\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}/objective",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"objective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Objective BU",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"objectiveTest\",\n    \"fulfilled\": 70\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}/objective",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"objective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Objective CO",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}/objective",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"objective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Objective BU",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}/objective",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}",
+								"objective"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OKRSet",
+			"item": [
+				{
+					"name": "Create OKRSet CO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"objective\": {\"uuid\": \"{{objectiveUuid}}\"},\n    \"keyResults\": [\n        {\n            \"uuid\": \"{{krUuid}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create OKRSet BU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"objective\": {\"uuid\": \"{{objectiveUuid}}\"},\n    \"keyResults\": [\n        {\n            \"uuid\": \"{{krUuid}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get OKRSets CO",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get OKRSets BU",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get OKRSet by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/okrset/{{okrUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"okrset",
+								"{{okrUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update OKRSet CO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"objective\": {\"uuid\": \"{{objectiveUuid}}\"},\n    \"keyResults\": [\n        {\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update OKRSet BU",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"objective\": {\"uuid\": \"{{objectiveUuid}}\"},\n    \"keyResults\": [\n        {\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete OKRSet CO",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/okrset/{{okrUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"okrset",
+								"{{okrUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete OKRSet BU",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/okrset/{{okrUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"okrset",
+								"{{okrUuid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "BusinessUnit",
+			"item": [
+				{
+					"name": "Create BusinesUnit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"units\": [\n        {\n            \"uuid\": \"{{unitUuid}}\"\n        }\n    ],\n    \"okrSets\": [\n        {\n            \"uuid\": \"{{okrUuid}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All BusinessUnits CO",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BusinessUnit by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/businessunit/{{businessUnitUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"businessunit",
+								"{{businessUnitUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Unit By BU Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}/units",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}",
+								"units"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update BusinessUnit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"units\": [\n        {\n            \"uuid\": \"{{unitUuid}}\"\n        }\n    ],\n    \"okrSets\": [\n        {\n            \"uuid\": \"{{okrUuid}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/3822e847-e9a8-4303-a625-6bb961499d3e",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"3822e847-e9a8-4303-a625-6bb961499d3e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete BusinessUnit",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}/businessunit/{{businessUnitUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}",
+								"businessunit",
+								"{{businessUnitUuid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "Create Company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"businessUnits\": [\n        {\n            \"uuid\": \"{{businessUnitUuid}}\"\n        }\n    ],\n    \"okrSets\": [\n        {\n            \"uuid\": \"{{okrUuid}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Companies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Company",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"businessUnits\": [\n        {\n            \"uuid\": \"{{businessUnitUuid}}\"\n        }\n    ],\n    \"okrSets\": [\n        {\n            \"uuid\": \"{{okrUuid}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Company",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/company/{{companyUuid}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"{{companyUuid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "password",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "testAdmin0",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
